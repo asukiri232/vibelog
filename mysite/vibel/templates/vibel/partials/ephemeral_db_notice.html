@@ -1,16 +1,20 @@
 {% if vercel_ephemeral_db %}
 <div class="vl-ephemeral-notice" role="alert">
-  <p class="vl-ephemeral-notice__title">Аккаунт на этом демо не сохраняется</p>
+  <p class="vl-ephemeral-notice__title">На Vercel аккаунт не сохраняется</p>
   <p class="vl-ephemeral-notice__text">
-    Vercel без базы данных стирает пользователей и посты через несколько минут — поэтому вас «выкидывает» и старый вход не работает.
-    Чтобы аккаунт жил постоянно, один раз подключите бесплатную БД <strong>Neon</strong> (5 минут):
+    Это ограничение бесплатного Vercel, не баг сайта: через несколько минут пользователи и посты стираются.
+    Neon не обязателен — выберите один из вариантов ниже.
   </p>
   <ol class="vl-ephemeral-notice__steps">
-    <li><a href="https://neon.tech" target="_blank" rel="noopener">neon.tech</a> → регистрация → <strong>New Project</strong></li>
-    <li>Скопируйте <strong>Connection string</strong> (PostgreSQL)</li>
-    <li><a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a> → проект VibeLog → <strong>Settings → Environment Variables</strong></li>
-    <li>Добавьте <code>DATABASE_URL</code> = строка из Neon, <code>DJANGO_DEBUG</code> = <code>false</code></li>
-    <li><strong>Deployments → Redeploy</strong>, затем зарегистрируйтесь ещё раз — этот аккаунт уже не пропадёт</li>
+    <li><strong>Beget (рекомендуем для диплома)</strong> — у вас уже есть техдомен <code>c99631u8.beget.tech</code>.
+      Там БД и файлы на диске, вход не сбрасывается. Инструкция в файле <code>BEGET.md</code> в репозитории.</li>
+    <li><strong>Supabase</strong> (бесплатно, если нужен именно Vercel) —
+      <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a> → New project →
+      Settings → Database → Connection string (URI) → в Vercel добавить <code>DATABASE_URL</code> → Redeploy.</li>
+    <li><strong>Локально + туннель</strong> — пока включён ваш ПК, дать преподу ссылку через Cloudflare Tunnel (см. <code>DEPLOY.md</code>).</li>
   </ol>
+  <p class="vl-ephemeral-notice__text vl-ephemeral-notice__text--muted">
+    Пока ничего не подключено — можно пользоваться Vercel как демо, но после простоя нужна новая регистрация.
+  </p>
 </div>
 {% endif %}

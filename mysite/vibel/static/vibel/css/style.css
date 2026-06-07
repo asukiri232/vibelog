@@ -5662,3 +5662,9 @@ body.vl-dm-reply-active .vl-dm-msg__edit-form {
   font-size: 0.82em;
 }
 
+.vl-ephemeral-notice__text--muted {
+  margin-bottom: 0;
+  opacity: 0.85;
+  font-size: 0.82rem;
+}
+

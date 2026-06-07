@@ -44,8 +44,8 @@ class StyledAuthenticationForm(AuthenticationForm):
         err = super().get_invalid_login_error()
         if getattr(settings, 'VERCEL_EPHEMERAL_DB', False):
             return ValidationError(
-                'Неверный логин или пароль. На демо-Vercel старый аккаунт мог уже стереться — '
-                'зарегистрируйтесь заново или подключите Neon (см. инструкцию выше).',
+                'Неверный логин или пароль. На Vercel без постоянной БД старый аккаунт мог стереться — '
+                'зарегистрируйтесь заново или перенесите сайт на Beget / Supabase (см. выше).',
                 code='invalid_login',
             )
         return err

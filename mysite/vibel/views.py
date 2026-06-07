@@ -520,8 +520,8 @@ def register(request):
                 if getattr(dj_settings, 'VERCEL_EPHEMERAL_DB', False):
                     messages.warning(
                         request,
-                        'Аккаунт создан, но на демо-Vercel без Neon он пропадёт через несколько минут. '
-                        'Подключите DATABASE_URL (Neon) — инструкция на странице регистрации.',
+                        'Аккаунт создан, но на Vercel без постоянной БД он пропадёт через несколько минут. '
+                        'Для сохранения — Beget или Supabase (инструкция на странице регистрации).',
                     )
                 return redirect('vibel:feed')
     else:
