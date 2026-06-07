@@ -109,42 +109,75 @@ class RegisterForm(forms.Form):
 
 
 class ProfileEditForm(forms.ModelForm):
+    """FileField вместо ImageField — на Vercel нет Pillow, иначе 500 при загрузке."""
+
     class Meta:
         model = Profile
         fields = (
-            'cover',
-            'avatar',
             'display_name',
             'bio',
             'location',
             'is_private',
         )
         labels = {
-            'cover': 'Обложка профиля',
-            'avatar': 'Фото профиля',
             'display_name': 'Имя',
             'bio': 'О себе',
             'location': 'Локация',
             'is_private': 'Закрытый профиль (посты только для подписчиков)',
         }
         widgets = {
-            'cover': forms.FileInput(
+            'display_name': forms.TextInput(attrs={'class': 'vl-input'}),
+            'bio': forms.Textarea(attrs={'class': 'vl-input vl-textarea', 'rows': 4}),
+            'location': forms.TextInput(attrs={'class': 'vl-input'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cover'] = forms.FileField(
+            label='Обложка профиля',
+            required=False,
+            widget=forms.FileInput(
                 attrs={
                     'class': 'vl-file-input',
                     'accept': 'image/*',
                 }
             ),
-            'display_name': forms.TextInput(attrs={'class': 'vl-input'}),
-            'bio': forms.Textarea(attrs={'class': 'vl-input vl-textarea', 'rows': 4}),
-            'location': forms.TextInput(attrs={'class': 'vl-input'}),
-            'avatar': forms.FileInput(
+        )
+        self.fields['avatar'] = forms.FileField(
+            label='Фото профиля',
+            required=False,
+            widget=forms.FileInput(
                 attrs={
                     'class': 'vl-file-input vl-file-input--avatar',
                     'accept': 'image/*',
                     'data-vl-avatar-editor': '1',
                 }
             ),
-        }
+        )
+
+    def _clean_profile_image(self, name):
+        upload = self.files.get(name) if self.files else None
+        if not upload:
+            return None
+        if upload.size > MAX_IMAGE_UPLOAD_BYTES:
+            raise ValidationError('Файл больше 8 МБ.')
+        return optimize_uploaded_image(upload)
+
+    def clean_avatar(self):
+        return self._clean_profile_image('avatar')
+
+    def clean_cover(self):
+        return self._clean_profile_image('cover')
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        if self.files and self.files.get('avatar'):
+            instance.avatar = self.cleaned_data['avatar']
+        if self.files and self.files.get('cover'):
+            instance.cover = self.cleaned_data['cover']
+        if commit:
+            instance.save()
+        return instance
 
 
 class PostForm(forms.ModelForm):

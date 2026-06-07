@@ -235,13 +235,23 @@ def profile_edit(request, username):
     user = get_object_or_404(User, username=username)
     if user != request.user:
         return HttpResponseForbidden()
-    profile = user.profile
+    profile, _ = Profile.objects.get_or_create(user=user)
     if request.method == 'POST':
         form = ProfileEditForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             try:
+                import os
+
+                if os.environ.get('VERCEL'):
+                    from vercel_bootstrap import ensure_media_dirs
+
+                    ensure_media_dirs()
                 form.save()
-            except (DatabaseError, OSError, PermissionError, IOError):
+            except (DatabaseError, OSError, PermissionError, IOError, DjangoValidationError):
+                logger.warning('profile_edit save failed', exc_info=True)
+                add_form_write_error(form, WRITE_ERROR_MSG)
+            except Exception:
+                logger.exception('profile_edit unexpected error')
                 add_form_write_error(form, WRITE_ERROR_MSG)
             else:
                 return redirect('vibel:profile', username=user.username)
