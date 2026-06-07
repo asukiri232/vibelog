@@ -14,3 +14,8 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 from django.core.wsgi import get_wsgi_application
 
 application = get_wsgi_application()
+
+if os.environ.get('VERCEL'):
+    from vercel_bootstrap import ensure_vercel_database
+
+    ensure_vercel_database()

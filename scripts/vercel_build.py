@@ -12,7 +12,7 @@ def run(*args: str) -> None:
 
 
 def main() -> None:
-    run('manage.py', 'migrate', '--noinput')
+    # migrate на Vercel выполняется при cold start (см. vercel_bootstrap.py)
     run('manage.py', 'collectstatic', '--noinput')
 
     src = ROOT / 'mysite' / 'staticfiles'

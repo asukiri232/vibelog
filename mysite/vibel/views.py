@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.contrib import messages
 from django.contrib.auth import login
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import CharField, Count, F, Q, Value
@@ -430,13 +431,19 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            user = None
             try:
                 user = form.save()
             except DjangoValidationError as exc:
                 msgs = getattr(exc, 'messages', None) or [str(exc)]
                 for msg in msgs:
                     form.add_error('password', msg)
-            else:
+            except DatabaseError:
+                form.add_error(
+                    None,
+                    'Не удалось создать аккаунт. Попробуйте ещё раз через минуту.',
+                )
+            if user is not None:
                 login(request, user)
                 return redirect('vibel:feed')
     else:

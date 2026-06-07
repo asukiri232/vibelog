@@ -102,9 +102,9 @@ class RegisterForm(forms.Form):
             email=email,
             password=self.cleaned_data['password'],
         )
-        profile = user.profile
+        profile, _ = Profile.objects.get_or_create(user=user)
         profile.display_name = self.cleaned_data['name']
-        profile.save()
+        profile.save(update_fields=['display_name'])
         return user
 
 
