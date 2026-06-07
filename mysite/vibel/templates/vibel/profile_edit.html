@@ -1,0 +1,369 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Редактирование — VibeLog{% endblock %}
+{% block content %}
+
+<form method="post" enctype="multipart/form-data" class="vl-form" id="vl-profile-edit-form">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="vl-field{% if field.errors %} vl-field--error{% endif %}{% if field.field.widget.input_type == 'file' %} vl-field--file{% endif %}">
+      <label class="vl-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.field.widget.input_type == 'file' %}
+        <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" data-vl-default-hint="{% if field.name == 'cover' %}Широкое горизонтальное фото для шапки. Нажмите «Выбрать файл».{% else %}Новый аватар или оставьте как есть — «Выбрать файл».{% endif %}" aria-live="polite">{% if field.name == 'cover' %}Широкое горизонтальное фото для шапки. Нажмите «Выбрать файл».{% else %}Новый аватар или оставьте как есть — «Выбрать файл».{% endif %}</p>
+      {% endif %}
+      {% if field.errors %}<span class="vl-error">{{ field.errors.0 }}</span>{% endif %}
+    </div>
+  {% endfor %}
+  <button type="submit" class="vl-btn">Сохранить</button>
+</form>
+
+<div class="vl-avatar-editor" id="vl-avatar-editor" hidden aria-hidden="true">
+  <div class="vl-avatar-editor__backdrop" data-vl-avatar-editor-close></div>
+  <div class="vl-avatar-editor__dialog" role="dialog" aria-modal="true" aria-labelledby="vl-avatar-editor-title">
+    <h2 class="vl-avatar-editor__title" id="vl-avatar-editor-title">Фото на вашей странице</h2>
+    <p class="vl-avatar-editor__lead">Перетащите фото в круге, чтобы выбрать фрагмент для аватара. Колёсико мыши или кнопки «+ / −» — масштаб. Затем «Применить».</p>
+
+    <div class="vl-avatar-editor__preview-wrap" id="vl-avatar-editor-preview">
+      <canvas class="vl-avatar-editor__canvas vl-avatar-editor__canvas--interactive" id="vl-avatar-editor-canvas" width="280" height="280" role="img" aria-label="Предпросмотр аватара, перетащите изображение"></canvas>
+    </div>
+
+    <div class="vl-avatar-editor__controls">
+      <div class="vl-avatar-editor__row">
+        <span class="vl-avatar-editor__row-label">Масштаб</span>
+        <div class="vl-avatar-editor__row-btns">
+          <button type="button" class="vl-avatar-editor__icon-btn" id="vl-avatar-editor-zoom-out" title="Уменьшить" aria-label="Уменьшить масштаб">−</button>
+          <span class="vl-avatar-editor__zoom-val" id="vl-avatar-editor-zoom-pct">100%</span>
+          <button type="button" class="vl-avatar-editor__icon-btn" id="vl-avatar-editor-zoom-in" title="Увеличить" aria-label="Увеличить масштаб">+</button>
+        </div>
+      </div>
+      <div class="vl-avatar-editor__row">
+        <span class="vl-avatar-editor__row-label">Поворот</span>
+        <div class="vl-avatar-editor__row-btns">
+          <button type="button" class="vl-avatar-editor__rot" id="vl-avatar-editor-ccw" title="На 90° против часовой" aria-label="Повернуть на 90° против часовой стрелки">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+          <span class="vl-avatar-editor__angle-val" id="vl-avatar-editor-angle-out">0°</span>
+          <button type="button" class="vl-avatar-editor__rot" id="vl-avatar-editor-cw" title="На 90° по часовой" aria-label="Повернуть на 90° по часовой стрелке">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="vl-avatar-editor__actions">
+      <button type="button" class="vl-avatar-editor__btn vl-avatar-editor__btn--primary" id="vl-avatar-editor-apply">Применить</button>
+      <button type="button" class="vl-avatar-editor__btn vl-avatar-editor__btn--ghost" id="vl-avatar-editor-cancel" data-vl-avatar-editor-close>Отмена</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var PREVIEW = 280;
+    var EXPORT = 512;
+    var ZOOM_MIN = 1;
+    var ZOOM_MAX = 4;
+    var ZOOM_STEP = 0.12;
+
+    function drawCircularAvatar(canvas, img, angleDeg, logicalSize, panX, panY, zoom) {
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var px = Math.round(logicalSize * dpr);
+      canvas.width = px;
+      canvas.height = px;
+      canvas.style.width = logicalSize + 'px';
+      canvas.style.height = logicalSize + 'px';
+      var ctx = canvas.getContext('2d');
+      var size = logicalSize;
+      var cx = size / 2;
+      var cy = size / 2;
+      var R = cx;
+      var rad = angleDeg * Math.PI / 180;
+      var iw = img.naturalWidth;
+      var ih = img.naturalHeight;
+      var base = Math.max(size / iw, size / ih);
+      var s = base * zoom;
+      var dw = iw * s;
+      var dh = ih * s;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      ctx.clearRect(0, 0, size, size);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.translate(cx + panX, cy + panY);
+      ctx.rotate(rad);
+      ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+    }
+
+    function renderAvatarBlob(img, angleDeg, outSize, panX, panY, zoom, callback) {
+      var ratio = outSize / PREVIEW;
+      var panEX = panX * ratio;
+      var panEY = panY * ratio;
+      var c = document.createElement('canvas');
+      c.width = outSize;
+      c.height = outSize;
+      var ctx = c.getContext('2d');
+      var cx = outSize / 2;
+      var cy = outSize / 2;
+      var R = cx;
+      var rad = angleDeg * Math.PI / 180;
+      var iw = img.naturalWidth;
+      var ih = img.naturalHeight;
+      var base = Math.max(outSize / iw, outSize / ih);
+      var s = base * zoom;
+      var dw = iw * s;
+      var dh = ih * s;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.translate(cx + panEX, cy + panEY);
+      ctx.rotate(rad);
+      ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+      c.toBlob(callback, 'image/png', 0.92);
+    }
+
+    document.querySelectorAll('.vl-file-input').forEach(function (input) {
+      var hint = document.querySelector('[data-vl-file-hint-for="' + input.id + '"]');
+      if (!hint) return;
+      var def = hint.getAttribute('data-vl-default-hint') || hint.textContent;
+      if (!input.hasAttribute('data-vl-avatar-editor')) {
+        input.addEventListener('change', function () {
+          hint.textContent = input.files && input.files.length
+            ? 'Выбрано: ' + input.files[0].name
+            : def;
+        });
+        return;
+      }
+
+      var modal = document.getElementById('vl-avatar-editor');
+      var canvas = document.getElementById('vl-avatar-editor-canvas');
+      var previewWrap = document.getElementById('vl-avatar-editor-preview');
+      var angleOut = document.getElementById('vl-avatar-editor-angle-out');
+      var zoomPct = document.getElementById('vl-avatar-editor-zoom-pct');
+      var btnApply = document.getElementById('vl-avatar-editor-apply');
+      var btnCancel = document.getElementById('vl-avatar-editor-cancel');
+      var btnCcw = document.getElementById('vl-avatar-editor-ccw');
+      var btnCw = document.getElementById('vl-avatar-editor-cw');
+      var btnZoomIn = document.getElementById('vl-avatar-editor-zoom-in');
+      var btnZoomOut = document.getElementById('vl-avatar-editor-zoom-out');
+      var imgEl = new Image();
+      var objectUrl = null;
+      var pendingFile = null;
+      var angleDeg = 0;
+      var panX = 0;
+      var panY = 0;
+      var zoom = 1;
+      var dragging = false;
+      var lastX = 0;
+      var lastY = 0;
+      var dragPointerId = null;
+
+      function clampPan() {
+        var iw = imgEl.naturalWidth;
+        var ih = imgEl.naturalHeight;
+        if (!iw) return;
+        var R = PREVIEW / 2;
+        var base = Math.max(PREVIEW / iw, PREVIEW / ih);
+        var s = base * zoom;
+        var dw = iw * s;
+        var dh = ih * s;
+        var halfDiag = Math.sqrt((dw / 2) * (dw / 2) + (dh / 2) * (dh / 2));
+        var lim = Math.max(0, halfDiag - R + 0.5);
+        if (zoom <= 1.001) {
+          panX = 0;
+          panY = 0;
+          return;
+        }
+        panX = Math.max(-lim, Math.min(lim, panX));
+        panY = Math.max(-lim, Math.min(lim, panY));
+      }
+
+      function updateZoomLabel() {
+        zoomPct.textContent = Math.round(zoom * 100) + '%';
+      }
+
+      function redraw() {
+        if (!imgEl.complete || !imgEl.naturalWidth) return;
+        clampPan();
+        drawCircularAvatar(canvas, imgEl, angleDeg, PREVIEW, panX, panY, zoom);
+      }
+
+      function setAngle(n) {
+        angleDeg = Math.round(n);
+        while (angleDeg > 180) angleDeg -= 360;
+        while (angleDeg < -180) angleDeg += 360;
+        angleOut.textContent = angleDeg + '°';
+        clampPan();
+        redraw();
+      }
+
+      function addZoom(delta) {
+        zoom = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, zoom + delta));
+        if (zoom <= ZOOM_MIN + 0.001) {
+          panX = 0;
+          panY = 0;
+        }
+        clampPan();
+        updateZoomLabel();
+        redraw();
+      }
+
+      function resetEditorState() {
+        angleDeg = 0;
+        panX = 0;
+        panY = 0;
+        zoom = 1;
+        angleOut.textContent = '0°';
+        updateZoomLabel();
+      }
+
+      function openModal() {
+        modal.hidden = false;
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('vl-avatar-editor-open');
+        redraw();
+        requestAnimationFrame(function () {
+          btnApply.focus();
+        });
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('vl-avatar-editor-open');
+        dragging = false;
+        dragPointerId = null;
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+          objectUrl = null;
+        }
+        imgEl.removeAttribute('src');
+        pendingFile = null;
+      }
+
+      function cancelEditor() {
+        input.value = '';
+        hint.textContent = def;
+        closeModal();
+      }
+
+      function onPointerDown(e) {
+        if (modal.hidden) return;
+        if (e.button !== undefined && e.button !== 0) return;
+        dragging = true;
+        dragPointerId = e.pointerId;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        canvas.setPointerCapture(e.pointerId);
+        canvas.classList.add('vl-avatar-editor__canvas--dragging');
+      }
+
+      function onPointerMove(e) {
+        if (!dragging || e.pointerId !== dragPointerId) return;
+        var dx = e.clientX - lastX;
+        var dy = e.clientY - lastY;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        panX += dx;
+        panY += dy;
+        clampPan();
+        redraw();
+      }
+
+      function onPointerUp(e) {
+        if (e.pointerId !== dragPointerId) return;
+        dragging = false;
+        dragPointerId = null;
+        try {
+          canvas.releasePointerCapture(e.pointerId);
+        } catch (err) { /* ignore */ }
+        canvas.classList.remove('vl-avatar-editor__canvas--dragging');
+      }
+
+      canvas.addEventListener('pointerdown', onPointerDown);
+      canvas.addEventListener('pointermove', onPointerMove);
+      canvas.addEventListener('pointerup', onPointerUp);
+      canvas.addEventListener('pointercancel', onPointerUp);
+
+      previewWrap.addEventListener('wheel', function (e) {
+        if (modal.hidden) return;
+        e.preventDefault();
+        var step = ZOOM_STEP * 2.2;
+        if (e.deltaMode === 1) step *= 14;
+        else if (e.deltaMode === 2) step *= 320;
+        addZoom((e.deltaY < 0 ? 1 : -1) * step);
+      }, { passive: false });
+
+      input.addEventListener('change', function () {
+        var f = input.files && input.files[0];
+        if (!f) {
+          hint.textContent = def;
+          return;
+        }
+        if (!f.type.match(/^image\//)) {
+          hint.textContent = 'Нужен файл изображения';
+          input.value = '';
+          return;
+        }
+        pendingFile = f;
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+        objectUrl = URL.createObjectURL(f);
+        imgEl.onload = function () {
+          resetEditorState();
+          openModal();
+        };
+        imgEl.onerror = function () {
+          hint.textContent = 'Не удалось открыть изображение';
+          input.value = '';
+          closeModal();
+        };
+        imgEl.src = objectUrl;
+      });
+
+      btnCcw.addEventListener('click', function () {
+        setAngle(angleDeg - 90);
+      });
+      btnCw.addEventListener('click', function () {
+        setAngle(angleDeg + 90);
+      });
+
+      btnZoomIn.addEventListener('click', function () {
+        addZoom(ZOOM_STEP * 3);
+      });
+      btnZoomOut.addEventListener('click', function () {
+        addZoom(-ZOOM_STEP * 3);
+      });
+
+      btnApply.addEventListener('click', function () {
+        if (!imgEl.complete || !imgEl.naturalWidth) return;
+        renderAvatarBlob(imgEl, angleDeg, EXPORT, panX, panY, zoom, function (blob) {
+          if (!blob) return;
+          var name = (pendingFile && pendingFile.name.replace(/\.[^.]+$/, '')) || 'avatar';
+          var file = new File([blob], name + '.png', { type: 'image/png' });
+          var dt = new DataTransfer();
+          dt.items.add(file);
+          input.files = dt.files;
+          hint.textContent = 'Аватар: ' + file.name + ' (готов к сохранению)';
+          closeModal();
+        });
+      });
+
+      btnCancel.addEventListener('click', cancelEditor);
+      modal.querySelectorAll('[data-vl-avatar-editor-close]').forEach(function (el) {
+        el.addEventListener('click', cancelEditor);
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (!modal.hidden && e.key === 'Escape') {
+          e.preventDefault();
+          cancelEditor();
+        }
+      });
+    });
+  })();
+</script>
+{% endblock %}

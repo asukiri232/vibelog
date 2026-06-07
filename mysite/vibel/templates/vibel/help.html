@@ -1,0 +1,66 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Помощь — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-settings">
+  <h1 class="vl-form__title">Помощь</h1>
+  <p class="vl-settings__lead">Кратко о том, как пользоваться VibeLog: лента, посты, люди и сообщения.</p>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-overview">
+    <h2 id="vl-help-overview" class="vl-settings-section__title">Обзор</h2>
+    <p class="vl-settings-section__text">VibeLog — это лента фото-постов по настроению: вы смотрите картинки с подписями, ставите лайки, комментируете и сохраняете понравившее в избранное.</p>
+    <p class="vl-settings-section__text">Без входа можно открывать ленту и чужие страницы. Чтобы подписываться, публиковать, комментировать и пользоваться сообщениями, нужен <a href="{% url 'vibel:register' %}">аккаунт</a> или <a href="{% url 'vibel:login' %}">вход</a>.</p>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-feed">
+    <h2 id="vl-help-feed" class="vl-settings-section__title">Лента</h2>
+    <ul class="vl-help-list">
+      <li><strong>Подписки</strong> — посты только от тех, на кого вы подписаны (доступно после входа).</li>
+      <li><strong>Популярное</strong> — сначала показываются посты с большим числом лайков.</li>
+      <li><strong>Свежее</strong> — сортировка по времени публикации.</li>
+      <li><strong>Тип поста</strong> — фильтр по тематике (лайфстайл, спорт, путешествия и др.), можно сочетать с любой вкладкой.</li>
+    </ul>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-posts">
+    <h2 id="vl-help-posts" class="vl-settings-section__title">Посты и реакции</h2>
+    <dl class="vl-help-faq">
+      <dt>Как опубликовать пост?</dt>
+      <dd>После входа откройте «Новый пост»: загрузите изображение, выберите тип поста и при желании добавьте подпись.</dd>
+      <dt>Что можно делать с чужим постом?</dt>
+      <dd>Поставить лайк, написать комментарий или сохранить пост в избранное — так же, как в соцсетях с фото-лентой.</dd>
+      <dt>Где лежат сохранённые посты?</dt>
+      <dd>В разделе «Избранное» в меню (боковая панель на большом экране или мобильное меню).</dd>
+    </dl>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-people">
+    <h2 id="vl-help-people" class="vl-settings-section__title">Люди и подписки</h2>
+    <p class="vl-settings-section__text">Через поиск в шапке можно найти пользователя по имени или логину и перейти на страницу профиля. Там же можно подписаться или отписаться.</p>
+    <p class="vl-settings-section__text">Если вы подписаны друг на друга, в интерфейсе это отображается как «дружба» — так проще понять, с кем доступны личные сообщения.</p>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-dm">
+    <h2 id="vl-help-dm" class="vl-settings-section__title">Сообщения</h2>
+    <p class="vl-settings-section__text">Личные сообщения доступны только между пользователями с <strong>взаимной подпиской</strong>: вы подписаны друг на друга. Тогда в разделе «Сообщения» можно открыть диалог и переписываться.</p>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-notify">
+    <h2 id="vl-help-notify" class="vl-settings-section__title">Уведомления</h2>
+    <p class="vl-settings-section__text">Лайки, комментарии и новые подписчики попадают в «Уведомления». Непрочитанное можно отличить по подсказке на иконке в меню.</p>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-ui">
+    <h2 id="vl-help-ui" class="vl-settings-section__title">Тема и экран</h2>
+    <p class="vl-settings-section__text">Светлая или тёмная тема переключается в шапке или в меню аккаунта и сохраняется в браузере. На узком экране основная навигация собрана в меню «гамбургер».</p>
+  </section>
+
+  <section class="vl-settings-section" aria-labelledby="vl-help-more">
+    <h2 id="vl-help-more" class="vl-settings-section__title">Ещё</h2>
+    {% if user.is_authenticated %}
+    <p class="vl-settings-section__text">Параметры аккаунта и темы собраны на странице <a href="{% url 'vibel:settings' %}">Настройки</a>. Имя в ленте, аватар и обложку можно изменить в <a href="{% url 'vibel:profile_edit' username=user.username %}">редактировании профиля</a>.</p>
+    {% else %}
+    <p class="vl-settings-section__text">После регистрации станут доступны настройки профиля и раздел «Настройки» в меню аккаунта.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

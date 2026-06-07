@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: vibelog
+    runtime: python
+    plan: free
+    buildCommand: ./build.sh
+    startCommand: cd mysite && gunicorn mysite.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: SERVE_MEDIA
+        value: "True"
+      - key: SEED_DEMO
+        value: "0"
+      - key: ALLOWED_HOSTS
+        value: localhost,127.0.0.1,.onrender.com
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: "3.12.2"

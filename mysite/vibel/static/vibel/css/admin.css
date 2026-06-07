@@ -1,0 +1,456 @@
+/* VibeLog — оформление Django Admin */
+
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&display=swap');
+
+:root {
+  --vl-admin-green: #0c3d2e;
+  --vl-admin-green-mid: #1a5c47;
+  --vl-admin-green-soft: rgba(12, 61, 46, 0.08);
+  --vl-admin-cream: #f4f2eb;
+  --vl-admin-paper: #faf9f6;
+  --vl-admin-text: #1e2a3b;
+  --vl-admin-muted: rgba(30, 42, 59, 0.65);
+  --vl-admin-line: rgba(30, 42, 59, 0.12);
+  --vl-admin-danger: #c45c48;
+  --vl-admin-radius: 12px;
+  --vl-admin-shadow: 0 12px 32px rgba(12, 61, 46, 0.08);
+}
+
+html[data-theme='dark'] {
+  --vl-admin-green: #b89aad;
+  --vl-admin-green-mid: #cdb4c4;
+  --vl-admin-green-soft: rgba(184, 154, 173, 0.12);
+  --vl-admin-cream: #101014;
+  --vl-admin-paper: #1a1a20;
+  --vl-admin-text: #ffffff;
+  --vl-admin-muted: rgba(255, 255, 255, 0.65);
+  --vl-admin-line: rgba(255, 255, 255, 0.1);
+  --vl-admin-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+body {
+  font-family: 'Comfortaa', system-ui, sans-serif !important;
+  background: linear-gradient(165deg, var(--vl-admin-paper), var(--vl-admin-cream)) !important;
+  color: var(--vl-admin-text) !important;
+}
+
+#header {
+  background: var(--vl-admin-green) !important;
+  color: #faf9f6 !important;
+  box-shadow: var(--vl-admin-shadow);
+  border-bottom: none;
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+#branding {
+  float: none;
+  display: flex;
+  align-items: center;
+}
+
+#branding h1 {
+  margin: 0;
+  padding: 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+#branding h1 a:link,
+#branding h1 a:visited {
+  color: #faf9f6 !important;
+  text-decoration: none;
+}
+
+.vl-admin-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.vl-admin-brand__dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: #b8a369;
+  box-shadow: 0 0 0 3px rgba(184, 163, 105, 0.25);
+}
+
+#user-tools {
+  float: none;
+  margin: 0 0 0 auto;
+  padding: 0;
+  font-weight: 500;
+}
+
+#user-tools a {
+  border-bottom: none !important;
+  opacity: 0.92;
+}
+
+#user-tools a:hover {
+  opacity: 1;
+}
+
+.vl-admin-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.vl-admin-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.vl-admin-nav__links a {
+  color: #faf9f6 !important;
+  text-decoration: none;
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.88rem;
+}
+
+.vl-admin-nav__links a:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+#nav-global {
+  float: none;
+  order: 3;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  #nav-global {
+    width: auto;
+    order: unset;
+  }
+}
+
+#content {
+  padding: 1.25rem 1.5rem 2rem;
+}
+
+#content h1 {
+  font-weight: 700;
+  color: var(--vl-admin-text);
+}
+
+.module,
+.inline-group {
+  border: 1px solid var(--vl-admin-line) !important;
+  border-radius: var(--vl-admin-radius) !important;
+  overflow: hidden;
+  box-shadow: var(--vl-admin-shadow);
+  background: var(--vl-admin-paper) !important;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: var(--vl-admin-green) !important;
+  color: #faf9f6 !important;
+  font-weight: 600;
+  padding: 0.75rem 1rem !important;
+}
+
+.module table,
+.inline-group table {
+  background: transparent !important;
+}
+
+thead th {
+  background: var(--vl-admin-green-soft) !important;
+  color: var(--vl-admin-text) !important;
+  border-bottom: 1px solid var(--vl-admin-line) !important;
+}
+
+tbody tr:nth-child(even) {
+  background: rgba(12, 61, 46, 0.03);
+}
+
+html[data-theme='dark'] tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+tbody tr:hover {
+  background: var(--vl-admin-green-soft) !important;
+}
+
+a:link,
+a:visited {
+  color: var(--vl-admin-green-mid) !important;
+}
+
+.button,
+input[type='submit'],
+input[type='button'],
+.submit-row input,
+.object-tools a {
+  background: var(--vl-admin-green) !important;
+  border: none !important;
+  border-radius: 10px !important;
+  color: #faf9f6 !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  padding: 0.55rem 1rem !important;
+  box-shadow: none !important;
+}
+
+.button:hover,
+input[type='submit']:hover,
+input[type='button']:hover,
+.object-tools a:hover {
+  background: var(--vl-admin-green-mid) !important;
+}
+
+.button.default,
+input[type='submit'].default,
+.submit-row input.default {
+  background: var(--vl-admin-green) !important;
+}
+
+.deletelink,
+.deletelink-box a {
+  background: var(--vl-admin-danger) !important;
+}
+
+.submit-row {
+  background: var(--vl-admin-paper) !important;
+  border-top: 1px solid var(--vl-admin-line) !important;
+  border-radius: 0 0 var(--vl-admin-radius) var(--vl-admin-radius);
+  padding: 1rem !important;
+}
+
+.form-row input,
+.form-row textarea,
+.form-row select,
+.vTextField,
+.vLargeTextField,
+.vURLField {
+  border: 1px solid var(--vl-admin-line) !important;
+  border-radius: 8px !important;
+  background: var(--vl-admin-paper) !important;
+  color: var(--vl-admin-text) !important;
+  font-family: inherit !important;
+}
+
+.form-row input:focus,
+.form-row textarea:focus,
+.form-row select:focus {
+  border-color: var(--vl-admin-green-mid) !important;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--vl-admin-green-soft);
+}
+
+#changelist-filter {
+  background: var(--vl-admin-paper) !important;
+  border: 1px solid var(--vl-admin-line) !important;
+  border-radius: var(--vl-admin-radius);
+  box-shadow: var(--vl-admin-shadow);
+}
+
+#changelist-filter h2 {
+  background: var(--vl-admin-green) !important;
+  color: #faf9f6 !important;
+}
+
+.breadcrumbs {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 0 1rem !important;
+  color: var(--vl-admin-muted) !important;
+}
+
+.breadcrumbs a {
+  color: var(--vl-admin-green-mid) !important;
+}
+
+.messagelist li {
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.messagelist .success {
+  background: rgba(26, 92, 71, 0.12) !important;
+  color: var(--vl-admin-green-mid) !important;
+}
+
+.messagelist .warning {
+  background: rgba(184, 163, 105, 0.18) !important;
+}
+
+.messagelist .error {
+  background: rgba(196, 92, 72, 0.12) !important;
+  color: var(--vl-admin-danger) !important;
+}
+
+/* Главная */
+.vl-admin-home {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.vl-admin-home__hero {
+  background: var(--vl-admin-paper);
+  border: 1px solid var(--vl-admin-line);
+  border-radius: var(--vl-admin-radius);
+  box-shadow: var(--vl-admin-shadow);
+  padding: 1.1rem 1.25rem;
+}
+
+.vl-admin-home__hero h2 {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+}
+
+.vl-admin-home__hero p {
+  margin: 0;
+  color: var(--vl-admin-muted);
+  line-height: 1.5;
+}
+
+.vl-admin-quick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.vl-admin-quick__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--vl-admin-line);
+  background: var(--vl-admin-paper);
+  color: var(--vl-admin-green-mid) !important;
+  text-decoration: none !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: var(--vl-admin-shadow);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.vl-admin-quick__link:hover {
+  background: var(--vl-admin-green-soft);
+  border-color: var(--vl-admin-green-mid);
+}
+
+.vl-admin-quick__link--site {
+  background: var(--vl-admin-green);
+  color: #faf9f6 !important;
+  border-color: transparent;
+}
+
+.vl-admin-quick__link--site:hover {
+  background: var(--vl-admin-green-mid);
+  color: #faf9f6 !important;
+}
+
+.vl-admin-home__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.vl-admin-stat {
+  background: var(--vl-admin-paper);
+  border: 1px solid var(--vl-admin-line);
+  border-radius: var(--vl-admin-radius);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--vl-admin-shadow);
+}
+
+.vl-admin-stat__n {
+  display: block;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--vl-admin-green-mid);
+}
+
+.vl-admin-stat__l {
+  font-size: 0.82rem;
+  color: var(--vl-admin-muted);
+}
+
+.vl-admin-login-lead {
+  text-align: center;
+  color: var(--vl-admin-muted);
+  margin: 0 0 1rem;
+}
+
+/* Логин */
+body.login {
+  background: linear-gradient(165deg, var(--vl-admin-paper), var(--vl-admin-cream)) !important;
+}
+
+body.login #container {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  width: min(420px, calc(100% - 2rem));
+  margin: 4rem auto;
+}
+
+body.login #header {
+  background: transparent !important;
+  box-shadow: none;
+  padding: 0 0 1rem;
+}
+
+body.login #branding h1 {
+  text-align: center;
+  width: 100%;
+}
+
+body.login #branding h1 a {
+  color: var(--vl-admin-green) !important;
+  font-size: 1.35rem;
+}
+
+body.login #content {
+  padding: 0;
+}
+
+body.login #content-main {
+  float: none;
+  width: 100%;
+}
+
+body.login .form-row {
+  padding: 0.35rem 0;
+}
+
+body.login .submit-row {
+  border: none;
+  background: transparent !important;
+  padding: 0.75rem 0 0 !important;
+}
+
+body.login input[type='submit'] {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  #header,
+  .vl-admin-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  #content {
+    padding: 1rem;
+  }
+}

@@ -1,0 +1,302 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Чат с {{ other.profile.display_handle }} — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-dm-page">
+  <div class="vl-dm-thread-head">
+    <a href="{% url 'vibel:profile' username=other.username %}" class="vl-dm-thread-head__user">
+      <span class="vl-dm-thread-head__avatar">
+        {% if other.profile.avatar %}
+          <img src="{{ other.profile.avatar.url }}" alt="" width="40" height="40">
+        {% else %}
+          <span class="vl-dm-thread-head__avatar-ph" aria-hidden="true">{{ other.profile.display_name|default:other.username|first|upper }}</span>
+        {% endif %}
+      </span>
+      <span class="vl-dm-thread-head__name">{{ other.profile.display_handle }}</span>
+    </a>
+  </div>
+
+  <div class="vl-dm-log" id="vl-dm-log">
+    {% for m in thread_messages %}
+      <div class="vl-dm-msg {% if m.sender_id == user.id %}vl-dm-msg--out{% else %}vl-dm-msg--in{% endif %}" id="dm-{{ m.id }}">
+        <div class="vl-dm-msg__inner">
+          <div class="vl-dm-msg__bubble">
+            {% if m.is_hidden_for_me %}
+              <p class="vl-dm-msg__deleted">Сообщение удалено</p>
+            {% else %}
+              {% if m.show_reply_to %}
+                <blockquote class="vl-dm-msg__reply">
+                  <span class="vl-dm-msg__reply-who">{{ m.reply_to.sender.profile.display_handle }}</span>
+                  {% if m.reply_to.body %}{{ m.reply_to.body|truncatechars:120 }}{% else %}Фото{% endif %}
+                </blockquote>
+              {% endif %}
+              {% if m.attachments.all %}
+                <div class="vl-dm-msg__images">
+                  {% for att in m.attachments.all %}
+                    <a href="{{ att.image.url }}" class="vl-dm-msg__img-link" data-vl-lightbox>
+                      <img src="{{ att.image.url }}" alt="" class="vl-dm-msg__img" loading="lazy" width="280" height="280">
+                    </a>
+                  {% endfor %}
+                </div>
+              {% elif m.image %}
+                <a href="{{ m.image.url }}" class="vl-dm-msg__img-link" data-vl-lightbox>
+                  <img src="{{ m.image.url }}" alt="" class="vl-dm-msg__img" loading="lazy" width="280" height="280">
+                </a>
+              {% endif %}
+              {% if m.body %}
+                <p class="vl-dm-msg__text">{{ m.body|linebreaksbr }}{% if m.edited_at %} <span class="vl-dm-msg__edited">(изменено)</span>{% endif %}</p>
+              {% endif %}
+            {% endif %}
+            <time class="vl-dm-msg__time" datetime="{{ m.created_at|date:'c' }}">{{ m.created_at|date:"d.m.Y H:i" }}
+              {% if m.sender_id == user.id and not m.is_hidden_for_me %}
+                · {% if m.read_at %}<span class="vl-dm-msg__read">прочитано</span>{% else %}<span class="vl-dm-msg__read">доставлено</span>{% endif %}
+              {% endif %}
+            </time>
+          </div>
+          {% if not m.is_hidden_for_me %}
+          <details class="vl-dm-msg__actions">
+            <summary class="vl-dm-msg__actions-toggle" aria-label="Меню сообщения">⋯</summary>
+            <div class="vl-dm-msg__actions-menu" role="menu">
+              <button type="button" class="vl-dm-msg__action-btn" role="menuitem"
+                data-dm-reply="{{ m.id }}"
+                data-dm-reply-label="{% if m.body %}{{ m.body|truncatechars:80 }}{% else %}Фото{% endif %}"
+                data-dm-reply-who="{{ m.sender.profile.display_handle }}"
+              >Ответить</button>
+              {% if m.can_edit %}
+                <button type="button" class="vl-dm-msg__action-btn" role="menuitem" data-dm-edit="{{ m.id }}">Изменить</button>
+              {% endif %}
+              <form method="post" action="{% url 'vibel:dm_message_delete' username=other.username message_id=m.id %}" class="vl-dm-msg__action-form">
+                {% csrf_token %}
+                <input type="hidden" name="mode" value="me">
+                <button type="submit" class="vl-dm-msg__action-btn" role="menuitem">Удалить у себя</button>
+              </form>
+              {% if m.sender_id == user.id %}
+                <form method="post" action="{% url 'vibel:dm_message_delete' username=other.username message_id=m.id %}" class="vl-dm-msg__action-form">
+                  {% csrf_token %}
+                  <input type="hidden" name="mode" value="all">
+                  <button type="button" class="vl-dm-msg__action-btn vl-dm-msg__action-btn--danger" role="menuitem"
+                    data-vl-confirm-trigger
+                    data-vl-confirm-title="Удалить у всех?"
+                    data-vl-confirm-text="Сообщение исчезнет у вас и у собеседника."
+                    data-vl-confirm-ok="Удалить"
+                  >Удалить у всех</button>
+                </form>
+              {% endif %}
+            </div>
+          </details>
+          {% endif %}
+        </div>
+        {% if m.can_edit and not m.is_hidden_for_me %}
+        <form method="post" action="{% url 'vibel:dm_message_edit' username=other.username message_id=m.id %}" class="vl-dm-msg__edit-form" id="dm-edit-{{ m.id }}" hidden data-dm-edit-form>
+          {% csrf_token %}
+          <textarea name="body" class="vl-input vl-textarea vl-dm-msg__edit-input" rows="2" maxlength="2000" placeholder="Текст сообщения…">{{ m.body }}</textarea>
+          <div class="vl-dm-msg__edit-actions">
+            <button type="button" class="vl-dm-msg__edit-cancel" data-dm-edit-cancel>Отмена</button>
+            <span class="vl-dm-msg__edit-hint">Ctrl+Enter — сохранить</span>
+          </div>
+        </form>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="vl-dm-log__empty">Пока нет сообщений — напишите ниже.</p>
+    {% endfor %}
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="vl-dm-compose" id="vl-dm-compose-form">
+    {% csrf_token %}
+    <input type="hidden" name="reply_to" id="id_reply_to" value="">
+    <p class="vl-dm-compose__reply-preview" id="vl-dm-reply-preview" hidden></p>
+    {% if form.non_field_errors %}
+      <p class="vl-error vl-error--block">{{ form.non_field_errors.0 }}</p>
+    {% endif %}
+    {% if form.text.errors %}<p class="vl-error vl-error--block">{{ form.text.errors.0 }}</p>{% endif %}
+    <div class="vl-dm-compose__preview-wrap" id="vl-dm-preview-wrap" hidden>
+      <div class="vl-dm-compose__preview-strip" id="vl-dm-preview-strip" aria-live="polite"></div>
+    </div>
+    <div class="vl-dm-compose__main-row">
+      <div class="vl-dm-compose__merged" role="group" aria-label="Сообщение">
+        <div class="vl-dm-compose__attach">
+          <label class="vl-attach-btn vl-attach-btn--dm" title="Прикрепить фото">
+            <input type="file" name="images" id="id_dm_images" class="vl-attach-input" accept="image/*" multiple data-dm-image-input aria-label="Прикрепить фото">
+            {% include 'vibel/partials/attach_clip_face.html' %}
+          </label>
+        </div>
+        {% include 'vibel/partials/emoji_toggle_in_compose.html' %}
+        {{ form.text }}
+      </div>
+      <button type="submit" class="vl-btn vl-btn--small vl-dm-compose__send">Отправить</button>
+    </div>
+  </form>
+</div>
+<script>
+  (function () {
+    var log = document.getElementById('vl-dm-log');
+    if (log) log.scrollTop = log.scrollHeight;
+
+    var replyInput = document.getElementById('id_reply_to');
+    var replyPreview = document.getElementById('vl-dm-reply-preview');
+
+    function hideAllEditForms() {
+      document.querySelectorAll('.vl-dm-msg__edit-form').forEach(function (f) {
+        f.hidden = true;
+      });
+    }
+
+    function clearReplyMode() {
+      if (replyInput) replyInput.value = '';
+      if (replyPreview) {
+        replyPreview.hidden = true;
+        replyPreview.textContent = '';
+      }
+      document.body.classList.remove('vl-dm-reply-active');
+    }
+
+    function setReplyMode(id, label, who) {
+      hideAllEditForms();
+      if (replyInput) replyInput.value = String(id || '');
+      document.body.classList.add('vl-dm-reply-active');
+      if (replyPreview) {
+        replyPreview.hidden = false;
+        var txt = 'Ответ';
+        if (who) txt += ' ' + who;
+        if (label) txt += ': «' + label + '»';
+        replyPreview.textContent = txt + ' ';
+        var cancel = document.createElement('button');
+        cancel.type = 'button';
+        cancel.className = 'vl-dm-compose__reply-cancel';
+        cancel.setAttribute('aria-label', 'Отменить ответ');
+        cancel.textContent = '×';
+        cancel.addEventListener('click', clearReplyMode);
+        replyPreview.appendChild(cancel);
+      }
+      document.querySelector('#vl-dm-compose-form [name="text"]')?.focus();
+    }
+
+    document.querySelectorAll('[data-dm-reply]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        setReplyMode(
+          btn.getAttribute('data-dm-reply'),
+          btn.getAttribute('data-dm-reply-label') || '',
+          btn.getAttribute('data-dm-reply-who') || ''
+        );
+        var det = btn.closest('details');
+        if (det) det.removeAttribute('open');
+      });
+    });
+
+    if (replyInput && replyInput.value) {
+      setReplyMode(replyInput.value, '', '');
+    }
+
+    var composeForm = document.getElementById('vl-dm-compose-form');
+    if (composeForm) {
+      composeForm.addEventListener('submit', function () {
+        if (replyInput && !replyInput.value) {
+          document.body.classList.remove('vl-dm-reply-active');
+        }
+      });
+    }
+
+    function openEditForm(id) {
+      clearReplyMode();
+      hideAllEditForms();
+      var form = document.getElementById('dm-edit-' + id);
+      if (form) {
+        form.hidden = false;
+        form.querySelector('textarea')?.focus();
+      }
+    }
+
+    document.querySelectorAll('[data-dm-edit]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (document.body.classList.contains('vl-dm-reply-active')) return;
+        openEditForm(btn.getAttribute('data-dm-edit'));
+        var det = btn.closest('details');
+        if (det) det.removeAttribute('open');
+      });
+    });
+
+    document.querySelectorAll('[data-dm-edit-cancel]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var form = btn.closest('[data-dm-edit-form]');
+        if (form) form.hidden = true;
+      });
+    });
+
+    document.querySelectorAll('[data-dm-edit-form]').forEach(function (form) {
+      var ta = form.querySelector('textarea');
+      if (!ta) return;
+      ta.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+          e.preventDefault();
+          form.requestSubmit();
+        }
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          form.hidden = true;
+        }
+      });
+    });
+
+    var fileInput = document.querySelector('[data-dm-image-input]');
+    var wrap = document.getElementById('vl-dm-preview-wrap');
+    var strip = document.getElementById('vl-dm-preview-strip');
+    var previewUrls = [];
+
+    function revokeAllPreviewUrls() {
+      previewUrls.forEach(function (u) {
+        try { URL.revokeObjectURL(u); } catch (e) {}
+      });
+      previewUrls = [];
+    }
+
+    function filesFromInput() {
+      return fileInput && fileInput.files ? Array.from(fileInput.files) : [];
+    }
+
+    function applyFilesToInput(filesArr) {
+      if (!fileInput) return;
+      var dt = new DataTransfer();
+      filesArr.forEach(function (f) { dt.items.add(f); });
+      fileInput.files = dt.files;
+    }
+
+    function renderPreviews() {
+      if (!strip || !wrap || !fileInput) return;
+      revokeAllPreviewUrls();
+      strip.innerHTML = '';
+      var files = filesFromInput().filter(function (f) { return f && /^image\//.test(f.type); });
+      if (!files.length) { wrap.hidden = true; return; }
+      wrap.hidden = false;
+      files.forEach(function (file, idx) {
+        var url = URL.createObjectURL(file);
+        previewUrls.push(url);
+        var card = document.createElement('div');
+        card.className = 'vl-dm-compose__preview-card';
+        var img = document.createElement('img');
+        img.className = 'vl-dm-compose__preview-img';
+        img.src = url;
+        img.alt = '';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'vl-dm-compose__preview-remove';
+        btn.textContent = '×';
+        btn.addEventListener('click', function () {
+          var arr = filesFromInput();
+          arr.splice(idx, 1);
+          applyFilesToInput(arr);
+          renderPreviews();
+        });
+        card.appendChild(img);
+        card.appendChild(btn);
+        strip.appendChild(card);
+      });
+    }
+
+    if (fileInput && wrap && strip) {
+      fileInput.addEventListener('change', renderPreviews);
+    }
+  })();
+</script>
+{% endblock %}

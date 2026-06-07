@@ -1,0 +1,92 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Сохранённые — VibeLog{% endblock %}
+{% block content %}
+
+<div class="vl-feed">
+  {% for post in posts %}
+    <article class="vl-card">
+      <header class="vl-card__head">
+        <a href="{% url 'vibel:profile' username=post.author.username %}" class="vl-card__user">
+          {% if post.author.profile.avatar %}
+            <img src="{{ post.author.profile.avatar.url }}" alt="" class="vl-card__avatar">
+          {% else %}
+            <span class="vl-card__avatar vl-card__avatar--placeholder"></span>
+          {% endif %}
+          <span class="vl-card__name">{{ post.author.profile.display_handle }}</span>
+        </a>
+        <span class="vl-card__badge">{{ post.category.name }}</span>
+      </header>
+      <div class="vl-card__body">
+        <div class="vl-card__media-wrap">
+          <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-card__media-link">
+            <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy">
+          </a>
+          <div class="vl-card__media-actions" role="toolbar" aria-label="Действия с постом">
+            <form action="{% url 'vibel:save' post_id=post.id %}" method="post" class="vl-card__save-form" data-vl-unsave-form>
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{% url 'vibel:saved_posts' %}">
+              <button type="submit" class="vl-bookmark-btn vl-bookmark-btn--on" data-vl-unsave-button aria-label="Убрать из избранного" title="Убрать из избранного">
+                <svg class="vl-bookmark-btn__svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="vl-bookmark-btn__path" d="M7 3h10a2 2 0 012 2v15.5a.5.5 0 01-.78.42L12 17.8l-6.22 4.12A.5.5 0 015 20.5V5a2 2 0 012-2z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </button>
+            </form>
+          </div>
+        </div>
+        <div class="vl-card__main">
+      <div class="vl-card__bar">
+        <span class="vl-like vl-like--readonly"><span class="vl-like__icon">♥</span> {{ post.likes_count }}</span>
+        <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-comments-more">Открыть пост</a>
+        <time class="vl-card__time" datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"d.m.Y H:i" }}</time>
+      </div>
+        </div>
+      </div>
+    </article>
+  {% empty %}
+    <div class="vl-empty">
+      <p class="vl-empty__title">Пока пусто</p>
+      <p>Добавляйте посты в избранное — иконка закладки на фото в ленте.</p>
+    </div>
+  {% endfor %}
+</div>
+<script>
+  (function () {
+    var emptyHtml = '<div class="vl-empty"><p class="vl-empty__title">Пока пусто</p><p>Добавляйте посты в избранное — иконка закладки на фото в ленте.</p></div>';
+    document.querySelectorAll('[data-vl-unsave-form]').forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var button = form.querySelector('[data-vl-unsave-button]');
+        var csrf = form.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (!button || !csrf || button.disabled) return;
+        button.disabled = true;
+        fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrf.value,
+          },
+          body: new FormData(form),
+          credentials: 'same-origin',
+        })
+          .then(function (r) {
+            if (!r.ok) throw new Error('fail');
+            return r.json();
+          })
+          .then(function (data) {
+            if (!data.ok || data.saved) return;
+            var card = form.closest('.vl-card');
+            if (card) card.remove();
+            var feed = document.querySelector('.vl-feed');
+            if (feed && !feed.querySelector('.vl-card')) {
+              feed.innerHTML = emptyHtml;
+            }
+          })
+          .catch(function () {
+            form.submit();
+          })
+          .finally(function () {
+            button.disabled = false;
+          });
+      });
+    });
+  })();
+</script>
+{% endblock %}

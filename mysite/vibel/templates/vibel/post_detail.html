@@ -1,0 +1,245 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Пост — VibeLog{% endblock %}
+{% block content %}
+<article class="vl-card">
+  <header class="vl-card__head">
+    <a href="{% url 'vibel:profile' username=post.author.username %}" class="vl-card__user">
+      {% if post.author.profile.avatar %}
+        <img src="{{ post.author.profile.avatar.url }}" alt="" class="vl-card__avatar">
+      {% else %}
+        <span class="vl-card__avatar vl-card__avatar--placeholder"></span>
+      {% endif %}
+      <span class="vl-card__name">{{ post.author.profile.display_handle }}</span>
+    </a>
+    <span class="vl-card__badge">{{ post.category.name }}</span>
+    {% include 'vibel/partials/post_author_menu.html' with post=post %}
+  </header>
+
+  <div class="vl-card__body">
+    <div class="vl-card__media-wrap">
+      {% include 'vibel/partials/post_media.html' with post=post %}
+      {% if user.is_authenticated %}
+        <div class="vl-card__media-actions" role="toolbar" aria-label="Действия с постом">
+          <form action="{% url 'vibel:like' post_id=post.id %}" method="post" class="vl-like-form" data-like-form>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="vl-like-btn {% if liked %}vl-like-btn--on{% endif %}" aria-label="Нравится, {{ post.likes_count }}" data-like-button>
+              <svg class="vl-like-btn__svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="vl-like-btn__path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/></svg>
+              <span class="vl-like-btn__count" data-like-count aria-hidden="true">{{ post.likes_count }}</span>
+            </button>
+          </form>
+          <form action="{% url 'vibel:save' post_id=post.id %}" method="post" class="vl-card__save-form" data-save-form>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.path }}">
+            <button type="submit" class="vl-bookmark-btn {% if saved %}vl-bookmark-btn--on{% endif %}" data-save-button aria-label="{% if saved %}Убрать из сохранённых{% else %}В избранное{% endif %}" title="{% if saved %}В избранном{% else %}В избранное{% endif %}">
+              <svg class="vl-bookmark-btn__svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="vl-bookmark-btn__path" d="M7 3h10a2 2 0 012 2v15.5a.5.5 0 01-.78.42L12 17.8l-6.22 4.12A.5.5 0 015 20.5V5a2 2 0 012-2z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+    <div class="vl-card__main">
+  <div class="vl-card__bar">
+    <div class="vl-card__bar-actions{% if user.is_authenticated %} vl-card__bar-actions--hidden{% endif %}">
+      {% if not user.is_authenticated %}<span class="vl-like vl-like--readonly"><span class="vl-like__icon">♥</span> {{ post.likes_count }}</span>{% endif %}
+    </div>
+    <time class="vl-card__time" datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"d.m.Y H:i" }}</time>
+  </div>
+
+  {% if post.caption %}
+    <p class="vl-card__caption"><strong>{{ post.author.profile.display_handle }}</strong> {{ post.caption }}</p>
+  {% endif %}
+
+  <div class="vl-comments" id="post-comments">
+    {% for c in comments %}
+      <div class="vl-comment-line">
+        <div class="vl-comment-line__body">
+          <a href="{% url 'vibel:profile' username=c.author.username %}" class="vl-comment-user">{{ c.author.profile.display_handle }}</a>
+          {% if c.text %}<span class="vl-comment-body">{{ c.text }}</span>{% endif %}
+          {% if c.image %}
+            <a href="{{ c.image.url }}" class="vl-comment-img-link" data-vl-lightbox>
+              <img src="{{ c.image.url }}" alt="" class="vl-comment-img" loading="lazy" width="320" height="320">
+            </a>
+          {% endif %}
+        </div>
+        {% include 'vibel/partials/comment_delete_form.html' with c=c post=post ajax=False %}
+      </div>
+    {% empty %}
+      <p class="vl-comment-line vl-comment-line--empty">Комментариев пока нет</p>
+    {% endfor %}
+    {% if user.is_authenticated %}
+      <form action="{% url 'vibel:comment_create' post_id=post.id %}" method="post" enctype="multipart/form-data" class="vl-comment-form vl-comment-form--detail vl-dm-compose" data-post-comment-form>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}#post-comments">
+        {% if comment_form.non_field_errors %}<p class="vl-error vl-error--block">{{ comment_form.non_field_errors.0 }}</p>{% endif %}
+        {% if comment_form.text.errors %}<p class="vl-error vl-error--block">{{ comment_form.text.errors.0 }}</p>{% endif %}
+        {% if comment_form.image.errors %}<p class="vl-error vl-error--block">{{ comment_form.image.errors.0 }}</p>{% endif %}
+        <div class="vl-dm-compose__preview-wrap" hidden>
+          <div class="vl-dm-compose__preview-strip" aria-live="polite"></div>
+        </div>
+        <div class="vl-dm-compose__main-row">
+          <div class="vl-dm-compose__merged" role="group" aria-label="Комментарий">
+            <div class="vl-dm-compose__attach">
+              <label class="vl-attach-btn vl-attach-btn--dm" title="Прикрепить фото">
+                {{ comment_form.image }}
+                {% include 'vibel/partials/attach_clip_face.html' %}
+              </label>
+            </div>
+            {% include 'vibel/partials/emoji_toggle_in_compose.html' %}
+            {{ comment_form.text }}
+          </div>
+          <button type="submit" class="vl-btn vl-btn--small vl-dm-compose__send">Отправить</button>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+    </div>
+  </div>
+</article>
+<script>
+  (function () {
+    document.querySelectorAll('[data-like-form]').forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var button = form.querySelector('[data-like-button]');
+        var countEl = form.querySelector('[data-like-count]');
+        var csrf = form.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (!button || !countEl || !csrf || button.disabled) return;
+        button.disabled = true;
+        fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrf.value,
+          },
+          body: new FormData(form),
+          credentials: 'same-origin',
+        })
+          .then(function (r) {
+            if (!r.ok) throw new Error('fail');
+            return r.json();
+          })
+          .then(function (data) {
+            if (!data.ok) return;
+            button.classList.toggle('vl-like-btn--on', Boolean(data.liked));
+            countEl.textContent = String(data.likes_count);
+            button.setAttribute('aria-label', 'Нравится, ' + String(data.likes_count));
+            button.classList.remove('vl-like-btn--pulse');
+            void button.offsetWidth;
+            button.classList.add('vl-like-btn--pulse');
+          })
+          .catch(function () {
+            form.submit();
+          })
+          .finally(function () {
+            button.disabled = false;
+          });
+      });
+    });
+
+    document.querySelectorAll('[data-save-form]').forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var button = form.querySelector('[data-save-button]');
+        var csrf = form.querySelector('input[name="csrfmiddlewaretoken"]');
+        if (!button || !csrf || button.disabled) return;
+        button.disabled = true;
+        fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrf.value,
+          },
+          body: new FormData(form),
+          credentials: 'same-origin',
+        })
+          .then(function (r) {
+            if (!r.ok) throw new Error('fail');
+            return r.json();
+          })
+          .then(function (data) {
+            if (!data.ok) return;
+            var on = Boolean(data.saved);
+            button.classList.toggle('vl-bookmark-btn--on', on);
+            button.setAttribute('aria-label', on ? 'Убрать из сохранённых' : 'В избранное');
+            button.setAttribute('title', on ? 'В избранном' : 'В избранное');
+          })
+          .catch(function () {
+            form.submit();
+          })
+          .finally(function () {
+            button.disabled = false;
+          });
+      });
+    });
+
+    /* Превью вложения к комментарию (как в ленте) */
+    function clearPostCommentPreview(form) {
+      var wrap = form.querySelector('.vl-dm-compose__preview-wrap');
+      var strip = form.querySelector('.vl-dm-compose__preview-strip');
+      var url = strip && strip.dataset.previewUrl;
+      if (url && strip) {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {}
+        strip.removeAttribute('data-preview-url');
+      }
+      if (strip) strip.innerHTML = '';
+      if (wrap) wrap.hidden = true;
+    }
+
+    function renderPostCommentPreview(form, fileInput) {
+      var wrap = form.querySelector('.vl-dm-compose__preview-wrap');
+      var strip = form.querySelector('.vl-dm-compose__preview-strip');
+      if (!wrap || !strip || !fileInput) return;
+      clearPostCommentPreview(form);
+      var f = fileInput.files && fileInput.files[0];
+      if (!f || !/^image\//.test(f.type)) {
+        wrap.hidden = true;
+        return;
+      }
+      var blobUrl = URL.createObjectURL(f);
+      strip.dataset.previewUrl = blobUrl;
+      var card = document.createElement('div');
+      card.className = 'vl-dm-compose__preview-card';
+      var img = document.createElement('img');
+      img.className = 'vl-dm-compose__preview-img';
+      img.src = blobUrl;
+      img.alt = '';
+      img.width = 48;
+      img.height = 48;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vl-dm-compose__preview-remove';
+      btn.setAttribute('aria-label', 'Убрать фото');
+      btn.textContent = '×';
+      card.appendChild(img);
+      card.appendChild(btn);
+      strip.appendChild(card);
+      wrap.hidden = false;
+    }
+
+    var postCommentsRoot = document.getElementById('post-comments');
+    if (postCommentsRoot && postCommentsRoot.dataset.vlPostCommentPreviewBound !== '1') {
+      postCommentsRoot.dataset.vlPostCommentPreviewBound = '1';
+      postCommentsRoot.addEventListener('change', function (ev) {
+        var t = ev.target;
+        if (!t || !t.hasAttribute('data-comment-file')) return;
+        var form = t.closest('form[data-post-comment-form]');
+        if (!form) return;
+        renderPostCommentPreview(form, t);
+      });
+      postCommentsRoot.addEventListener('click', function (ev) {
+        var btn = ev.target.closest('.vl-dm-compose__preview-remove');
+        if (!btn) return;
+        var form = btn.closest('form[data-post-comment-form]');
+        if (!form) return;
+        ev.preventDefault();
+        var fi = form.querySelector('[data-comment-file]');
+        if (fi) fi.value = '';
+        clearPostCommentPreview(form);
+      });
+    }
+  })();
+</script>
+{% endblock %}

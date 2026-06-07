@@ -1,0 +1,26 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Вход — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-auth-layout">
+  <form method="post" class="vl-form vl-form--narrow vl-auth-layout__form" action="{% url 'vibel:login' %}">
+    <h1 class="vl-form__title">Вход</h1>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+      <div class="vl-error vl-error--block">{{ form.non_field_errors.0 }}</div>
+    {% endif %}
+    {% for field in form %}
+      <div class="vl-field{% if field.errors %} vl-field--error{% endif %}">
+        <label class="vl-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<span class="vl-error">{{ field.errors.0 }}</span>{% endif %}
+      </div>
+    {% endfor %}
+    {% if next %}
+      <input type="hidden" name="next" value="{{ next }}">
+    {% endif %}
+    <button type="submit" class="vl-btn">Войти</button>
+    <p class="vl-form__foot">Нет аккаунта? <a href="{% url 'vibel:register' %}">Регистрация</a></p>
+  </form>
+  {% include "vibel/auth_preview.html" %}
+</div>
+{% endblock %}

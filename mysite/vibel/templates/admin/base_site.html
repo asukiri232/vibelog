@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | VibeLog Admin{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'vibel/css/admin.css' %}?v=2">
+  <script>
+    (function () {
+      try {
+        var k = 'vibel-theme';
+        var s = localStorage.getItem(k);
+        if (s === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        else if (s === 'light') document.documentElement.removeAttribute('data-theme');
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+      <span class="vl-admin-brand">
+        <span class="vl-admin-brand__dot" aria-hidden="true"></span>
+        Админка VibeLog
+      </span>
+    </a>
+  </h1>
+{% endblock %}
+
+{% block nav-global %}
+  <div class="vl-admin-nav__links">
+    <a href="/">На сайт</a>
+    <a href="{% url 'admin:index' %}">Главная</a>
+  </div>
+{% endblock %}

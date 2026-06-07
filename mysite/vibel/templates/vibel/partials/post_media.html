@@ -1,0 +1,84 @@
+{% comment %}
+  Фото поста: одно — как раньше; несколько — карусель того же размера.
+  media_link_to_detail — в ленте клик по фото открывает пост.
+{% endcomment %}
+{% if post.video %}
+  <div class="vl-post-video" data-vl-post-clip data-clip-start="{{ post.video_clip_start_s }}" data-clip-end="{{ post.video_clip_end_s|default:'' }}">
+    <video class="vl-post-video__el" src="{{ post.video.url }}" playsinline muted controls preload="metadata"></video>
+  </div>
+{% else %}
+{% with extras=post.attachments.all %}
+  {% if post.image and not extras or not post.image and extras|length == 1 %}
+    <div class="vl-post-gallery{% if gallery_compact %} vl-post-gallery--compact{% endif %} vl-post-gallery--single">
+      {% if post.image %}
+        {% if media_link_to_detail %}
+          <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-post-gallery__item--main vl-card__media-link">
+            <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+          </a>
+        {% else %}
+          <a href="{{ post.image.url }}" class="vl-post-gallery__item vl-post-gallery__item--main" data-vl-lightbox>
+            <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+          </a>
+        {% endif %}
+      {% endif %}
+      {% for att in extras %}
+        {% if media_link_to_detail and not post.image %}
+          <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-card__media-link">
+            <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+          </a>
+        {% else %}
+          <a href="{{ att.image.url }}" class="vl-post-gallery__item" data-vl-lightbox>
+            <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% elif post.image or extras %}
+    <div class="vl-post-gallery{% if gallery_compact %} vl-post-gallery--compact{% endif %} vl-post-gallery--single vl-post-carousel" data-vl-post-carousel>
+      <div class="vl-post-carousel__viewport">
+        <button type="button" class="vl-post-carousel__edge vl-post-carousel__edge--prev" aria-label="Предыдущее фото" hidden></button>
+        <button type="button" class="vl-post-carousel__edge vl-post-carousel__edge--next" aria-label="Следующее фото"></button>
+        <div class="vl-post-carousel__track">
+          {% if post.image %}
+            <div class="vl-post-carousel__slide">
+              {% if media_link_to_detail %}
+                <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-post-gallery__item--main vl-card__media-link">
+                  <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                </a>
+              {% else %}
+                <a href="{{ post.image.url }}" class="vl-post-gallery__item vl-post-gallery__item--main" data-vl-lightbox>
+                  <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+          {% for att in extras %}
+            <div class="vl-post-carousel__slide">
+              {% if media_link_to_detail %}
+                <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-card__media-link">
+                  <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                </a>
+              {% else %}
+                <a href="{{ att.image.url }}" class="vl-post-gallery__item" data-vl-lightbox>
+                  <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                </a>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <button type="button" class="vl-post-carousel__btn vl-post-carousel__btn--prev" aria-label="Предыдущее фото" hidden>
+        <svg class="vl-post-carousel__arrow" viewBox="0 0 16 40" width="16" height="40" aria-hidden="true" focusable="false">
+          <path d="M13 3 L4 20 L13 37" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button type="button" class="vl-post-carousel__btn vl-post-carousel__btn--next" aria-label="Следующее фото">
+        <svg class="vl-post-carousel__arrow" viewBox="0 0 16 40" width="16" height="40" aria-hidden="true" focusable="false">
+          <path d="M3 3 L12 20 L3 37" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="vl-post-carousel__dots" role="tablist" aria-label="Фото в посте" hidden></div>
+    </div>
+  {% endif %}
+{% endwith %}
+{% endif %}

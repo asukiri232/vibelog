@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -o errexit
+
+pip install -r requirements.txt
+
+cd mysite
+python manage.py collectstatic --no-input
+python manage.py migrate --no-input
+python manage.py seed_vibel
+
+if [ "${SEED_DEMO:-1}" = "1" ]; then
+  python manage.py seed_demo_users --no-reconcile || true
+fi

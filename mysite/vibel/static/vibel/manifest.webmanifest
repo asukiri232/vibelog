@@ -1,0 +1,10 @@
+{
+  "name": "VibeLog",
+  "short_name": "VibeLog",
+  "description": "Лента настроения",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f4ef",
+  "theme_color": "#0c3d2e",
+  "lang": "ru"
+}

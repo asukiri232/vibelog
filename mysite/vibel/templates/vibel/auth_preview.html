@@ -1,0 +1,22 @@
+{% load static %}
+<aside class="vl-auth-preview" aria-label="Короткое зацикленное видео без звука о VibeLog">
+  <div class="vl-auth-preview__media">
+    <video
+      class="vl-auth-preview__video"
+      autoplay
+      loop
+      muted
+      playsinline
+      preload="auto"
+      disablePictureInPicture
+      disableRemotePlayback
+      aria-hidden="true"
+    >
+      <source src="{% static 'vibel/video/auth-preview.mp4' %}" type="video/mp4">
+      <p class="vl-auth-preview__fallback">
+        Ваш браузер не показывает видео.
+        <a href="{% url 'vibel:feed' %}">Откройте ленту</a>.
+      </p>
+    </video>
+  </div>
+</aside>

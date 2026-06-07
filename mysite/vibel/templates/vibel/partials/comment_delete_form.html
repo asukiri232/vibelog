@@ -1,0 +1,20 @@
+{% if user.is_authenticated %}
+{% if user.id == c.author_id or user.id == post.author_id %}
+<form method="post" action="{% url 'vibel:comment_delete' post_id=post.id comment_id=c.id %}" class="vl-comment-delete{% if ajax %} vl-comment-delete--ajax{% endif %}"{% if ajax %} data-comment-delete{% endif %}>
+  {% csrf_token %}
+  {% if ajax %}
+  <input type="hidden" name="next" value="{{ request.get_full_path }}#post-{{ post.id }}">
+  {% else %}
+  <input type="hidden" name="next" value="{{ request.path }}">
+  {% endif %}
+  <button type="button" class="vl-comment-delete__btn" aria-label="Удалить комментарий" title="Удалить"
+    data-vl-confirm-trigger
+    data-vl-confirm-title="Удалить комментарий?"
+    data-vl-confirm-text="Комментарий исчезнет у всех."
+    data-vl-confirm-ok="Удалить"
+  >
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14zM10 11v6M14 11v6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+</form>
+{% endif %}
+{% endif %}

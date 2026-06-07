@@ -1,0 +1,21 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Редактировать пост — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-form-page">
+  <h1 class="vl-form__title">Редактировать пост</h1>
+  <form method="post" class="vl-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <p class="vl-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<span class="vl-error">{{ field.errors.0 }}</span>{% endif %}
+      </p>
+    {% endfor %}
+    <div class="vl-form__actions">
+      <button type="submit" class="vl-btn">Сохранить</button>
+      <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-btn vl-btn--outline">Отмена</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

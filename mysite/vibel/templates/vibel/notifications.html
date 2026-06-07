@@ -1,0 +1,39 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Уведомления — VibeLog{% endblock %}
+{% block content %}
+
+{% if unread_count %}
+  <form method="post" action="{% url 'vibel:notification_mark_all_read' %}" class="vl-notify-toolbar">
+    {% csrf_token %}
+    <button type="submit" class="vl-btn vl-btn--small vl-btn--outline">Отметить все прочитанными</button>
+  </form>
+{% endif %}
+
+<div class="vl-notification-list">
+  {% for n in notifications %}
+    <article class="vl-notification-item {% if not n.is_read %}vl-notification-item--unread{% endif %}">
+      <div>
+        <p class="vl-notification-item__text">{{ n.text }}</p>
+        <p class="vl-card__time">{{ n.created_at|date:"d.m.Y H:i" }}</p>
+      </div>
+      <div class="vl-notification-item__actions">
+        <a href="{% url 'vibel:profile' username=n.actor.username %}" class="vl-comments-more">{{ n.actor.profile.display_handle }}</a>
+        {% if n.post_id %}
+          <a href="{% url 'vibel:post_detail' post_id=n.post_id %}" class="vl-comments-more">Открыть пост</a>
+        {% endif %}
+        {% if not n.is_read %}
+          <form method="post" action="{% url 'vibel:notification_mark_read' notification_id=n.id %}">
+            {% csrf_token %}
+            <button type="submit" class="vl-comments-more">Прочитано</button>
+          </form>
+        {% endif %}
+      </div>
+    </article>
+  {% empty %}
+    <div class="vl-empty">
+      <p class="vl-empty__title">Пока нет уведомлений</p>
+      <p>Когда с вашими постами будут взаимодействовать, это появится здесь.</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

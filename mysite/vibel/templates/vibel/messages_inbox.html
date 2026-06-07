@@ -1,0 +1,48 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Сообщения — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-dm-page">
+  <h1 class="vl-dm-page__title">Сообщения</h1>
+  <p class="vl-dm-page__lead">Друзья — это пользователи, на которых вы подписаны и которые подписаны на вас. Писать можно только им.</p>
+
+  <div class="vl-dm-thread-list">
+    {% for t in threads %}
+      <a href="{% url 'vibel:messages_thread' username=t.other.username %}" class="vl-dm-thread-row">
+        <span class="vl-dm-thread-row__avatar">
+          {% if t.other.profile.avatar %}
+            <img src="{{ t.other.profile.avatar.url }}" alt="" width="48" height="48">
+          {% else %}
+            <span class="vl-dm-thread-row__avatar-ph" aria-hidden="true">{{ t.other.profile.display_name|default:t.other.username|first|upper }}</span>
+          {% endif %}
+        </span>
+        <span class="vl-dm-thread-row__main">
+          <span class="vl-dm-thread-row__name">{{ t.other.profile.display_handle }}</span>
+          <span class="vl-dm-thread-row__preview">
+            {% if t.last %}
+              {% if t.last.sender_id == user.id %}Вы: {% endif %}
+              {% if t.last.body %}
+                {{ t.last.body|truncatechars:56 }}
+              {% elif t.last.attachments.all %}
+                Фото
+              {% elif t.last.image %}
+                Фото
+              {% endif %}
+            {% else %}
+              <span class="vl-dm-thread-row__empty">Нет сообщений — напишите первым</span>
+            {% endif %}
+          </span>
+        </span>
+        <span class="vl-dm-thread-row__meta">
+          {% if t.last %}<time class="vl-dm-thread-row__time" datetime="{{ t.last.created_at|date:'c' }}">{{ t.last.created_at|date:"d.m. H:i" }}</time>{% endif %}
+          {% if t.unread %}<span class="vl-dm-thread-row__badge">{{ t.unread }}</span>{% endif %}
+        </span>
+      </a>
+    {% empty %}
+      <div class="vl-empty">
+        <p class="vl-empty__title">Пока нет друзей для переписки</p>
+        <p>Когда кто-то подпишется на вас и вы подпишетесь в ответ, диалог появится здесь.</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

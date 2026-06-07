@@ -1,0 +1,173 @@
+{% extends 'vibel/base.html' %}
+{% block title %}@{{ profile_user.username }} — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-profile-page">
+  <div class="vl-profile-cover{% if user.is_authenticated and user == profile_user %} vl-profile-cover--editable{% endif %}">
+    {% if user.is_authenticated and user == profile_user %}
+      <div class="vl-profile-cover__toolbar">
+        <a href="{% url 'vibel:profile_edit' username=profile_user.username %}" class="vl-profile-cover__btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          Изменить обложку
+        </a>
+      </div>
+    {% endif %}
+    {% if profile.cover %}
+      <img src="{{ profile.cover.url }}" alt="" class="vl-profile-cover__img" width="1200" height="400">
+    {% else %}
+      <div class="vl-profile-cover__placeholder" aria-hidden="true"></div>
+    {% endif %}
+  </div>
+
+  <div class="vl-profile-sheet">
+    <div class="vl-profile-body">
+      <div class="vl-profile-avatar-slot">
+        <div class="vl-profile-avatar-ring">
+          {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="" class="vl-profile-avatar-ring__img" width="168" height="168">
+          {% else %}
+            <span class="vl-profile-avatar-ring__placeholder" aria-hidden="true">{{ profile.display_name|default:profile_user.username|first|upper }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="vl-profile-content">
+        <div class="vl-profile-row-name">
+          <h1 class="vl-profile-name">
+            {{ profile.display_handle }}
+            {% if user.is_authenticated and user != profile_user and is_friend %}
+              <span class="vl-profile-friend-badge" title="Взаимная подписка">Друг</span>
+            {% endif %}
+          </h1>
+          <div class="vl-profile-toolbar">
+            {% if user.is_authenticated %}
+              {% if user == profile_user %}
+                <a href="{% url 'vibel:profile_edit' username=profile_user.username %}" class="vl-profile-btn vl-profile-btn--secondary">Редактировать профиль</a>
+                <form action="{% url 'vibel:logout' %}" method="post" class="vl-profile-toolbar__form">
+                  {% csrf_token %}
+                  <button type="submit" class="vl-profile-btn vl-profile-btn--secondary vl-profile-btn--icon" title="Выйти" aria-label="Выйти из аккаунта">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M10 20H6.5A2.5 2.5 0 0 1 4 17.5v-11A2.5 2.5 0 0 1 6.5 4H10"/>
+                      <circle cx="7.35" cy="12" r="1.1" fill="currentColor" stroke="none"/>
+                      <path d="M15.5 9.25 19.5 12l-4 2.75"/><path d="M19.5 12h-7"/>
+                    </svg>
+                  </button>
+                </form>
+                <div class="vl-profile-more" id="vl-profile-more">
+                  <button type="button" class="vl-profile-btn vl-profile-btn--secondary vl-profile-more__trigger" id="vl-profile-more-btn" aria-expanded="false" aria-haspopup="true" aria-controls="vl-profile-more-panel">
+                    Ещё
+                    <svg class="vl-profile-more__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                  </button>
+                  <div class="vl-profile-more__panel" id="vl-profile-more-panel" role="menu" hidden>
+                    <button type="button" class="vl-profile-more__item" role="menuitem" id="vl-profile-copy-link" data-profile-url="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">Скопировать ссылку на профиль</button>
+                  </div>
+                </div>
+              {% else %}
+                {% if is_friend %}
+                  <a href="{% url 'vibel:messages_thread' username=profile_user.username %}" class="vl-profile-btn vl-profile-btn--secondary">Сообщения</a>
+                {% endif %}
+                <form action="{% url 'vibel:follow' username=profile_user.username %}" method="post" class="vl-profile-toolbar__form">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="vl-profile-btn {% if not is_following %}vl-profile-btn--primary{% else %}vl-profile-btn--secondary{% endif %}">
+                    {% if is_following %}Отписаться{% else %}Подписаться{% endif %}
+                  </button>
+                </form>
+                <form action="{% url 'vibel:block_toggle' username=profile_user.username %}" method="post" class="vl-profile-toolbar__form">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="vl-profile-btn vl-profile-btn--secondary">
+                    {% if blocked_by_me %}Разблокировать{% else %}Заблокировать{% endif %}
+                  </button>
+                </form>
+              {% endif %}
+            {% endif %}
+          </div>
+        </div>
+
+        <p class="vl-profile-handle">@{{ profile_user.username }}</p>
+        {% if user.is_authenticated and user != profile_user and they_follow_me and not is_following %}
+          <p class="vl-profile-friend-hint">Этот пользователь подписан на вас. Подпишитесь в ответ — станете друзьями и сможете переписываться.</p>
+        {% elif user.is_authenticated and user != profile_user and is_following and not they_follow_me %}
+          <p class="vl-profile-friend-hint">Вы подписаны. Когда пользователь подпишется на вас, вы станете друзьями и откроется чат.</p>
+        {% endif %}
+        {% if user.is_authenticated and user == profile_user and profile_user.last_login %}
+          <p class="vl-profile-status">Последний визит: {{ profile_user.last_login|date:"d.m.Y H:i" }}</p>
+        {% endif %}
+        {% if profile.bio %}
+          <p class="vl-profile-bio">{{ profile.bio }}</p>
+        {% endif %}
+        <div class="vl-profile-meta-row">
+          {% if profile.location %}
+            <span class="vl-profile-meta-item">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 21s7-4.35 7-11a7 7 0 1 0-14 0c0 6.65 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+              {{ profile.location }}
+            </span>
+          {% endif %}
+          <span class="vl-profile-meta-item vl-profile-meta-item--stats">
+            <strong>{{ posts_count }}</strong> публикаций
+            <span class="vl-profile-meta-dot">·</span>
+            <strong>{{ followers_n }}</strong> подписчиков
+            <span class="vl-profile-meta-dot">·</span>
+            <strong>{{ following_n }}</strong> подписок
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="vl-profile-grid-wrap">
+  <h2 class="vl-profile-grid-title">Публикации</h2>
+  <div class="vl-grid">
+    {% for post in posts %}
+      <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-grid__cell">
+        <img src="{{ post.image.url }}" alt="" class="vl-grid__img" loading="lazy">
+        <span class="vl-grid__overlay">♥ {{ post.likes_count }}</span>
+      </a>
+    {% empty %}
+      <p class="vl-empty-inline">Пока нет публикаций</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% if user.is_authenticated and user == profile_user %}
+<script>
+  (function () {
+    var root = document.getElementById('vl-profile-more');
+    var btn = document.getElementById('vl-profile-more-btn');
+    var panel = document.getElementById('vl-profile-more-panel');
+    var copyBtn = document.getElementById('vl-profile-copy-link');
+    function openMenu(p) {
+      if (!root || !btn || !panel) return;
+      root.classList.toggle('vl-profile-more--open', p);
+      btn.setAttribute('aria-expanded', p ? 'true' : 'false');
+      panel.hidden = !p;
+    }
+    if (root && btn && panel) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openMenu(panel.hidden);
+      });
+      document.addEventListener('click', function () { openMenu(false); });
+      root.addEventListener('click', function (e) { e.stopPropagation(); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') openMenu(false);
+      });
+    }
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var url = copyBtn.getAttribute('data-profile-url') || window.location.href;
+        var orig = copyBtn.textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(function () {
+            copyBtn.textContent = 'Ссылка скопирована';
+            setTimeout(function () { copyBtn.textContent = orig; }, 2000);
+          });
+        }
+        openMenu(false);
+      });
+    }
+  })();
+</script>
+{% endif %}
+{% endblock %}

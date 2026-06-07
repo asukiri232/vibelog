@@ -1,0 +1,479 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Лента — VibeLog{% endblock %}
+{% block content %}
+<div class="vl-feed-controls">
+  <div class="vl-feed-controls__row">
+    <div class="vl-tabs" role="tablist">
+      <a href="{% url 'vibel:feed' %}?tab=following{% if category_slug %}&category={{ category_slug }}{% endif %}"
+         class="vl-tab {% if tab == 'following' %}vl-tab--active{% endif %}">Подписки</a>
+      <a href="{% url 'vibel:feed' %}?tab=popular{% if category_slug %}&category={{ category_slug }}{% endif %}"
+         class="vl-tab {% if tab == 'popular' %}vl-tab--active{% endif %}">Популярное</a>
+      <a href="{% url 'vibel:feed' %}?tab=new{% if category_slug %}&category={{ category_slug }}{% endif %}"
+         class="vl-tab {% if tab == 'new' %}vl-tab--active{% endif %}">Свежее</a>
+    </div>
+  </div>
+  {% if not user.is_authenticated and tab == 'popular' %}
+    <p class="vl-hint"><a href="{% url 'vibel:login' %}">Войдите</a>, чтобы открыть ленту «Подписки».</p>
+  {% endif %}
+</div>
+
+<div class="vl-filters">
+  <span class="vl-filters__label">Тип поста</span>
+  <div class="vl-pills">
+    <a href="{% url 'vibel:feed' %}?tab={{ tab }}" class="vl-pill {% if not category_slug %}vl-pill--active{% endif %}">Все</a>
+    {% for c in categories %}
+      <a href="{% url 'vibel:feed' %}?tab={{ tab }}&category={{ c.slug }}"
+         class="vl-pill {% if category_slug == c.slug %}vl-pill--active{% endif %}">{{ c.name }}</a>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="vl-feed">
+  {% for post in posts %}
+    <article class="vl-card{% if not user.is_authenticated %} vl-card--guest-feed{% endif %}" id="post-{{ post.id }}">
+      <header class="vl-card__head">
+        <a href="{% url 'vibel:profile' username=post.author.username %}" class="vl-card__user">
+          {% if post.author.profile.avatar %}
+            <img src="{{ post.author.profile.avatar.url }}" alt="" class="vl-card__avatar">
+          {% else %}
+            <span class="vl-card__avatar vl-card__avatar--placeholder"></span>
+          {% endif %}
+          <span class="vl-card__name">{{ post.author.profile.display_handle }}</span>
+        </a>
+        <span class="vl-card__badge">{{ post.category.name }}</span>
+        {% include 'vibel/partials/post_author_menu.html' with post=post %}
+      </header>
+      <div class="vl-card__body">
+        <div class="vl-card__media-wrap">
+          {% include 'vibel/partials/post_media.html' with post=post gallery_compact=True media_link_to_detail=True %}
+          {% if user.is_authenticated %}
+            <div class="vl-card__media-actions" role="toolbar" aria-label="Действия с постом">
+              <form action="{% url 'vibel:like' post_id=post.id %}" method="post" class="vl-like-form" data-like-form>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}#post-{{ post.id }}">
+                <button type="submit" class="vl-like-btn {% if post.id in liked_ids %}vl-like-btn--on{% endif %}" aria-label="Нравится, {{ post.likes_count }}" data-like-button>
+                  <svg class="vl-like-btn__svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="vl-like-btn__path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor" stroke="currentColor" stroke-width="1.35" stroke-linejoin="round"/></svg>
+                  <span class="vl-like-btn__count" data-like-count aria-hidden="true">{{ post.likes_count }}</span>
+                </button>
+              </form>
+              <form action="{% url 'vibel:save' post_id=post.id %}" method="post" class="vl-card__save-form" data-save-form>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}#post-{{ post.id }}">
+                <button type="submit" class="vl-bookmark-btn {% if post.id in saved_ids %}vl-bookmark-btn--on{% endif %}" data-save-button aria-label="{% if post.id in saved_ids %}Убрать из сохранённых{% else %}В избранное{% endif %}" title="{% if post.id in saved_ids %}В избранном{% else %}В избранное{% endif %}">
+                  <svg class="vl-bookmark-btn__svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path class="vl-bookmark-btn__path" d="M7 3h10a2 2 0 012 2v15.5a.5.5 0 01-.78.42L12 17.8l-6.22 4.12A.5.5 0 015 20.5V5a2 2 0 012-2z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                </button>
+              </form>
+            </div>
+          {% endif %}
+        </div>
+        <div class="vl-card__main">
+      <div class="vl-card__bar">
+        <div class="vl-card__bar-actions">
+          {% if user.is_authenticated %}
+            <button type="button" class="vl-comments-toggle" data-comments-toggle aria-expanded="false" aria-controls="vl-feed-comments-{{ post.id }}" aria-label="Показать комментарии">
+              <span class="vl-comments-toggle__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <span class="vl-comments-toggle__n" data-comments-count>{{ post.comments_total }}</span>
+            </button>
+          {% else %}
+            <span class="vl-like vl-like--readonly"><span class="vl-like__icon">♥</span> {{ post.likes_count }}</span>
+            <a href="{% url 'vibel:post_detail' post_id=post.id %}#post-comments" class="vl-comments-toggle vl-comments-toggle--link" aria-label="Комментарии к посту">
+              <span class="vl-comments-toggle__icon" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </span>
+              <span class="vl-comments-toggle__n">{{ post.comments_total }}</span>
+            </a>
+          {% endif %}
+        </div>
+        <time class="vl-card__time" datetime="{{ post.created_at|date:'c' }}">{{ post.created_at|date:"d.m.Y H:i" }}</time>
+      </div>
+      {% if post.caption %}
+        <p class="vl-card__caption"><strong>{{ post.author.profile.display_handle }}</strong> {{ post.caption }}</p>
+      {% endif %}
+      <div class="vl-comments vl-comments--feed" id="vl-feed-comments-{{ post.id }}" data-comments-list>
+        {% for c in post.preview_comments %}
+          <div class="vl-comment-line" data-comment-id="{{ c.id }}">
+            <div class="vl-comment-line__body">
+              <a href="{% url 'vibel:profile' username=c.author.username %}" class="vl-comment-user">{{ c.author.profile.display_handle }}</a>
+              {% if c.text %}<span class="vl-comment-body">{{ c.text }}</span>{% endif %}
+              {% if c.image %}
+                <a href="{{ c.image.url }}" class="vl-comment-img-link" data-vl-lightbox>
+                  <img src="{{ c.image.url }}" alt="" class="vl-comment-img" loading="lazy" width="280" height="280">
+                </a>
+              {% endif %}
+            </div>
+            {% include 'vibel/partials/comment_delete_form.html' with c=c post=post ajax=True %}
+          </div>
+        {% empty %}
+          <p class="vl-comment-line vl-comment-line--empty">Комментариев пока нет</p>
+        {% endfor %}
+        {% if post.comments_total > 2 %}
+          <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-comments-more">
+            Показать все комментарии ({{ post.comments_total }})
+          </a>
+        {% endif %}
+        {% if user.is_authenticated %}
+          <form action="{% url 'vibel:comment_create' post_id=post.id %}" method="post" enctype="multipart/form-data" class="vl-comment-form vl-comment-form--feed vl-dm-compose vl-feed-comment-form">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ request.get_full_path }}#post-{{ post.id }}">
+            <div class="vl-dm-compose__preview-wrap" hidden data-comment-preview-wrap>
+              <div class="vl-dm-compose__preview-strip" data-comment-preview-strip aria-live="polite"></div>
+            </div>
+            <div class="vl-dm-compose__main-row">
+              <div class="vl-dm-compose__merged" role="group" aria-label="Комментарий">
+                <div class="vl-dm-compose__attach">
+                  <label class="vl-attach-btn vl-attach-btn--dm" title="Прикрепить фото">
+                    <input type="file" name="image" accept="image/*" class="vl-attach-input" data-comment-file aria-label="Прикрепить фото">
+                    {% include 'vibel/partials/attach_clip_face.html' %}
+                  </label>
+                </div>
+                {% include 'vibel/partials/emoji_toggle_in_compose.html' %}
+                <textarea name="text" maxlength="500" class="vl-input vl-textarea" rows="1" placeholder="Оставить комментарий" autocomplete="off" data-comment-text></textarea>
+              </div>
+              <button type="submit" class="vl-btn vl-btn--small vl-dm-compose__send" data-comment-button>Отправить</button>
+            </div>
+          </form>
+        {% endif %}
+      </div>
+        </div>
+      </div>
+    </article>
+  {% empty %}
+    <div class="vl-empty">
+      <p class="vl-empty__title">Пока пусто</p>
+      {% if tab == 'following' and user.is_authenticated %}
+        <p>Подпишитесь на авторов или откройте «Популярное» / «Свежее».</p>
+      {% elif tab == 'following' %}
+        <p>Войдите и подпишитесь на интересных людей — или смотрите «Популярное».</p>
+      {% else %}
+        <p>Станьте первым: <a href="{% url 'vibel:register' %}">зарегистрируйтесь</a> и выложите кадр.</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% if feed_has_more %}
+  <p class="vl-feed-more">
+    <a href="?tab={{ tab }}{% if category_slug %}&category={{ category_slug }}{% endif %}&page={{ feed_page|add:1 }}" class="vl-btn vl-btn--outline">Загрузить ещё</a>
+  </p>
+{% endif %}
+<script>
+  (function () {
+    const mqMobile = window.matchMedia('(max-width: 640px)');
+
+    async function submitLikeForm(form) {
+      const button = form.querySelector('[data-like-button]');
+      const countEl = form.querySelector('[data-like-count]');
+      const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+      if (!button || !countEl || !csrfToken || button.disabled) return;
+
+      button.disabled = true;
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': csrfToken,
+          },
+          body: new FormData(form),
+          credentials: 'same-origin',
+        });
+
+        if (!response.ok) {
+          throw new Error('Request failed');
+        }
+
+        const data = await response.json();
+        if (data.ok) {
+          button.classList.toggle('vl-like-btn--on', Boolean(data.liked));
+          countEl.textContent = String(data.likes_count);
+          button.setAttribute('aria-label', 'Нравится, ' + String(data.likes_count));
+          button.classList.remove('vl-like-btn--pulse');
+          void button.offsetWidth;
+          button.classList.add('vl-like-btn--pulse');
+        }
+      } catch (err) {
+        form.submit();
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    document.querySelectorAll('[data-like-form]').forEach((form) => {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        await submitLikeForm(form);
+      });
+    });
+
+    /* Мобилка ≤640px: двойной тап/клик по превью — лайк без открытия поста.
+       В F12 эмуляции чаще идут mouse click, не touchend; у <a> первый click сразу уходит в навигацию.
+       Решение: на мобилке всегда preventDefault на клике по фото и открытие поста через таймер; второй клик за окно — лайк. */
+    document.querySelectorAll('.vl-card__media-link').forEach((link) => {
+      const card = link.closest('.vl-card');
+      const form = card && card.querySelector('[data-like-form]');
+      if (!form || link.dataset.vlDbltapLikeInit === '1') return;
+      link.dataset.vlDbltapLikeInit = '1';
+
+      const st = { navTimer: null, prevClickAt: 0 };
+      const openDelayMs = 320;
+      const doubleWindowMs = 380;
+
+      function clearNav() {
+        if (st.navTimer) {
+          window.clearTimeout(st.navTimer);
+          st.navTimer = null;
+        }
+      }
+
+      link.addEventListener(
+        'click',
+        function (ev) {
+          if (!mqMobile.matches) return;
+          if (ev.defaultPrevented) return;
+          if (ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey) return;
+          if (ev.button !== 0) return;
+          if (ev.target.closest && ev.target.closest('.vl-card__media-actions')) return;
+
+          ev.preventDefault();
+          ev.stopPropagation();
+          ev.stopImmediatePropagation();
+
+          const now = Date.now();
+          clearNav();
+
+          if (st.prevClickAt && now - st.prevClickAt < doubleWindowMs) {
+            st.prevClickAt = 0;
+            void submitLikeForm(form);
+            return;
+          }
+
+          st.prevClickAt = now;
+          st.navTimer = window.setTimeout(function () {
+            st.navTimer = null;
+            st.prevClickAt = 0;
+            window.location.assign(link.href);
+          }, openDelayMs);
+        },
+        true
+      );
+
+      link.addEventListener(
+        'dblclick',
+        function (ev) {
+          if (!mqMobile.matches) return;
+          if (ev.ctrlKey || ev.metaKey) return;
+          ev.preventDefault();
+          ev.stopPropagation();
+          clearNav();
+          st.prevClickAt = 0;
+          void submitLikeForm(form);
+        },
+        true
+      );
+    });
+
+    function clearFeedCommentPreview(form) {
+      const wrap = form.querySelector('.vl-dm-compose__preview-wrap');
+      const strip = form.querySelector('.vl-dm-compose__preview-strip');
+      const url = strip && strip.dataset.previewUrl;
+      if (url && strip) {
+        try {
+          URL.revokeObjectURL(url);
+        } catch (e) {}
+        strip.removeAttribute('data-preview-url');
+      }
+      if (strip) strip.innerHTML = '';
+      if (wrap) wrap.hidden = true;
+    }
+
+    function renderFeedCommentPreview(form, fileInput) {
+      const wrap = form.querySelector('.vl-dm-compose__preview-wrap');
+      const strip = form.querySelector('.vl-dm-compose__preview-strip');
+      if (!wrap || !strip || !fileInput) return;
+      clearFeedCommentPreview(form);
+      const f = fileInput.files && fileInput.files[0];
+      if (!f || !/^image\//.test(f.type)) {
+        wrap.hidden = true;
+        return;
+      }
+      const url = URL.createObjectURL(f);
+      strip.dataset.previewUrl = url;
+      const card = document.createElement('div');
+      card.className = 'vl-dm-compose__preview-card';
+      const img = document.createElement('img');
+      img.className = 'vl-dm-compose__preview-img';
+      img.src = url;
+      img.alt = '';
+      img.width = 48;
+      img.height = 48;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vl-dm-compose__preview-remove';
+      btn.setAttribute('aria-label', 'Убрать фото');
+      btn.textContent = '×';
+      card.appendChild(img);
+      card.appendChild(btn);
+      strip.appendChild(card);
+      wrap.hidden = false;
+    }
+
+    /* Один обработчик на .vl-feed (делегирование) — без двойной подписки на каждую форму. */
+    const feedRoot = document.querySelector('.vl-feed');
+    if (feedRoot && feedRoot.dataset.vlFeedCommentPreviewBound !== '1') {
+      feedRoot.dataset.vlFeedCommentPreviewBound = '1';
+      feedRoot.addEventListener('change', function (ev) {
+        const t = ev.target;
+        if (!t || !t.hasAttribute('data-comment-file')) return;
+        const form = t.closest('form.vl-feed-comment-form');
+        if (!form) return;
+        renderFeedCommentPreview(form, t);
+      });
+      feedRoot.addEventListener('click', function (ev) {
+        const btn = ev.target.closest('.vl-dm-compose__preview-remove');
+        if (!btn) return;
+        const form = btn.closest('form.vl-feed-comment-form');
+        if (!form) return;
+        ev.preventDefault();
+        const fi = form.querySelector('[data-comment-file]');
+        if (fi) fi.value = '';
+        clearFeedCommentPreview(form);
+      });
+    }
+
+    /* Комментарии в ленте — обычная POST-форма (как post_detail), без fetch. */
+
+    document.querySelectorAll('[data-comments-list]').forEach((list) => {
+      list.addEventListener('submit', async function (ev) {
+        const target = ev.target;
+        if (!(target instanceof HTMLFormElement) || !target.hasAttribute('data-comment-delete')) return;
+        ev.preventDefault();
+        const delBtn = target.querySelector('button[type="submit"]');
+        if (delBtn) delBtn.disabled = true;
+        const delCsrf = target.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+        try {
+          const response = await fetch(target.action, {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': delCsrf,
+            },
+            body: new FormData(target),
+            credentials: 'same-origin',
+          });
+          if (!response.ok) throw new Error('Request failed');
+          const payload = await response.json();
+          if (!payload.ok) throw new Error('Bad payload');
+          const row = target.closest('.vl-comment-line');
+          if (row) row.remove();
+          const card = target.closest('.vl-card');
+          const countEl = card && card.querySelector('[data-comments-count]');
+          if (countEl) {
+            const v = parseInt(countEl.textContent.trim(), 10);
+            if (Number.isFinite(v) && v > 0) countEl.textContent = String(v - 1);
+          }
+          const clist = target.closest('[data-comments-list]');
+          if (clist) {
+            const hasComment = clist.querySelector('.vl-comment-line:not(.vl-comment-line--empty)');
+            if (!hasComment) {
+              const cform = clist.querySelector('form.vl-feed-comment-form');
+              const emptyP = document.createElement('p');
+              emptyP.className = 'vl-comment-line vl-comment-line--empty';
+              emptyP.textContent = 'Комментариев пока нет';
+              if (cform) clist.insertBefore(emptyP, cform);
+            }
+          }
+        } catch (err) {
+          target.submit();
+        } finally {
+          if (delBtn) delBtn.disabled = false;
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-comments-toggle]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.vl-card');
+        if (!card) return;
+        const open = !card.classList.contains('vl-card--comments-open');
+        card.classList.toggle('vl-card--comments-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+
+    const saveForms = document.querySelectorAll('[data-save-form]');
+    saveForms.forEach((form) => {
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const button = form.querySelector('[data-save-button]');
+        const csrfToken = form.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+        if (!button || !csrfToken || button.disabled) return;
+        button.disabled = true;
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRFToken': csrfToken,
+            },
+            body: new FormData(form),
+            credentials: 'same-origin',
+          });
+          if (!response.ok) throw new Error('Request failed');
+          const data = await response.json();
+          if (data.ok) {
+            button.classList.toggle('vl-bookmark-btn--on', Boolean(data.saved));
+            button.setAttribute('aria-label', data.saved ? 'Убрать из сохранённых' : 'В избранное');
+            button.setAttribute('title', data.saved ? 'В избранном' : 'В избранное');
+          }
+        } catch (err) {
+          form.submit();
+        } finally {
+          button.disabled = false;
+        }
+      });
+    });
+
+    document.querySelectorAll('form.vl-feed-comment-form').forEach(function (f) {
+      f.addEventListener('submit', function () {
+        try {
+          var y = window.scrollY || window.pageYOffset || 0;
+          sessionStorage.setItem('vl_feed_restore_scroll', String(Math.round(y)));
+        } catch (e) {}
+        var b = f.querySelector('[data-comment-button]');
+        if (b) b.disabled = true;
+      });
+    });
+
+    (function openFeedCommentsFromHash() {
+      try {
+        var m = /^#post-(\d+)$/.exec(location.hash || '');
+        if (!m) return;
+        var card = document.getElementById('post-' + m[1]);
+        if (!card) return;
+        card.classList.add('vl-card--comments-open');
+        var tb = card.querySelector('[data-comments-toggle]');
+        if (tb) tb.setAttribute('aria-expanded', 'true');
+      } catch (e) {}
+    })();
+
+    window.addEventListener('load', function () {
+      try {
+        var raw = sessionStorage.getItem('vl_feed_restore_scroll');
+        if (raw === null || raw === '') return;
+        sessionStorage.removeItem('vl_feed_restore_scroll');
+        var y = parseInt(raw, 10);
+        if (!Number.isFinite(y) || y < 0) return;
+        if ('scrollRestoration' in window.history) {
+          window.history.scrollRestoration = 'manual';
+        }
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            window.scrollTo(0, y);
+          });
+        });
+      } catch (e) {}
+    });
+  })();
+</script>
+{% endblock %}

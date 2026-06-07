@@ -1,0 +1,1315 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}VibeLog{% endblock %}</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230c3d2e'/%3E%3C/svg%3E" type="image/svg+xml">
+  <script>
+    (function () {
+      try {
+        var k = 'vibel-theme';
+        var s = localStorage.getItem(k);
+        if (s === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+        else if (s === 'light') document.documentElement.removeAttribute('data-theme');
+        else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'vibel/css/style.css' %}?v=60">
+  <link rel="manifest" href="{% static 'vibel/manifest.webmanifest' %}">
+</head>
+<body class="vl-body{% if user.is_authenticated %} vl-body--rail{% endif %}">
+  <header class="vl-header">
+    <div class="vl-header__inner">
+      <a class="vl-logo" href="{% url 'vibel:feed' %}" aria-label="VibeLog — на главную">
+        <span class="vl-logo__graphic" aria-hidden="true">
+          <!-- Знак: одна непрерывная линия — из «земли» вверх и в открытое пространство (свобода движения, без рамок и заливок) -->
+          <svg class="vl-logo__svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+            <path
+              class="vl-logo__path"
+              d="M 10 90 C 28 82 40 52 48 32 C 56 14 70 4 86 12 C 95 20 92 34 80 38 C 72 40 66 30 72 22"
+              stroke="currentColor"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+        </span>
+        <span class="vl-logo__word">VibeLog</span>
+      </a>
+      <button type="button" class="vl-mobile-menu-btn" id="vl-mobile-menu-btn" aria-expanded="false" aria-controls="vl-mobile-menu" aria-label="Открыть меню" title="Меню">
+        <span class="vl-mobile-menu-btn__icon vl-mobile-menu-btn__icon--open" aria-hidden="true"></span>
+        <span class="vl-mobile-menu-btn__icon vl-mobile-menu-btn__icon--close" aria-hidden="true"></span>
+      </button>
+      <nav class="vl-nav" aria-label="Основная навигация">
+        <div class="vl-nav-search" id="vl-nav-search">
+          <button type="button" class="vl-nav__icon vl-nav__icon--btn vl-nav-search__toggle" id="vl-nav-search-toggle" title="Поиск" aria-label="Открыть поиск" aria-expanded="false" aria-controls="vl-nav-search-form">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.2-3.2"/></svg>
+          </button>
+          <form method="get" class="vl-nav-search__form" id="vl-nav-search-form" action="{% url 'vibel:user_search' %}" role="search" autocomplete="off">
+            <label for="vl-nav-search-input" class="vl-nav-search__sr">Поиск пользователей</label>
+            <input id="vl-nav-search-input" type="search" name="q" class="vl-nav-search__input" placeholder="Поиск людей" maxlength="80">
+            <button type="button" class="vl-nav-search__close" id="vl-nav-search-close" aria-label="Закрыть поиск">✕</button>
+            <div class="vl-nav-search__results" id="vl-nav-search-results" hidden></div>
+          </form>
+        </div>
+        {% if not user.is_authenticated %}
+        <button type="button" class="vl-nav__icon vl-nav__icon--btn vl-theme-toggle" title="Тёмная тема" aria-label="Переключить тему оформления">
+          <span class="vl-theme-toggle__icon vl-theme-toggle__icon--moon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </span>
+          <span class="vl-theme-toggle__icon vl-theme-toggle__icon--sun" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+          </span>
+        </button>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <div class="vl-user-menu" id="vl-user-menu">
+          <button type="button" class="vl-user-menu__trigger" id="vl-user-menu-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="vl-user-menu-panel" title="Меню аккаунта">
+            <span class="vl-user-menu__avatar-wrap">
+              {% if nav_profile.avatar %}
+                <img src="{{ nav_profile.avatar.url }}" alt="" class="vl-user-menu__avatar-img" width="36" height="36">
+              {% else %}
+                <span class="vl-user-menu__avatar-img vl-user-menu__avatar-img--placeholder" aria-hidden="true">{{ nav_profile.display_name|default:user.username|first|upper }}</span>
+              {% endif %}
+            </span>
+            <span class="vl-user-menu__chevron" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+            </span>
+          </button>
+          <div class="vl-user-menu__panel" id="vl-user-menu-panel" role="menu" aria-label="Меню пользователя" hidden>
+            <div class="vl-user-menu__head">
+              {% if nav_profile.avatar %}
+                <img src="{{ nav_profile.avatar.url }}" alt="" class="vl-user-menu__head-avatar" width="56" height="56">
+              {% else %}
+                <span class="vl-user-menu__head-avatar vl-user-menu__head-avatar--placeholder" aria-hidden="true">{{ nav_profile.display_name|default:user.username|first|upper }}</span>
+              {% endif %}
+              <div class="vl-user-menu__head-text">
+                <span class="vl-user-menu__head-name">{{ nav_profile.display_handle }}</span>
+                <span class="vl-user-menu__head-handle">@{{ user.username }}</span>
+              </div>
+            </div>
+            <div class="vl-user-menu__list">
+              <a href="{% url 'vibel:profile' username=user.username %}" class="vl-user-menu__item" role="menuitem">
+                <span class="vl-user-menu__item-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20v-1a8 8 0 0 1 16 0v1"/></svg>
+                </span>
+                <span class="vl-user-menu__item-label">Профиль</span>
+              </a>
+              <a href="{% url 'vibel:settings' %}" class="vl-user-menu__item" role="menuitem">
+                <span class="vl-user-menu__item-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                </span>
+                <span class="vl-user-menu__item-label">Настройки</span>
+              </a>
+              <a href="{% url 'vibel:help' %}" class="vl-user-menu__item" role="menuitem">
+                <span class="vl-user-menu__item-icon" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                </span>
+                <span class="vl-user-menu__item-label">Помощь</span>
+              </a>
+              <button type="button" class="vl-user-menu__item vl-user-menu__item--btn vl-theme-toggle" role="menuitem" data-vl-theme-row>
+                <span class="vl-user-menu__item-icon" aria-hidden="true">
+                  <span class="vl-theme-toggle__icon vl-theme-toggle__icon--moon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  </span>
+                  <span class="vl-theme-toggle__icon vl-theme-toggle__icon--sun">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+                  </span>
+                </span>
+                <span class="vl-user-menu__item-textcol">
+                  <span class="vl-user-menu__item-label">Тема оформления</span>
+                  <span class="vl-user-menu__item-note" data-vl-theme-label>Светлая</span>
+                </span>
+              </button>
+            </div>
+            <div class="vl-user-menu__foot">
+              <form action="{% url 'vibel:logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="vl-user-menu__item vl-user-menu__item--btn vl-user-menu__item--logout" role="menuitem">
+                  <span class="vl-user-menu__item-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20H6.5A2.5 2.5 0 0 1 4 17.5v-11A2.5 2.5 0 0 1 6.5 4H10"/><circle cx="7.35" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M15.5 9.25 19.5 12l-4 2.75"/><path d="M19.5 12h-7"/></svg>
+                  </span>
+                  <span class="vl-user-menu__item-label">Выйти из аккаунта</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% else %}
+          <a href="{% url 'vibel:login' %}" class="vl-nav__icon" title="Войти" aria-label="Войти">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+          </a>
+          <a href="{% url 'vibel:register' %}" class="vl-btn vl-btn--small" title="Регистрация">Регистрация</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <div class="vl-mobile-menu" id="vl-mobile-menu" aria-hidden="true" inert>
+    <div class="vl-mobile-menu__backdrop" data-vl-mobile-menu-close tabindex="-1" aria-hidden="true"></div>
+    <div class="vl-mobile-menu__panel" role="dialog" aria-modal="true" aria-labelledby="vl-mobile-menu-title">
+      <div class="vl-mobile-menu__head">
+        <span class="vl-mobile-menu__title" id="vl-mobile-menu-title">Меню</span>
+        <button type="button" class="vl-mobile-menu__close" data-vl-mobile-menu-close aria-label="Закрыть меню">
+          <span aria-hidden="true">✕</span>
+        </button>
+      </div>
+      <div class="vl-mobile-menu__body">
+        {% if user.is_authenticated %}
+        <div class="vl-mobile-menu__user">
+          {% if nav_profile.avatar %}
+            <img src="{{ nav_profile.avatar.url }}" alt="" class="vl-mobile-menu__user-avatar" width="48" height="48">
+          {% else %}
+            <span class="vl-mobile-menu__user-avatar vl-mobile-menu__user-avatar--ph" aria-hidden="true">{{ nav_profile.display_name|default:user.username|first|upper }}</span>
+          {% endif %}
+          <div class="vl-mobile-menu__user-text">
+            <span class="vl-mobile-menu__user-name">{{ nav_profile.display_handle }}</span>
+            <span class="vl-mobile-menu__user-handle">@{{ user.username }}</span>
+          </div>
+        </div>
+        <a href="{% url 'vibel:profile' username=user.username %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20v-1a8 8 0 0 1 16 0v1"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Профиль</span>
+        </a>
+        <a href="{% url 'vibel:feed' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Лента</span>
+        </a>
+        <a href="{% url 'vibel:saved_posts' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h12v20l-6-4-6 4V2z"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Избранное</span>
+        </a>
+        <a href="{% url 'vibel:messages_inbox' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8l-4 3V6a2 2 0 0 1 2-2z"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Сообщения</span>
+          {% if unread_dm_count %}
+            <span class="vl-mobile-menu__badge">{{ unread_dm_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'vibel:notifications' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 7-3 7h18s-3 0-3-7"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Уведомления</span>
+          {% if unread_notifications_count %}
+            <span class="vl-mobile-menu__badge">{{ unread_notifications_count }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'vibel:post_create' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Новый пост</span>
+        </a>
+        <a href="{% url 'vibel:settings' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.47a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Настройки</span>
+        </a>
+        <a href="{% url 'vibel:help' %}" class="vl-mobile-menu__link">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          </span>
+          <span class="vl-mobile-menu__link-text">Помощь</span>
+        </a>
+        <button type="button" class="vl-mobile-menu__link vl-mobile-menu__link--btn vl-theme-toggle" aria-label="Переключить тему оформления">
+          <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+            <span class="vl-theme-toggle__icon vl-theme-toggle__icon--moon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </span>
+            <span class="vl-theme-toggle__icon vl-theme-toggle__icon--sun">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            </span>
+          </span>
+          <span class="vl-mobile-menu__link-text">Тема: <span data-vl-theme-label>Светлая</span></span>
+        </button>
+        <form action="{% url 'vibel:logout' %}" method="post" class="vl-mobile-menu__logout">
+          {% csrf_token %}
+          <button type="submit" class="vl-mobile-menu__link vl-mobile-menu__link--btn vl-mobile-menu__link--danger">
+            <span class="vl-mobile-menu__link-icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20H6.5A2.5 2.5 0 0 1 4 17.5v-11A2.5 2.5 0 0 1 6.5 4H10"/><circle cx="7.35" cy="12" r="1.1" fill="currentColor" stroke="none"/><path d="M15.5 9.25 19.5 12l-4 2.75"/><path d="M19.5 12h-7"/></svg>
+            </span>
+            <span class="vl-mobile-menu__link-text">Выйти</span>
+          </button>
+        </form>
+        {% else %}
+        <div class="vl-mobile-menu__guest">
+          <p class="vl-mobile-menu__guest-lead">Войдите или создайте аккаунт</p>
+          <a href="{% url 'vibel:login' %}" class="vl-btn vl-mobile-menu__guest-btn">Войти</a>
+          <a href="{% url 'vibel:register' %}" class="vl-btn vl-btn--outline vl-mobile-menu__guest-btn">Регистрация</a>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if not user.is_authenticated and request.resolver_match and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'register' %}
+  <div class="vl-mobile-auth-gate" id="vl-mobile-auth-gate" hidden data-vl-auth-gate>
+    <div class="vl-mobile-auth-gate__backdrop" data-vl-auth-gate-dismiss tabindex="-1" aria-hidden="true"></div>
+    <div class="vl-mobile-auth-gate__sheet" role="dialog" aria-modal="true" aria-labelledby="vl-mobile-auth-gate-title">
+      <h2 class="vl-mobile-auth-gate__title" id="vl-mobile-auth-gate-title">VibeLog</h2>
+      <p class="vl-mobile-auth-gate__lead">Войдите или зарегистрируйтесь — чтобы подписываться, комментировать и сохранять посты.</p>
+      <div class="vl-mobile-auth-gate__actions">
+        <a href="{% url 'vibel:login' %}" class="vl-btn vl-mobile-auth-gate__btn" data-vl-auth-gate-go>Войти</a>
+        <a href="{% url 'vibel:register' %}" class="vl-btn vl-btn--outline vl-mobile-auth-gate__btn" data-vl-auth-gate-go>Регистрация</a>
+      </div>
+      <button type="button" class="vl-mobile-auth-gate__later" data-vl-auth-gate-dismiss>Позже, просто смотреть</button>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if messages %}
+    <ul class="vl-messages" id="vl-django-messages" hidden>
+      {% for message in messages %}
+        <li class="vl-msg vl-msg--{{ message.tags }}" data-vl-toast-text>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <div class="vl-body-wrap{% if user.is_authenticated %} vl-body-wrap--with-rail{% endif %}">
+    {% if user.is_authenticated %}
+    <aside class="vl-quick-rail" aria-label="Боковая навигация">
+      {% include 'vibel/partials/quick_messages_notifications.html' %}
+    </aside>
+    {% endif %}
+    <main class="vl-main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <footer class="vl-footer">
+    <p class="vl-footer__text">VibeLog — лента настроения. Сделано в духе чистых линий и свободы движения.</p>
+    <p class="vl-footer__links"><a href="{% url 'vibel:help' %}">Помощь</a></p>
+  </footer>
+
+  <div class="vl-toast-stack" id="vl-toast-stack" aria-live="polite" aria-atomic="true"></div>
+
+  <div id="vl-lightbox" class="vl-lightbox" hidden role="dialog" aria-modal="true" aria-label="Просмотр фото">
+    <button type="button" class="vl-lightbox__backdrop" tabindex="-1" aria-label="Закрыть"></button>
+    <div class="vl-lightbox__panel">
+      <button type="button" class="vl-lightbox__close" id="vl-lightbox-close" aria-label="Закрыть">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <img src="" alt="" class="vl-lightbox__img" id="vl-lightbox-img" decoding="async">
+    </div>
+  </div>
+
+  <div id="vl-emoji-flyout" class="vl-emoji-flyout" hidden role="dialog" aria-label="Выбор эмодзи">
+    <div class="vl-emoji-flyout__grid" id="vl-emoji-flyout-grid"></div>
+  </div>
+
+  {% include 'vibel/partials/report_modal.html' %}
+
+  <div id="vl-confirm" class="vl-confirm" hidden role="dialog" aria-modal="true" aria-labelledby="vl-confirm-title">
+    <button type="button" class="vl-confirm__backdrop" id="vl-confirm-backdrop" tabindex="-1" aria-label="Закрыть"></button>
+    <div class="vl-confirm__panel">
+      <h2 id="vl-confirm-title" class="vl-confirm__title"></h2>
+      <p id="vl-confirm-text" class="vl-confirm__text"></p>
+      <div class="vl-confirm__actions">
+        <button type="button" class="vl-btn vl-btn--outline" id="vl-confirm-cancel">Отмена</button>
+        <button type="button" class="vl-btn vl-btn--destructive" id="vl-confirm-ok"></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var stack = document.getElementById('vl-toast-stack');
+      if (!stack) return;
+      function showToast(text, kind) {
+        if (!text) return;
+        var el = document.createElement('div');
+        el.className = 'vl-toast vl-toast--' + (kind || 'info');
+        el.textContent = text;
+        stack.appendChild(el);
+        setTimeout(function () {
+          el.classList.add('vl-toast--out');
+          setTimeout(function () { el.remove(); }, 320);
+        }, 4200);
+      }
+      document.querySelectorAll('#vl-django-messages [data-vl-toast-text]').forEach(function (li) {
+        var kind = 'info';
+        if (li.classList.contains('vl-msg--success')) kind = 'success';
+        if (li.classList.contains('vl-msg--error')) kind = 'error';
+        showToast(li.textContent.trim(), kind);
+      });
+      window.vlShowToast = showToast;
+    })();
+  </script>
+  <script>
+    (function () {
+      var key = 'vibel-theme';
+      var root = document.documentElement;
+      function isDark() {
+        return root.getAttribute('data-theme') === 'dark';
+      }
+      function setTheme(mode) {
+        if (mode === 'dark') root.setAttribute('data-theme', 'dark');
+        else root.removeAttribute('data-theme');
+        try {
+          localStorage.setItem(key, mode);
+        } catch (e) {}
+        syncThemeUi();
+      }
+      function syncThemeUi() {
+        var dark = isDark();
+        document.querySelectorAll('.vl-theme-toggle').forEach(function (btn) {
+          btn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+          btn.title = dark ? 'Включить светлую тему' : 'Включить тёмную тему';
+          btn.setAttribute('aria-label', dark ? 'Включить светлую тему' : 'Включить тёмную тему');
+        });
+        document.querySelectorAll('[data-vl-theme-label]').forEach(function (el) {
+          el.textContent = dark ? 'Тёмная' : 'Светлая';
+        });
+      }
+      document.querySelectorAll('.vl-theme-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          setTheme(isDark() ? 'light' : 'dark');
+        });
+      });
+      syncThemeUi();
+
+      var menu = document.getElementById('vl-user-menu');
+      var trigger = document.getElementById('vl-user-menu-trigger');
+      var panel = document.getElementById('vl-user-menu-panel');
+      if (menu && trigger && panel) {
+        function openMenu(open) {
+          menu.classList.toggle('vl-user-menu--open', open);
+          trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+          panel.hidden = !open;
+        }
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          openMenu(panel.hidden);
+        });
+        document.addEventListener('click', function () {
+          openMenu(false);
+        });
+        menu.addEventListener('click', function (e) {
+          e.stopPropagation();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') openMenu(false);
+        });
+        panel.querySelectorAll('a[role="menuitem"]').forEach(function (link) {
+          link.addEventListener('click', function () {
+            openMenu(false);
+          });
+        });
+      }
+
+      var searchRoot = document.getElementById('vl-nav-search');
+      var searchToggle = document.getElementById('vl-nav-search-toggle');
+      var searchForm = document.getElementById('vl-nav-search-form');
+      var searchInput = document.getElementById('vl-nav-search-input');
+      var searchClose = document.getElementById('vl-nav-search-close');
+      var searchResults = document.getElementById('vl-nav-search-results');
+      var searchReqId = 0;
+      if (searchRoot && searchToggle && searchForm && searchInput && searchClose && searchResults) {
+        function esc(s) {
+          return String(s).replace(/[&<>"']/g, function (ch) {
+            return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+          });
+        }
+
+        function openSearch(open) {
+          searchRoot.classList.toggle('vl-nav-search--open', open);
+          searchToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+          if (open) {
+            setTimeout(function () { searchInput.focus(); }, 20);
+          } else {
+            searchInput.value = '';
+            searchResults.hidden = true;
+            searchResults.innerHTML = '';
+          }
+        }
+
+        function renderResults(items) {
+          if (!items.length) {
+            searchResults.innerHTML = '<p class="vl-nav-search__empty">Ничего не найдено</p>';
+            searchResults.hidden = false;
+            return;
+          }
+          searchResults.innerHTML = items.map(function (item) {
+            var display = esc(item.display_name || item.username || '');
+            var username = esc(item.username || '');
+            var profileUrl = esc(item.profile_url || '#');
+            var avatar = item.avatar_url
+              ? '<img src="' + esc(item.avatar_url) + '" alt="" class="vl-nav-search__avatar">'
+              : '<span class="vl-nav-search__avatar vl-nav-search__avatar--ph" aria-hidden="true">' + display.slice(0, 1).toUpperCase() + '</span>';
+            return (
+              '<a href="' + profileUrl + '" class="vl-nav-search__item">' +
+              avatar +
+              '<span class="vl-nav-search__text"><strong>' + display + '</strong><small>@' + username + '</small></span>' +
+              '</a>'
+            );
+          }).join('');
+          searchResults.hidden = false;
+        }
+
+        searchToggle.addEventListener('click', function () {
+          var next = !searchRoot.classList.contains('vl-nav-search--open');
+          openSearch(next);
+        });
+        searchClose.addEventListener('click', function () {
+          openSearch(false);
+        });
+        searchInput.addEventListener('input', function () {
+          var q = searchInput.value.trim();
+          if (!q.length) {
+            searchResults.hidden = true;
+            searchResults.innerHTML = '';
+            return;
+          }
+          searchReqId += 1;
+          var reqId = searchReqId;
+          fetch('{% url "vibel:user_search_api" %}?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+            .then(function (resp) { return resp.ok ? resp.json() : { ok: false, items: [] }; })
+            .then(function (data) {
+              if (reqId !== searchReqId) return;
+              renderResults(data && data.ok ? (data.items || []) : []);
+            })
+            .catch(function () {
+              if (reqId !== searchReqId) return;
+              searchResults.hidden = true;
+            });
+        });
+        searchForm.addEventListener('submit', function (e) {
+          var first = searchResults.querySelector('.vl-nav-search__item');
+          if (first) {
+            e.preventDefault();
+            window.location.href = first.getAttribute('href');
+          }
+        });
+        document.addEventListener('click', function (e) {
+          if (!searchRoot.contains(e.target)) openSearch(false);
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') openSearch(false);
+        });
+      }
+
+      var mobileMenu = document.getElementById('vl-mobile-menu');
+      var mobileMenuBtn = document.getElementById('vl-mobile-menu-btn');
+      var mobileMenuPanel = mobileMenu ? mobileMenu.querySelector('.vl-mobile-menu__panel') : null;
+      if (mobileMenu && mobileMenuBtn) {
+        var mqMobileMenu = window.matchMedia('(max-width: 640px)');
+        var mqMobileMenuReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        var mobileMenuOpGen = 0;
+        function cancelMobileMenuPanelAnimations() {
+          if (!mobileMenuPanel) return;
+          mobileMenuPanel.getAnimations().forEach(function (anim) {
+            anim.cancel();
+          });
+        }
+        function slideMobileMenuPanel(toOpen) {
+          if (!mobileMenuPanel) return Promise.resolve();
+          cancelMobileMenuPanelAnimations();
+          if (mqMobileMenuReduceMotion.matches) {
+            mobileMenuPanel.style.transform = toOpen ? 'translate3d(0, 0, 0)' : 'translate3d(100%, 0, 0)';
+            return Promise.resolve();
+          }
+          if (typeof mobileMenuPanel.animate !== 'function') {
+            mobileMenuPanel.style.transform = toOpen ? 'translate3d(0, 0, 0)' : 'translate3d(100%, 0, 0)';
+            return Promise.resolve();
+          }
+          var anim = mobileMenuPanel.animate(
+            [
+              { transform: toOpen ? 'translate3d(100%, 0, 0)' : 'translate3d(0, 0, 0)' },
+              { transform: toOpen ? 'translate3d(0, 0, 0)' : 'translate3d(100%, 0, 0)' },
+            ],
+            { duration: 420, easing: 'cubic-bezier(0.25, 0.8, 0.25, 1)', fill: 'forwards' }
+          );
+          return anim.finished.catch(function () {});
+        }
+        function closeNavSearchIfOpen() {
+          var sr = document.getElementById('vl-nav-search');
+          var st = document.getElementById('vl-nav-search-toggle');
+          var sf = document.getElementById('vl-nav-search-form');
+          var si = document.getElementById('vl-nav-search-input');
+          var sres = document.getElementById('vl-nav-search-results');
+          if (sr) sr.classList.remove('vl-nav-search--open');
+          if (st) st.setAttribute('aria-expanded', 'false');
+          if (si) si.value = '';
+          if (sres) {
+            sres.hidden = true;
+            sres.innerHTML = '';
+          }
+        }
+        function closeUserMenuIfOpen() {
+          var um = document.getElementById('vl-user-menu');
+          var trig = document.getElementById('vl-user-menu-trigger');
+          var pnl = document.getElementById('vl-user-menu-panel');
+          if (um && trig && pnl) {
+            um.classList.remove('vl-user-menu--open');
+            trig.setAttribute('aria-expanded', 'false');
+            pnl.hidden = true;
+          }
+        }
+        function moveFocusOutOfMobileMenu() {
+          var ae = document.activeElement;
+          if (ae && mobileMenu.contains(ae)) {
+            try {
+              mobileMenuBtn.focus({ preventScroll: true });
+            } catch (err) {
+              mobileMenuBtn.focus();
+            }
+          }
+        }
+        function setMobileMenuOpen(open) {
+          if (open) {
+            if (
+              mobileMenuBtn.getAttribute('aria-expanded') === 'true' &&
+              mobileMenu.classList.contains('vl-mobile-menu--is-open') &&
+              mobileMenuPanel &&
+              typeof mobileMenuPanel.getAnimations === 'function' &&
+              mobileMenuPanel.getAnimations().length === 0
+            ) {
+              return;
+            }
+            var gen = ++mobileMenuOpGen;
+            mobileMenu.removeAttribute('inert');
+            closeUserMenuIfOpen();
+            closeNavSearchIfOpen();
+            document.body.classList.add('vl-mobile-menu-active');
+            mobileMenu.setAttribute('aria-hidden', 'false');
+            mobileMenuBtn.setAttribute('aria-expanded', 'true');
+            mobileMenuBtn.setAttribute('aria-label', 'Закрыть меню');
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                if (gen !== mobileMenuOpGen) return;
+                cancelMobileMenuPanelAnimations();
+                if (mobileMenuPanel) mobileMenuPanel.style.removeProperty('transform');
+                mobileMenu.classList.add('vl-mobile-menu--is-open');
+                mobileMenuBtn.classList.add('vl-mobile-menu-btn--is-open');
+                slideMobileMenuPanel(true);
+              });
+            });
+          } else {
+            if (!mobileMenu.classList.contains('vl-mobile-menu--is-open')) return;
+            var gen = ++mobileMenuOpGen;
+            moveFocusOutOfMobileMenu();
+            slideMobileMenuPanel(false).then(function () {
+              if (gen !== mobileMenuOpGen) return;
+              mobileMenu.classList.remove('vl-mobile-menu--is-open');
+              mobileMenuBtn.classList.remove('vl-mobile-menu-btn--is-open');
+              mobileMenuBtn.setAttribute('aria-expanded', 'false');
+              mobileMenuBtn.setAttribute('aria-label', 'Открыть меню');
+              document.body.classList.remove('vl-mobile-menu-active');
+              mobileMenu.setAttribute('aria-hidden', 'true');
+              if (mobileMenuPanel) mobileMenuPanel.style.removeProperty('transform');
+              mobileMenu.setAttribute('inert', '');
+            });
+          }
+        }
+        mobileMenuBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setMobileMenuOpen(mobileMenuBtn.getAttribute('aria-expanded') !== 'true');
+        });
+        mobileMenu.querySelectorAll('[data-vl-mobile-menu-close]').forEach(function (el) {
+          el.addEventListener('click', function () {
+            setMobileMenuOpen(false);
+          });
+        });
+        var mobileMenuBody = mobileMenu.querySelector('.vl-mobile-menu__body');
+        if (mobileMenuBody) {
+          mobileMenuBody.addEventListener('click', function (e) {
+            if (e.target.closest('a[href]')) setMobileMenuOpen(false);
+          });
+        }
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && mobileMenu.classList.contains('vl-mobile-menu--is-open')) {
+            setMobileMenuOpen(false);
+          }
+        });
+        mqMobileMenu.addEventListener('change', function () {
+          if (!mqMobileMenu.matches) setMobileMenuOpen(false);
+        });
+      }
+
+      var authGate = document.getElementById('vl-mobile-auth-gate');
+      if (authGate) {
+        var authGateKey = 'vibel_auth_gate_dismissed';
+        var mqAuthGate = window.matchMedia('(max-width: 640px)');
+        function dismissAuthGate(remember) {
+          authGate.setAttribute('hidden', '');
+          authGate.classList.remove('vl-mobile-auth-gate--open');
+          authGate.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('vl-auth-gate-active');
+          if (remember) {
+            try {
+              sessionStorage.setItem(authGateKey, '1');
+            } catch (e) {}
+          }
+        }
+        function tryOpenAuthGate() {
+          if (!mqAuthGate.matches) {
+            dismissAuthGate(false);
+            return;
+          }
+          try {
+            if (sessionStorage.getItem(authGateKey) === '1') return;
+          } catch (e) {}
+          authGate.removeAttribute('hidden');
+          authGate.setAttribute('aria-hidden', 'false');
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              authGate.classList.add('vl-mobile-auth-gate--open');
+            });
+          });
+          document.body.classList.add('vl-auth-gate-active');
+        }
+        authGate.querySelectorAll('[data-vl-auth-gate-dismiss]').forEach(function (el) {
+          el.addEventListener('click', function () {
+            dismissAuthGate(true);
+          });
+        });
+        authGate.querySelectorAll('[data-vl-auth-gate-go]').forEach(function (el) {
+          el.addEventListener('click', function () {
+            try {
+              sessionStorage.setItem(authGateKey, '1');
+            } catch (e) {}
+          });
+        });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && authGate.classList.contains('vl-mobile-auth-gate--open')) {
+            dismissAuthGate(true);
+          }
+        });
+        mqAuthGate.addEventListener('change', function () {
+          if (mqAuthGate.matches) tryOpenAuthGate();
+          else dismissAuthGate(false);
+        });
+        tryOpenAuthGate();
+      }
+
+      /* Посты: .vl-card--compact-media — см. style.css. Логика: очень маленький файл или узкая портретная полоса на экране. */
+      (function () {
+        function shouldUseCompactLayout(img, body) {
+          var nw = img.naturalWidth;
+          var nh = img.naturalHeight;
+          if (!nw || !nh) return false;
+          var px = nw * nh;
+          var maxNat = Math.max(nw, nh);
+          var tinyFile = maxNat <= 520 || px <= 260000;
+          var bw = body.clientWidth;
+          var rw = img.offsetWidth;
+          var rh = img.offsetHeight;
+          var narrowOnScreen = bw > 60 && rw > 0 && rw < bw * 0.54;
+          var tallOnScreen = rw > 0 && rh > 0 && rh / rw >= 1.2;
+          return tinyFile || (narrowOnScreen && tallOnScreen);
+        }
+        function applyCompact(img) {
+          var card = img.closest('.vl-card');
+          if (!card || !img.naturalWidth || !img.naturalHeight) return;
+          var body = card.querySelector('.vl-card__body');
+          if (!body) return;
+          card.classList.toggle('vl-card--compact-media', shouldUseCompactLayout(img, body));
+        }
+        function scheduleApply(img) {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              applyCompact(img);
+            });
+          });
+        }
+        document.querySelectorAll('.vl-card__img').forEach(function (img) {
+          if (img.complete && img.naturalWidth) scheduleApply(img);
+          else
+            img.addEventListener('load', function () {
+              scheduleApply(img);
+            });
+          img.addEventListener('error', function () {
+            var c = img.closest('.vl-card');
+            if (c) c.classList.remove('vl-card--compact-media');
+          });
+        });
+        var resizeT = null;
+        window.addEventListener('resize', function () {
+          clearTimeout(resizeT);
+          resizeT = setTimeout(function () {
+            document.querySelectorAll('.vl-card__img').forEach(applyCompact);
+          }, 180);
+        });
+      })();
+
+      /* Несколько фото в посте: карусель того же размера, свайп и стрелки */
+      (function () {
+        function scheduleApply(img) {
+          if (!img) return;
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              var card = img.closest('.vl-card');
+              if (!card || !img.naturalWidth || !img.naturalHeight) return;
+              var body = card.querySelector('.vl-card__body');
+              if (!body) return;
+              var nw = img.naturalWidth;
+              var nh = img.naturalHeight;
+              var px = nw * nh;
+              var maxNat = Math.max(nw, nh);
+              var tinyFile = maxNat <= 520 || px <= 260000;
+              var bw = body.clientWidth;
+              var rw = img.offsetWidth;
+              var rh = img.offsetHeight;
+              var narrowOnScreen = bw > 60 && rw > 0 && rw < bw * 0.54;
+              var tallOnScreen = rw > 0 && rh > 0 && rh / rw >= 1.2;
+              card.classList.toggle(
+                'vl-card--compact-media',
+                tinyFile || (narrowOnScreen && tallOnScreen)
+              );
+            });
+          });
+        }
+
+        function initCarousel(root) {
+          if (!root || root.dataset.vlCarouselInit === '1') return;
+          var track = root.querySelector('.vl-post-carousel__track');
+          var slides = track ? track.querySelectorAll('.vl-post-carousel__slide') : [];
+          if (!track || slides.length < 2) return;
+          root.dataset.vlCarouselInit = '1';
+
+          var prevBtn = root.querySelector('.vl-post-carousel__btn--prev');
+          var nextBtn = root.querySelector('.vl-post-carousel__btn--next');
+          var edgePrev = root.querySelector('.vl-post-carousel__edge--prev');
+          var edgeNext = root.querySelector('.vl-post-carousel__edge--next');
+          var dotsWrap = root.querySelector('.vl-post-carousel__dots');
+          var n = slides.length;
+          var idx = 0;
+          var touchStartX = 0;
+          var touchStartY = 0;
+          var touchDx = 0;
+          var swiping = false;
+          var suppressClick = false;
+
+          function updateNav() {
+            var atStart = idx <= 0;
+            var atEnd = idx >= n - 1;
+            if (prevBtn) prevBtn.hidden = atStart;
+            if (nextBtn) nextBtn.hidden = atEnd;
+            if (edgePrev) edgePrev.hidden = atStart;
+            if (edgeNext) edgeNext.hidden = atEnd;
+          }
+          if (dotsWrap) {
+            dotsWrap.hidden = false;
+            dotsWrap.innerHTML = '';
+            for (var d = 0; d < n; d++) {
+              var dot = document.createElement('button');
+              dot.type = 'button';
+              dot.className = 'vl-post-carousel__dot' + (d === 0 ? ' is-active' : '');
+              dot.setAttribute('role', 'tab');
+              dot.setAttribute('aria-label', 'Фото ' + (d + 1) + ' из ' + n);
+              dot.setAttribute('aria-selected', d === 0 ? 'true' : 'false');
+              dot.dataset.index = String(d);
+              dotsWrap.appendChild(dot);
+            }
+          }
+
+          function go(to) {
+            idx = Math.max(0, Math.min(n - 1, to));
+            track.style.transform = 'translate3d(' + -idx * 100 + '%, 0, 0)';
+            root.setAttribute('data-vl-slide', String(idx));
+            updateNav();
+            if (dotsWrap) {
+              dotsWrap.querySelectorAll('.vl-post-carousel__dot').forEach(function (btn, i) {
+                var on = i === idx;
+                btn.classList.toggle('is-active', on);
+                btn.setAttribute('aria-selected', on ? 'true' : 'false');
+              });
+            }
+            var img = slides[idx] && slides[idx].querySelector('.vl-card__img');
+            if (img) {
+              if (img.complete && img.naturalWidth) scheduleApply(img);
+              else img.addEventListener('load', function () { scheduleApply(img); }, { once: true });
+            }
+          }
+
+          function onPrev(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            if (idx <= 0) return;
+            go(idx - 1);
+          }
+          function onNext(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            if (idx >= n - 1) return;
+            go(idx + 1);
+          }
+
+          if (prevBtn) prevBtn.addEventListener('click', onPrev);
+          if (nextBtn) nextBtn.addEventListener('click', onNext);
+          if (edgePrev) edgePrev.addEventListener('click', onPrev);
+          if (edgeNext) edgeNext.addEventListener('click', onNext);
+          if (dotsWrap) {
+            dotsWrap.addEventListener('click', function (e) {
+              var btn = e.target.closest('.vl-post-carousel__dot');
+              if (!btn) return;
+              e.preventDefault();
+              e.stopPropagation();
+              go(parseInt(btn.dataset.index, 10) || 0);
+            });
+          }
+
+          var viewport = root.querySelector('.vl-post-carousel__viewport');
+          if (viewport) {
+            viewport.addEventListener(
+              'touchstart',
+              function (e) {
+                if (e.touches.length !== 1) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchDx = 0;
+                swiping = false;
+              },
+              { passive: true }
+            );
+            viewport.addEventListener(
+              'touchmove',
+              function (e) {
+                if (e.touches.length !== 1) return;
+                var dx = e.touches[0].clientX - touchStartX;
+                var dy = e.touches[0].clientY - touchStartY;
+                if (!swiping && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                  swiping = true;
+                }
+                if (swiping) {
+                  touchDx = dx;
+                  e.preventDefault();
+                }
+              },
+              { passive: false }
+            );
+            viewport.addEventListener('touchend', function () {
+              if (!swiping) return;
+              var threshold = 48;
+              if (touchDx <= -threshold && idx < n - 1) onNext();
+              else if (touchDx >= threshold && idx > 0) onPrev();
+              if (Math.abs(touchDx) >= threshold) {
+                suppressClick = true;
+                window.setTimeout(function () { suppressClick = false; }, 400);
+              }
+              swiping = false;
+              touchDx = 0;
+            });
+            viewport.addEventListener(
+              'click',
+              function (e) {
+                if (suppressClick) {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.stopImmediatePropagation();
+                }
+              },
+              true
+            );
+          }
+
+          go(0);
+        }
+
+        document.querySelectorAll('[data-vl-post-carousel]').forEach(initCarousel);
+      })();
+    })();
+  </script>
+  <script>
+    (function () {
+      function initClip(root) {
+        if (!root || root.dataset.vlClipInit === '1') return;
+        var v = root.querySelector('video');
+        if (!v) return;
+        root.dataset.vlClipInit = '1';
+        var start = parseFloat(root.getAttribute('data-clip-start') || '0') || 0;
+        var endRaw = root.getAttribute('data-clip-end');
+        var end = endRaw ? (parseFloat(endRaw) || 0) : null;
+
+        function clampTime() {
+          if (!isFinite(v.duration) || v.duration <= 0) return;
+          var realEnd = end && end > 0 ? Math.min(end, v.duration) : v.duration;
+          if (v.currentTime < start) v.currentTime = start;
+          if (v.currentTime >= realEnd) {
+            v.pause();
+            v.currentTime = start;
+          }
+        }
+
+        v.addEventListener('loadedmetadata', function () {
+          if (!isFinite(v.duration) || v.duration <= 0) return;
+          var realEnd = end && end > 0 ? Math.min(end, v.duration) : v.duration;
+          if (start > 0 && start < v.duration) v.currentTime = start;
+          if (realEnd <= start) realEnd = Math.min(v.duration, start + 15);
+          root.setAttribute('data-clip-end-effective', String(realEnd));
+        });
+
+        v.addEventListener('timeupdate', clampTime);
+        v.addEventListener('seeking', clampTime);
+        v.addEventListener('play', function () {
+          clampTime();
+        });
+      }
+
+      document.querySelectorAll('[data-vl-post-clip]').forEach(initClip);
+    })();
+  </script>
+  <script>
+    (function () {
+      var root = document.getElementById('vl-lightbox');
+      var imgEl = document.getElementById('vl-lightbox-img');
+      var backdrop = root && root.querySelector('.vl-lightbox__backdrop');
+      var closeBtn = document.getElementById('vl-lightbox-close');
+      if (!root || !imgEl) return;
+
+      function open(src) {
+        if (!src) return;
+        imgEl.src = src;
+        imgEl.alt = '';
+        root.hidden = false;
+        document.body.classList.add('vl-lightbox-open');
+        try {
+          closeBtn.focus();
+        } catch (e) {}
+      }
+
+      function close() {
+        root.hidden = true;
+        document.body.classList.remove('vl-lightbox-open');
+        imgEl.removeAttribute('src');
+      }
+
+      document.addEventListener(
+        'click',
+        function (e) {
+          var a = e.target.closest('a[data-vl-lightbox]');
+          if (!a || !a.href) return;
+          if (e.defaultPrevented) return;
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+          if (e.button !== 0) return;
+          var href = a.getAttribute('href');
+          if (!href || href.charAt(0) === '#') return;
+          e.preventDefault();
+          open(href);
+        },
+        false
+      );
+
+      if (backdrop) backdrop.addEventListener('click', close);
+      if (closeBtn) closeBtn.addEventListener('click', close);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && root && !root.hidden) {
+          e.preventDefault();
+          close();
+        }
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var flyout = document.getElementById('vl-emoji-flyout');
+      var grid = document.getElementById('vl-emoji-flyout-grid');
+      if (!flyout || !grid) return;
+
+      var EMOJI =
+        '😀 😃 😄 😁 😅 🤣 😂 🙂 😉 😊 😇 🥰 😍 🤩 😘 🥲 😋 😛 😜 🤪 🤑 🤗 🤭 🤔 🤐 🤨 😐 😑 😶 😏 😒 🙄 😬 🥺 😢 😭 😤 😡 🤬 😱 🥳 🤝 👋 👍 👎 👏 🙏 💪 ✨ 🔥 💯 ❤️ 🧡 💛 💚 💙 💜 🤍 🖤 💔 💕 🌸 🌹 ⭐ 🌙 ☀️ 🌈 ☕ 🍕 🎉 🎵 ✅ ❌ ❓ ⁉️ ‼️'.split(
+          /\s+/
+        );
+      var activeTa = null;
+      var activeBtn = null;
+
+      function insertAtCursor(ta, text) {
+        if (!ta || text == null || text === '') return;
+        var start = typeof ta.selectionStart === 'number' ? ta.selectionStart : ta.value.length;
+        var end = typeof ta.selectionEnd === 'number' ? ta.selectionEnd : ta.value.length;
+        var val = ta.value;
+        var max = ta.getAttribute('maxlength');
+        var maxN = max ? parseInt(max, 10) : NaN;
+        var next = val.slice(0, start) + text + val.slice(end);
+        if (Number.isFinite(maxN) && next.length > maxN) {
+          var room = maxN - (val.length - (end - start));
+          if (room <= 0) return;
+          text = text.slice(0, room);
+          next = val.slice(0, start) + text + val.slice(end);
+        }
+        ta.value = next;
+        var pos = start + text.length;
+        try {
+          ta.selectionStart = ta.selectionEnd = pos;
+        } catch (e) {}
+        ta.focus();
+        try {
+          ta.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (e2) {}
+      }
+
+      function buildGrid() {
+        if (grid.getAttribute('data-built') === '1') return;
+        grid.setAttribute('data-built', '1');
+        EMOJI.forEach(function (ch) {
+          if (!ch) return;
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'vl-emoji-flyout__btn';
+          b.textContent = ch;
+          b.setAttribute('aria-label', ch);
+          b.addEventListener('click', function (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            if (activeTa) insertAtCursor(activeTa, ch);
+          });
+          grid.appendChild(b);
+        });
+      }
+
+      function findTextarea(btn) {
+        var merged = btn.closest('.vl-dm-compose__merged');
+        if (!merged) return null;
+        var ta = merged.querySelector('textarea');
+        if (ta) return ta;
+        var inp = merged.querySelector('input[type="text"], input:not([type])');
+        return inp || null;
+      }
+
+      function positionFlyout(btn) {
+        flyout.hidden = false;
+        flyout.style.position = 'fixed';
+        var r = btn.getBoundingClientRect();
+        var w = flyout.offsetWidth || 280;
+        var h = flyout.offsetHeight || 200;
+        var left = r.left;
+        if (left + w > window.innerWidth - 8) left = Math.max(8, window.innerWidth - w - 8);
+        if (left < 8) left = 8;
+        var top = r.bottom + 6;
+        if (top + h > window.innerHeight - 8) top = Math.max(8, r.top - h - 6);
+        flyout.style.left = left + 'px';
+        flyout.style.top = top + 'px';
+      }
+
+      function openFor(btn) {
+        var ta = findTextarea(btn);
+        if (!ta) return;
+        buildGrid();
+        activeTa = ta;
+        activeBtn = btn;
+        btn.setAttribute('aria-expanded', 'true');
+        positionFlyout(btn);
+      }
+
+      function closeFlyout() {
+        flyout.hidden = true;
+        if (activeBtn) activeBtn.setAttribute('aria-expanded', 'false');
+        activeTa = null;
+        activeBtn = null;
+      }
+
+      document.addEventListener(
+        'click',
+        function (e) {
+          var tgl = e.target.closest('[data-vl-emoji-toggle]');
+          if (tgl) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!flyout.hidden && activeBtn === tgl) {
+              closeFlyout();
+              return;
+            }
+            if (!flyout.hidden) closeFlyout();
+            openFor(tgl);
+            return;
+          }
+          if (!flyout.hidden && flyout.contains(e.target)) return;
+          if (!flyout.hidden) closeFlyout();
+        },
+        true
+      );
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !flyout.hidden) {
+          e.preventDefault();
+          closeFlyout();
+        }
+      });
+
+      document.addEventListener(
+        'scroll',
+        function (e) {
+          if (flyout.hidden) return;
+          var t = e.target;
+          if (t && (t === flyout || (typeof flyout.contains === 'function' && flyout.contains(t)))) return;
+          if (typeof flyout.matches === 'function' && flyout.matches(':hover')) return;
+          if (document.activeElement && typeof flyout.contains === 'function' && flyout.contains(document.activeElement)) return;
+          closeFlyout();
+        },
+        true
+      );
+
+      window.addEventListener('resize', function () {
+        if (!flyout.hidden) closeFlyout();
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var dlg = document.getElementById('vl-confirm');
+      var titleEl = document.getElementById('vl-confirm-title');
+      var textEl = document.getElementById('vl-confirm-text');
+      var btnOk = document.getElementById('vl-confirm-ok');
+      var btnCancel = document.getElementById('vl-confirm-cancel');
+      var backdrop = document.getElementById('vl-confirm-backdrop');
+      if (!dlg || !titleEl || !textEl || !btnOk || !btnCancel) return;
+
+      var pendingForm = null;
+
+      function close() {
+        dlg.hidden = true;
+        document.body.classList.remove('vl-confirm-open');
+        pendingForm = null;
+        btnOk.onclick = null;
+      }
+
+      function open(form, opts) {
+        pendingForm = form;
+        titleEl.textContent = opts.title || 'Подтверждение';
+        textEl.textContent = opts.text || '';
+        btnOk.textContent = opts.okLabel || 'Подтвердить';
+        dlg.hidden = false;
+        document.body.classList.add('vl-confirm-open');
+        btnOk.onclick = function () {
+          if (pendingForm) pendingForm.submit();
+          close();
+        };
+        try {
+          btnCancel.focus();
+        } catch (e) {}
+      }
+
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest('[data-vl-confirm-trigger]');
+        if (!el) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var form = el.closest('form');
+        if (!form) {
+          var fid = el.getAttribute('data-vl-confirm-form');
+          if (fid) form = document.querySelector(fid);
+        }
+        if (!form) return;
+        if (!dlg.hidden) return;
+        var det = el.closest('details');
+        if (det) det.removeAttribute('open');
+        open(form, {
+          title: el.getAttribute('data-vl-confirm-title') || '',
+          text: el.getAttribute('data-vl-confirm-text') || '',
+          okLabel: el.getAttribute('data-vl-confirm-ok') || 'Подтвердить',
+        });
+      });
+
+      btnCancel.addEventListener('click', close);
+      if (backdrop) backdrop.addEventListener('click', close);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape' || dlg.hidden) return;
+        e.preventDefault();
+        e.stopPropagation();
+        close();
+      }, true);
+    })();
+  </script>
+  <script>
+    (function () {
+      var dlg = document.getElementById('vl-report');
+      var form = document.getElementById('vl-report-form');
+      var otherWrap = document.getElementById('vl-report-other-wrap');
+      var otherTa = document.getElementById('vl-report-reason-other');
+      var typeInp = document.getElementById('vl-report-target-type');
+      var idInp = document.getElementById('vl-report-target-id');
+      var nextInp = document.getElementById('vl-report-next');
+      var btnCancel = document.getElementById('vl-report-cancel');
+      var backdrop = document.getElementById('vl-report-backdrop');
+      if (!dlg || !form) return;
+
+      function syncOtherVisibility() {
+        if (!otherWrap) return;
+        var picked = form.querySelector('input[name="reason_choice"]:checked');
+        var isOther = picked && picked.value === 'other';
+        otherWrap.hidden = !isOther;
+        if (otherTa) {
+          otherTa.required = isOther;
+          if (!isOther) otherTa.value = '';
+        }
+      }
+
+      function resetForm() {
+        form.querySelectorAll('input[name="reason_choice"]').forEach(function (r) {
+          r.checked = false;
+        });
+        if (otherTa) otherTa.value = '';
+        syncOtherVisibility();
+      }
+
+      function close() {
+        dlg.hidden = true;
+        document.body.classList.remove('vl-report-open');
+        resetForm();
+      }
+
+      function open(opts) {
+        if (typeInp) typeInp.value = opts.type || '';
+        if (idInp) idInp.value = opts.id || '';
+        if (nextInp) nextInp.value = opts.next || window.location.pathname + window.location.search;
+        resetForm();
+        dlg.hidden = false;
+        document.body.classList.add('vl-report-open');
+        try {
+          var first = form.querySelector('input[name="reason_choice"]');
+          if (first) first.focus();
+        } catch (e) {}
+      }
+
+      form.addEventListener('change', function (e) {
+        if (e.target && e.target.name === 'reason_choice') syncOtherVisibility();
+      });
+
+      document.addEventListener('click', function (e) {
+        var el = e.target.closest('[data-vl-report-trigger]');
+        if (!el) return;
+        e.preventDefault();
+        e.stopPropagation();
+        var det = el.closest('details');
+        if (det) det.removeAttribute('open');
+        open({
+          type: el.getAttribute('data-vl-report-type') || '',
+          id: el.getAttribute('data-vl-report-id') || '',
+          next: el.getAttribute('data-vl-report-next') || '',
+        });
+      });
+
+      if (btnCancel) btnCancel.addEventListener('click', close);
+      if (backdrop) backdrop.addEventListener('click', close);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape' || dlg.hidden) return;
+        e.preventDefault();
+        e.stopPropagation();
+        close();
+      }, true);
+    })();
+  </script>
+</body>
+</html>

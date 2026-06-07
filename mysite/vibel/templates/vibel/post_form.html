@@ -1,0 +1,187 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Новый пост — VibeLog{% endblock %}
+{% block content %}
+
+<form method="post" enctype="multipart/form-data" class="vl-form">
+  {% csrf_token %}
+  {% for field in form %}
+    {% if field.name == 'video_clip_start_s' or field.name == 'video_clip_end_s' %}
+      {{ field }}
+    {% else %}
+    <div class="vl-field{% if field.errors %} vl-field--error{% endif %}{% if field.field.widget.input_type == 'file' %} vl-field--file{% endif %}">
+      <label class="vl-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {% if field.name == 'image' %}
+        <input type="file" name="images" id="{{ field.id_for_label }}" class="vl-file-input" accept="image/*" multiple>
+        <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" aria-live="polite">Можно выбрать до 8 фото.</p>
+        <div class="vl-post-images-preview" id="vl-post-images-preview" hidden aria-live="polite"></div>
+      {% else %}
+        {{ field }}
+      {% endif %}
+      {% if field.field.widget.input_type == 'file' %}
+        {% if field.name != 'image' %}
+          <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" aria-live="polite">Файл не выбран — нажмите кнопку и укажите изображение (JPG, PNG, WebP).</p>
+        {% endif %}
+      {% endif %}
+      {% if field.errors %}<span class="vl-error">{{ field.errors.0 }}</span>{% endif %}
+    </div>
+    {% endif %}
+  {% endfor %}
+
+  <div class="vl-field" id="vl-clip-editor" hidden>
+    <div class="vl-label">Обрезка клипа</div>
+    <video id="vl-clip-video" class="vl-clip-video" controls muted playsinline preload="metadata"></video>
+    <div class="vl-clip-controls">
+      <div class="vl-clip-row">
+        <label class="vl-clip-lbl">Старт: <span id="vl-clip-start-txt">0</span>с</label>
+        <input type="range" id="vl-clip-start" min="0" max="0" value="0" step="1" class="vl-range">
+      </div>
+      <div class="vl-clip-row">
+        <label class="vl-clip-lbl">Конец: <span id="vl-clip-end-txt">0</span>с</label>
+        <input type="range" id="vl-clip-end" min="0" max="0" value="0" step="1" class="vl-range">
+      </div>
+      <div class="vl-clip-row">
+        <span class="vl-clip-hint" id="vl-clip-hint"></span>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="vl-btn">Опубликовать</button>
+</form>
+<script>
+  (function () {
+    document.querySelectorAll('.vl-file-input').forEach(function (input) {
+      var hint = document.querySelector('[data-vl-file-hint-for="' + input.id + '"]');
+      if (!hint) return;
+      input.addEventListener('change', function () {
+        if (input.multiple && input.files && input.files.length > 1) {
+          hint.textContent = 'Выбрано файлов: ' + input.files.length;
+        } else if (input.files && input.files.length) {
+          hint.textContent = 'Выбрано: ' + input.files[0].name;
+        } else {
+          hint.textContent = input.name === 'images'
+            ? 'Можно выбрать до 8 фото.'
+            : 'Файл не выбран — нажмите кнопку и укажите изображение (JPG, PNG, WebP).';
+        }
+      });
+    });
+
+    // Превью выбранных фото (до 8)
+    (function () {
+      var input = document.querySelector('input.vl-file-input[name="images"]');
+      var wrap = document.getElementById('vl-post-images-preview');
+      if (!input || !wrap) return;
+
+      var urls = [];
+      function clear() {
+        urls.forEach(function (u) {
+          try { URL.revokeObjectURL(u); } catch (e) {}
+        });
+        urls = [];
+        wrap.innerHTML = '';
+        wrap.hidden = true;
+      }
+
+      function render() {
+        clear();
+        if (!input.files || !input.files.length) return;
+        var max = 8;
+        var n = Math.min(input.files.length, max);
+        for (var i = 0; i < n; i++) {
+          var f = input.files[i];
+          if (!f) continue;
+          var url = URL.createObjectURL(f);
+          urls.push(url);
+          var img = document.createElement('img');
+          img.className = 'vl-post-images-preview__img';
+          img.src = url;
+          img.alt = 'Фото ' + (i + 1);
+          img.loading = 'lazy';
+          wrap.appendChild(img);
+        }
+        if (input.files.length > max) {
+          var more = document.createElement('div');
+          more.className = 'vl-post-images-preview__more';
+          more.textContent = '+' + (input.files.length - max);
+          wrap.appendChild(more);
+        }
+        wrap.hidden = false;
+      }
+
+      input.addEventListener('change', render);
+      window.addEventListener('beforeunload', clear);
+    })();
+
+    var videoInput = document.querySelector('[data-vl-clip-input="1"]');
+    var limitSel = document.querySelector('[data-vl-clip-limit="1"]');
+    var hidStart = document.querySelector('[data-vl-clip-start="1"]');
+    var hidEnd = document.querySelector('[data-vl-clip-end="1"]');
+    var wrap = document.getElementById('vl-clip-editor');
+    var vid = document.getElementById('vl-clip-video');
+    var rStart = document.getElementById('vl-clip-start');
+    var rEnd = document.getElementById('vl-clip-end');
+    var tStart = document.getElementById('vl-clip-start-txt');
+    var tEnd = document.getElementById('vl-clip-end-txt');
+    var hintEl = document.getElementById('vl-clip-hint');
+
+    if (videoInput && limitSel && hidStart && hidEnd && wrap && vid && rStart && rEnd) {
+      var url = null;
+      function sec(v) { return Math.max(0, Math.round(Number(v) || 0)); }
+      function limitS() { return sec(limitSel.value) || 15; }
+      function setHidden(s, e) {
+        hidStart.value = String(sec(s));
+        hidEnd.value = String(sec(e));
+      }
+      function syncText() {
+        tStart.textContent = String(sec(rStart.value));
+        tEnd.textContent = String(sec(rEnd.value));
+        var len = sec(rEnd.value) - sec(rStart.value);
+        var lim = limitS();
+        hintEl.textContent = 'Длина: ' + Math.max(0, len) + 'с (лимит ' + lim + 'с)';
+        hintEl.style.color = len > lim ? 'var(--vl-red, #d44)' : '';
+      }
+      function clamp() {
+        var s = sec(rStart.value);
+        var e = sec(rEnd.value);
+        var lim = limitS();
+        if (e < s + 1) e = s + 1;
+        if (e - s > lim) e = s + lim;
+        rEnd.value = String(e);
+        rStart.max = String(Math.max(0, e - 1));
+        syncText();
+        setHidden(s, e);
+      }
+      function onMeta() {
+        var dur = sec(vid.duration);
+        if (!dur || !isFinite(dur)) return;
+        wrap.hidden = false;
+        rStart.min = '0';
+        rEnd.min = '0';
+        rStart.max = String(Math.max(0, dur - 1));
+        rEnd.max = String(dur);
+        rStart.value = '0';
+        rEnd.value = String(Math.min(dur, limitS()));
+        clamp();
+      }
+      videoInput.addEventListener('change', function () {
+        if (url) try { URL.revokeObjectURL(url); } catch (e) {}
+        url = null;
+        if (!videoInput.files || !videoInput.files.length) {
+          wrap.hidden = true;
+          vid.removeAttribute('src');
+          setHidden(0, '');
+          return;
+        }
+        url = URL.createObjectURL(videoInput.files[0]);
+        vid.src = url;
+        wrap.hidden = true;
+      });
+      vid.addEventListener('loadedmetadata', onMeta);
+      rStart.addEventListener('input', clamp);
+      rEnd.addEventListener('input', clamp);
+      limitSel.addEventListener('change', function () {
+        clamp();
+      });
+    }
+  })();
+</script>
+{% endblock %}

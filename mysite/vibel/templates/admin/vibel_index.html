@@ -1,0 +1,49 @@
+{% extends "admin/index.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="vl-admin-home">
+  <div class="vl-admin-home__hero">
+    <h2>Панель VibeLog</h2>
+    <p>Быстрый доступ к постам, пользователям, жалобам и сообщениям.</p>
+  </div>
+
+  <div class="vl-admin-home__stats">
+    <div class="vl-admin-stat">
+      <span class="vl-admin-stat__n">{{ vl_admin_stats.posts|default:"—" }}</span>
+      <span class="vl-admin-stat__l">Постов</span>
+    </div>
+    <div class="vl-admin-stat">
+      <span class="vl-admin-stat__n">{{ vl_admin_stats.users|default:"—" }}</span>
+      <span class="vl-admin-stat__l">Пользователей</span>
+    </div>
+    <div class="vl-admin-stat">
+      <span class="vl-admin-stat__n">{{ vl_admin_stats.reports|default:"—" }}</span>
+      <span class="vl-admin-stat__l">Жалоб</span>
+    </div>
+    <div class="vl-admin-stat">
+      <span class="vl-admin-stat__n">{{ vl_admin_stats.messages|default:"—" }}</span>
+      <span class="vl-admin-stat__l">Сообщений</span>
+    </div>
+    <div class="vl-admin-stat">
+      <span class="vl-admin-stat__n">{{ vl_admin_stats.unread_notifications|default:"0" }}</span>
+      <span class="vl-admin-stat__l">Непрочит. уведомлений</span>
+    </div>
+    <div class="vl-admin-stat">
+      <span class="vl-admin-stat__n">{{ vl_admin_stats.drafts|default:"0" }}</span>
+      <span class="vl-admin-stat__l">Черновиков</span>
+    </div>
+  </div>
+
+  <nav class="vl-admin-quick" aria-label="Быстрые ссылки">
+    <a class="vl-admin-quick__link" href="{% url 'admin:vibel_post_changelist' %}">Все посты</a>
+    <a class="vl-admin-quick__link" href="{% url 'admin:vibel_contentreport_changelist' %}">Жалобы</a>
+    <a class="vl-admin-quick__link" href="{% url 'admin:auth_user_changelist' %}">Пользователи</a>
+    <a class="vl-admin-quick__link" href="{% url 'admin:vibel_directmessage_changelist' %}">Личные сообщения</a>
+    <a class="vl-admin-quick__link" href="{% url 'admin:vibel_notification_changelist' %}?is_read__exact=0">Непрочитанные уведомления</a>
+    <a class="vl-admin-quick__link" href="{% url 'admin:vibel_post_changelist' %}?visibility__exact=draft">Черновики</a>
+    <a class="vl-admin-quick__link vl-admin-quick__link--site" href="/">Открыть сайт</a>
+  </nav>
+</div>
+{{ block.super }}
+{% endblock %}

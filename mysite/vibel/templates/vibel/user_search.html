@@ -1,0 +1,31 @@
+{% extends 'vibel/base.html' %}
+{% block title %}Поиск пользователей — VibeLog{% endblock %}
+{% block content %}
+
+<form method="get" class="vl-form vl-form--narrow">
+  <div class="vl-field">
+    <label class="vl-label" for="id_q">Запрос</label>
+    <input type="text" id="id_q" name="q" class="vl-input" value="{{ q }}" placeholder="например: alex">
+  </div>
+  <button type="submit" class="vl-btn">Искать</button>
+</form>
+
+<div class="vl-search-results">
+  {% if q and not users %}
+    <p class="vl-empty__title">Ничего не найдено</p>
+  {% endif %}
+  {% for u in users %}
+    <a href="{% url 'vibel:profile' username=u.username %}" class="vl-user-row">
+      {% if u.profile.avatar %}
+        <img src="{{ u.profile.avatar.url }}" class="vl-card__avatar" alt="">
+      {% else %}
+        <span class="vl-card__avatar vl-card__avatar--placeholder"></span>
+      {% endif %}
+      <span class="vl-user-row__text">
+        <strong>{{ u.profile.display_handle }}</strong>
+        <small>@{{ u.username }}</small>
+      </span>
+    </a>
+  {% endfor %}
+</div>
+{% endblock %}

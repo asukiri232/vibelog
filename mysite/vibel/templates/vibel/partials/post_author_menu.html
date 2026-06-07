@@ -1,0 +1,34 @@
+{% if user.is_authenticated and post.author_id == user.id %}
+<details class="vl-card__menu">
+  <summary class="vl-card__menu-toggle" aria-label="Меню поста">⋯</summary>
+  <div class="vl-card__menu-panel">
+    <a href="{% url 'vibel:post_edit' post_id=post.id %}" class="vl-card__menu-item">Редактировать</a>
+    <form method="post" action="{% url 'vibel:post_delete' post_id=post.id %}" class="vl-card__menu-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="button" class="vl-card__menu-item vl-card__menu-item--danger"
+        data-vl-confirm-trigger
+        data-vl-confirm-title="Удалить пост?"
+        data-vl-confirm-text="Пост исчезнет у всех. Это нельзя отменить."
+        data-vl-confirm-ok="Удалить"
+      >Удалить</button>
+    </form>
+  </div>
+</details>
+{% elif user.is_authenticated %}
+<details class="vl-card__menu">
+  <summary class="vl-card__menu-toggle" aria-label="Меню поста">⋯</summary>
+  <div class="vl-card__menu-panel">
+    <form method="post" action="{% url 'vibel:hide_post_toggle' post_id=post.id %}" class="vl-card__menu-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      <button type="submit" class="vl-card__menu-item">Скрыть из ленты</button>
+    </form>
+    <button type="button" class="vl-card__menu-item"
+      data-vl-report-trigger
+      data-vl-report-type="post"
+      data-vl-report-id="{{ post.id }}"
+    >Пожаловаться</button>
+  </div>
+</details>
+{% endif %}
