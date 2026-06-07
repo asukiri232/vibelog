@@ -18,8 +18,16 @@ try:
 except ImportError:  # локальная разработка без полного requirements.txt
     dj_database_url = None
 
+try:
+    import whitenoise  # noqa: F401
+    _has_whitenoise = True
+except ImportError:
+    _has_whitenoise = False
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+_IS_VERCEL = bool(os.environ.get('VERCEL'))
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -54,7 +62,7 @@ for _vercel_host in ('.vercel.app',):
     if _vercel_host not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(_vercel_host)
 
-if os.environ.get('VERCEL'):
+if _IS_VERCEL:
     DEBUG = _env_bool('DJANGO_DEBUG', False)
 
 if DEBUG:
@@ -87,7 +95,11 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+]
+# На Vercel статику отдаёт CDN; WhiteNoise только для Beget/локального prod.
+if _has_whitenoise and not _IS_VERCEL:
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
+MIDDLEWARE += [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -174,9 +186,11 @@ LOCALE_PATHS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-if _env_bool('BEGET_DEPLOY', False) or not DEBUG:
+if _IS_VERCEL:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+elif _has_whitenoise and (_env_bool('BEGET_DEPLOY', False) or not DEBUG):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
