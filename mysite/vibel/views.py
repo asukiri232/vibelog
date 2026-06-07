@@ -237,9 +237,9 @@ def profile_edit(request, username):
         return HttpResponseForbidden()
     profile, _ = Profile.objects.get_or_create(user=user)
     if request.method == 'POST':
-        form = ProfileEditForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            try:
+        try:
+            form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+            if form.is_valid():
                 import os
 
                 if os.environ.get('VERCEL'):
@@ -247,20 +247,31 @@ def profile_edit(request, username):
 
                     ensure_media_dirs()
                 form.save()
-            except (DatabaseError, OSError, PermissionError, IOError, DjangoValidationError):
-                logger.warning('profile_edit save failed', exc_info=True)
-                add_form_write_error(form, WRITE_ERROR_MSG)
-            except Exception:
-                logger.exception('profile_edit unexpected error')
-                add_form_write_error(form, WRITE_ERROR_MSG)
-            else:
                 return redirect('vibel:profile', username=user.username)
+        except (DatabaseError, OSError, PermissionError, IOError, DjangoValidationError):
+            logger.warning('profile_edit save failed', exc_info=True)
+            form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+            add_form_write_error(form, WRITE_ERROR_MSG)
+        except Exception:
+            logger.exception('profile_edit unexpected error')
+            form = ProfileEditForm(request.POST, request.FILES, instance=profile)
+            add_form_write_error(
+                form,
+                'Не удалось сохранить профиль. Уменьшите фото (до 3 МБ каждое) и попробуйте снова.',
+            )
     else:
         form = ProfileEditForm(instance=profile)
+    from django.conf import settings as dj_settings
+
+    max_b = int(getattr(dj_settings, 'MAX_IMAGE_UPLOAD_BYTES', 8 * 1024 * 1024))
     return render(
         request,
         'vibel/profile_edit.html',
-        {'form': form, 'profile': profile},
+        {
+            'form': form,
+            'profile': profile,
+            'max_upload_mb': max(1, max_b // (1024 * 1024)),
+        },
     )
 
 

@@ -1,5 +1,6 @@
-# Минимум для Vercel (лимит bundle ~245 МБ). Локально: pip install -r requirements-local.txt
+# Vercel bundle. Локально дополнительно: pip install -r requirements-local.txt (gunicorn)
 Django>=4.2,<5
+Pillow>=10.0
 whitenoise>=6.6
 dj-database-url>=2.1
 psycopg2-binary>=2.9

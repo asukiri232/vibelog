@@ -250,6 +250,9 @@ if _IS_VERCEL:
         if _origin not in CSRF_TRUSTED_ORIGINS:
             CSRF_TRUSTED_ORIGINS.append(_origin)
 
+# На Vercel лимит тела запроса ~4.5 МБ — не принимаем файлы больше 3 МБ.
+MAX_IMAGE_UPLOAD_BYTES = 3 * 1024 * 1024 if _IS_VERCEL else 8 * 1024 * 1024
+
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'

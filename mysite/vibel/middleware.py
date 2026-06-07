@@ -36,6 +36,7 @@ class SafeWriteErrorMiddleware:
         except Exception as exc:
             if not os.environ.get('VERCEL'):
                 raise
+            from django.core.exceptions import RequestDataTooBig, SuspiciousOperation
             from django.db import DatabaseError
 
             write_errors = (
@@ -44,6 +45,8 @@ class SafeWriteErrorMiddleware:
                 PermissionError,
                 IOError,
                 ValidationError,
+                RequestDataTooBig,
+                SuspiciousOperation,
             )
             if request.method not in ('POST', 'PUT', 'PATCH', 'DELETE'):
                 raise

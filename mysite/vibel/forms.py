@@ -1,4 +1,5 @@
 from django import forms
+from django.conf import settings
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm as AuthPasswordChangeForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
@@ -6,7 +7,12 @@ from django.core.exceptions import ValidationError
 from .models import Comment, Post, Profile
 from .utils import optimize_uploaded_image
 
-MAX_IMAGE_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 МБ
+
+def _max_image_bytes():
+    return int(getattr(settings, 'MAX_IMAGE_UPLOAD_BYTES', 8 * 1024 * 1024))
+
+
+MAX_IMAGE_UPLOAD_BYTES = _max_image_bytes()
 MAX_POST_IMAGES = 8
 MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 МБ
 
@@ -159,8 +165,10 @@ class ProfileEditForm(forms.ModelForm):
         upload = self.files.get(name) if self.files else None
         if not upload:
             return None
-        if upload.size > MAX_IMAGE_UPLOAD_BYTES:
-            raise ValidationError('Файл больше 8 МБ.')
+        max_b = _max_image_bytes()
+        if upload.size > max_b:
+            mb = max(1, max_b // (1024 * 1024))
+            raise ValidationError(f'Файл больше {mb} МБ.')
         return optimize_uploaded_image(upload)
 
     def clean_avatar(self):

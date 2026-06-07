@@ -9,7 +9,7 @@
       <label class="vl-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
       {{ field }}
       {% if field.field.widget.input_type == 'file' %}
-        <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" data-vl-default-hint="{% if field.name == 'cover' %}Широкое горизонтальное фото для шапки. Нажмите «Выбрать файл».{% else %}Новый аватар или оставьте как есть — «Выбрать файл».{% endif %}" aria-live="polite">{% if field.name == 'cover' %}Широкое горизонтальное фото для шапки. Нажмите «Выбрать файл».{% else %}Новый аватар или оставьте как есть — «Выбрать файл».{% endif %}</p>
+        <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" data-vl-default-hint="{% if field.name == 'cover' %}Широкое фото для шапки, до {{ max_upload_mb }} МБ.{% else %}Новый аватар или оставьте как есть — до {{ max_upload_mb }} МБ.{% endif %}" aria-live="polite">{% if field.name == 'cover' %}Широкое фото для шапки, до {{ max_upload_mb }} МБ.{% else %}Новый аватар или оставьте как есть — до {{ max_upload_mb }} МБ.{% endif %}</p>
       {% endif %}
       {% if field.errors %}<span class="vl-error">{{ field.errors.0 }}</span>{% endif %}
     </div>
@@ -364,6 +364,93 @@
         }
       });
     });
+
+    var MAX_BYTES = {{ max_upload_mb }} * 1024 * 1024;
+    var MAX_TOTAL = Math.floor(MAX_BYTES * 1.4);
+
+    function compressImageFile(file, maxEdge, quality, callback) {
+      if (!file || !file.type.match(/^image\//)) {
+        callback(file);
+        return;
+      }
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      img.onload = function () {
+        URL.revokeObjectURL(url);
+        var w = img.naturalWidth;
+        var h = img.naturalHeight;
+        var scale = 1;
+        if (Math.max(w, h) > maxEdge) {
+          scale = maxEdge / Math.max(w, h);
+        }
+        var nw = Math.max(1, Math.round(w * scale));
+        var nh = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = nw;
+        canvas.height = nh;
+        canvas.getContext('2d').drawImage(img, 0, 0, nw, nh);
+        canvas.toBlob(function (blob) {
+          if (!blob) {
+            callback(file);
+            return;
+          }
+          var ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+          if (ext === 'png' && blob.size > MAX_BYTES * 0.85) {
+            canvas.toBlob(function (jpg) {
+              callback(jpg ? new File([jpg], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }) : file);
+            }, 'image/jpeg', quality);
+            return;
+          }
+          callback(new File([blob], file.name, { type: blob.type || file.type }));
+        }, file.type === 'image/png' ? 'image/png' : 'image/jpeg', quality);
+      };
+      img.onerror = function () {
+        URL.revokeObjectURL(url);
+        callback(file);
+      };
+      img.src = url;
+    }
+
+    var coverInput = document.querySelector('input.vl-file-input[name="cover"]');
+    if (coverInput) {
+      coverInput.addEventListener('change', function () {
+        var f = coverInput.files && coverInput.files[0];
+        if (!f) return;
+        compressImageFile(f, 1920, 0.82, function (out) {
+          if (!out || out === f) return;
+          var dt = new DataTransfer();
+          dt.items.add(out);
+          coverInput.files = dt.files;
+          var hint = document.querySelector('[data-vl-file-hint-for="' + coverInput.id + '"]');
+          if (hint) hint.textContent = 'Обложка сжата: ' + out.name;
+        });
+      });
+    }
+
+    var profileForm = document.getElementById('vl-profile-edit-form');
+    if (profileForm) {
+      profileForm.addEventListener('submit', function (e) {
+        var total = 0;
+        var tooBig = [];
+        profileForm.querySelectorAll('input[type="file"]').forEach(function (inp) {
+          if (!inp.files) return;
+          for (var i = 0; i < inp.files.length; i++) {
+            var f = inp.files[i];
+            total += f.size;
+            if (f.size > MAX_BYTES) tooBig.push(f.name);
+          }
+        });
+        if (tooBig.length) {
+          e.preventDefault();
+          window.vlShowToast && window.vlShowToast('Файл слишком большой (макс. {{ max_upload_mb }} МБ): ' + tooBig.join(', '), 'error');
+          return;
+        }
+        if (total > MAX_TOTAL) {
+          e.preventDefault();
+          window.vlShowToast && window.vlShowToast('Суммарный размер фото слишком большой. Выберите файлы поменьше.', 'error');
+        }
+      });
+    }
   })();
 </script>
 {% endblock %}
