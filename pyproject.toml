@@ -8,4 +8,4 @@ dependencies = []
 entrypoint = "mysite.wsgi:application"
 
 [tool.vercel.scripts]
-build = "python manage.py migrate --noinput && python manage.py seed_vibel"
+build = "python manage.py migrate --noinput"
