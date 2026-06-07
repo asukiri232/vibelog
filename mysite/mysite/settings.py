@@ -143,12 +143,15 @@ _db_url = os.environ.get('DATABASE_URL', '').strip()
 VERCEL_EPHEMERAL_DB = _IS_VERCEL and not _db_url
 
 if _db_url and dj_database_url is not None:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=_db_url,
-            conn_max_age=0 if _IS_VERCEL else 600,
-        )
-    }
+    _db_cfg = dj_database_url.config(
+        default=_db_url,
+        conn_max_age=0 if _IS_VERCEL else 600,
+    )
+    if _IS_VERCEL:
+        _db_cfg.setdefault('OPTIONS', {})
+        _db_cfg['OPTIONS'].setdefault('sslmode', 'require')
+        _db_cfg['CONN_HEALTH_CHECKS'] = True
+    DATABASES = {'default': _db_cfg}
 elif _IS_VERCEL:
     # На Vercel файловая система проекта read-only — пишем в /tmp.
     DATABASES = {

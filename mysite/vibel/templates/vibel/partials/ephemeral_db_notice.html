@@ -1,0 +1,16 @@
+{% if vercel_ephemeral_db %}
+<div class="vl-ephemeral-notice" role="alert">
+  <p class="vl-ephemeral-notice__title">Аккаунт на этом демо не сохраняется</p>
+  <p class="vl-ephemeral-notice__text">
+    Vercel без базы данных стирает пользователей и посты через несколько минут — поэтому вас «выкидывает» и старый вход не работает.
+    Чтобы аккаунт жил постоянно, один раз подключите бесплатную БД <strong>Neon</strong> (5 минут):
+  </p>
+  <ol class="vl-ephemeral-notice__steps">
+    <li><a href="https://neon.tech" target="_blank" rel="noopener">neon.tech</a> → регистрация → <strong>New Project</strong></li>
+    <li>Скопируйте <strong>Connection string</strong> (PostgreSQL)</li>
+    <li><a href="https://vercel.com" target="_blank" rel="noopener">vercel.com</a> → проект VibeLog → <strong>Settings → Environment Variables</strong></li>
+    <li>Добавьте <code>DATABASE_URL</code> = строка из Neon, <code>DJANGO_DEBUG</code> = <code>false</code></li>
+    <li><strong>Deployments → Redeploy</strong>, затем зарегистрируйтесь ещё раз — этот аккаунт уже не пропадёт</li>
+  </ol>
+</div>
+{% endif %}

@@ -515,6 +515,14 @@ def register(request):
                 )
             if user is not None:
                 login(request, user)
+                from django.conf import settings as dj_settings
+
+                if getattr(dj_settings, 'VERCEL_EPHEMERAL_DB', False):
+                    messages.warning(
+                        request,
+                        'Аккаунт создан, но на демо-Vercel без Neon он пропадёт через несколько минут. '
+                        'Подключите DATABASE_URL (Neon) — инструкция на странице регистрации.',
+                    )
                 return redirect('vibel:feed')
     else:
         form = RegisterForm()

@@ -2,6 +2,7 @@
 {% block title %}Регистрация — VibeLog{% endblock %}
 {% block content %}
 <div class="vl-auth-layout">
+  {% include 'vibel/partials/ephemeral_db_notice.html' %}
   <form method="post" class="vl-form vl-form--narrow vl-auth-layout__form" action="{% url 'vibel:register' %}">
     <h1 class="vl-form__title">Регистрация</h1>
     {% csrf_token %}

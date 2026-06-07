@@ -5612,3 +5612,53 @@ body.vl-dm-reply-active .vl-dm-msg__edit-form {
   display: none !important;
 }
 
+.vl-ephemeral-notice {
+  max-width: 28rem;
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(180, 120, 0, 0.35);
+  background: #fff8e6;
+  color: #3d2e00;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+[data-theme='dark'] .vl-ephemeral-notice {
+  background: rgba(255, 200, 80, 0.1);
+  border-color: rgba(255, 200, 80, 0.25);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.vl-ephemeral-notice__title {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.vl-ephemeral-notice__text {
+  margin: 0 0 0.65rem;
+}
+
+.vl-ephemeral-notice__steps {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.vl-ephemeral-notice__steps li {
+  margin-bottom: 0.35rem;
+}
+
+.vl-ephemeral-notice a {
+  color: #0c3d2e;
+  font-weight: 600;
+}
+
+[data-theme='dark'] .vl-ephemeral-notice a {
+  color: #8fd4b8;
+}
+
+.vl-ephemeral-notice code {
+  font-size: 0.82em;
+}
+

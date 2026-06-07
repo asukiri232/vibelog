@@ -22,7 +22,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'vibel/css/style.css' %}?v=61">
+  <link rel="stylesheet" href="{% static 'vibel/css/style.css' %}?v=62">
   <link rel="manifest" href="{% static 'vibel/manifest.webmanifest' %}">
 </head>
 <body class="vl-body{% if user.is_authenticated %} vl-body--rail{% endif %}">
@@ -278,7 +278,7 @@
 
   {% if vercel_ephemeral_db %}
   <div class="vl-ephemeral-bar" id="vl-ephemeral-bar" role="status">
-    <p class="vl-ephemeral-bar__text">Демо на Vercel: аккаунт и посты могут сбрасываться после простоя. Для постоянного входа подключите Neon — инструкция в файле <code>VERCEL.md</code>. Временный демо: <strong>demo_ru_01</strong> / <strong>DemoSeed2026!</strong></p>
+    <p class="vl-ephemeral-bar__text"><strong>Без Neon аккаунт пропадает через несколько минут.</strong> Подключите бесплатную БД: <a href="https://neon.tech" target="_blank" rel="noopener">neon.tech</a> → Connection string → Vercel → Settings → Environment Variables → <code>DATABASE_URL</code> → Redeploy. Подробно на странице <a href="{% url 'vibel:register' %}">Регистрация</a>.</p>
     <button type="button" class="vl-ephemeral-bar__close" id="vl-ephemeral-bar-close" aria-label="Скрыть уведомление">×</button>
   </div>
   <script>
