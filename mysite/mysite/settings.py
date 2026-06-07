@@ -47,6 +47,16 @@ _render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '').strip()
 if _render_host and _render_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_render_host)
 
+_vercel_url = os.environ.get('VERCEL_URL', '').strip()
+if _vercel_url and _vercel_url not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_vercel_url)
+for _vercel_host in ('.vercel.app',):
+    if _vercel_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_vercel_host)
+
+if os.environ.get('VERCEL'):
+    DEBUG = _env_bool('DJANGO_DEBUG', False)
+
 if DEBUG:
     for _tunnel_host in ('.loca.lt', '.trycloudflare.com', '.ngrok-free.app'):
         if _tunnel_host not in ALLOWED_HOSTS:
@@ -59,6 +69,8 @@ for _origin in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(','):
         CSRF_TRUSTED_ORIGINS.append(_origin)
 if _render_host:
     CSRF_TRUSTED_ORIGINS.append(f'https://{_render_host}')
+if _vercel_url:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{_vercel_url}')
 
 
 # Application definition

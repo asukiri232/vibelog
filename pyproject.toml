@@ -1,0 +1,11 @@
+[project]
+name = "vibelog"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.vercel]
+entrypoint = "mysite.wsgi:application"
+
+[tool.vercel.scripts]
+build = "python manage.py migrate --noinput && python manage.py seed_vibel"
