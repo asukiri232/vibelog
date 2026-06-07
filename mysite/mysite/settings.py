@@ -140,11 +140,13 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 _db_url = os.environ.get('DATABASE_URL', '').strip()
+VERCEL_EPHEMERAL_DB = _IS_VERCEL and not _db_url
+
 if _db_url and dj_database_url is not None:
     DATABASES = {
         'default': dj_database_url.config(
             default=_db_url,
-            conn_max_age=600,
+            conn_max_age=0 if _IS_VERCEL else 600,
         )
     }
 elif _IS_VERCEL:
@@ -232,6 +234,21 @@ if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+
+if _IS_VERCEL:
+    # Без внешней БД данные в /tmp живут только до cold start.
+    SESSION_COOKIE_AGE = 60 * 60 * 24 * 14  # 14 дней
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    if VERCEL_EPHEMERAL_DB:
+        # Сессия в подписанной cookie — меньше зависимость от sqlite в /tmp.
+        SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+    for _host in ALLOWED_HOSTS:
+        if _host.startswith('.'):
+            continue
+        _origin = f'https://{_host}'
+        if _origin not in CSRF_TRUSTED_ORIGINS:
+            CSRF_TRUSTED_ORIGINS.append(_origin)
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

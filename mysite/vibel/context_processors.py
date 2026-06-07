@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from .forms import REPORT_REASON_CHOICES
 from .models import DirectMessage, Notification, Profile
 
@@ -19,4 +21,5 @@ def header_state(request):
         'unread_dm_count': unread_dm_count,
         'nav_profile': nav_profile,
         'report_reason_choices': REPORT_REASON_CHOICES,
+        'vercel_ephemeral_db': getattr(settings, 'VERCEL_EPHEMERAL_DB', False),
     }
