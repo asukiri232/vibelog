@@ -77,6 +77,8 @@ pip install -r requirements-local.txt
 
 Не коммитьте папку `mysite/media/` — она в `.gitignore` и `.vercelignore`.
 
+В `pyproject.toml` и `requirements.txt` должны быть одни и те же зависимости — иначе Vercel может не установить Django (пустой `dependencies = []`).
+
 ---
 
 ## Медиа (фото в постах)

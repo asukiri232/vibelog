@@ -15,9 +15,12 @@ class VercelBootstrapMiddleware:
 
     def __call__(self, request):
         if os.environ.get('VERCEL'):
-            from vercel_bootstrap import ensure_vercel_runtime
+            try:
+                from vercel_bootstrap import ensure_vercel_runtime
 
-            ensure_vercel_runtime()
+                ensure_vercel_runtime()
+            except Exception:
+                logger.exception('Vercel bootstrap failed in middleware')
         return self.get_response(request)
 
 

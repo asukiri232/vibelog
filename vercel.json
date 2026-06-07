@@ -1,4 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "pip install --no-cache-dir -r requirements.txt",
   "buildCommand": "python scripts/vercel_build.py"
 }

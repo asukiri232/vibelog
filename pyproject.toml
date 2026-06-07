@@ -2,7 +2,12 @@
 name = "vibelog"
 version = "1.0.0"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "Django>=4.2,<5",
+    "whitenoise>=6.6",
+    "dj-database-url>=2.1",
+    "psycopg2-binary>=2.9",
+]
 
 [tool.vercel]
 entrypoint = "mysite.wsgi:application"

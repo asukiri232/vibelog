@@ -16,6 +16,11 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
 if os.environ.get('VERCEL'):
-    from vercel_bootstrap import ensure_vercel_runtime
+    try:
+        from vercel_bootstrap import ensure_vercel_runtime
 
-    ensure_vercel_runtime()
+        ensure_vercel_runtime()
+    except Exception:
+        import logging
+
+        logging.getLogger(__name__).exception('Vercel bootstrap failed at import')
