@@ -40,17 +40,6 @@ class StyledAuthenticationForm(AuthenticationForm):
         self.fields['password'].widget.attrs['class'] = 'vl-input'
         self.fields['password'].widget.attrs['autocomplete'] = 'current-password'
 
-    def get_invalid_login_error(self):
-        err = super().get_invalid_login_error()
-        if getattr(settings, 'VERCEL_EPHEMERAL_DB', False):
-            return ValidationError(
-                'Неверный логин или пароль. На Vercel без постоянной БД старый аккаунт мог стереться — '
-                'зарегистрируйтесь заново или перенесите сайт на Beget / Supabase (см. выше).',
-                code='invalid_login',
-            )
-        return err
-
-
 class RegisterForm(forms.Form):
     name = forms.CharField(
         label='Имя',

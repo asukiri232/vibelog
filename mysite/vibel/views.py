@@ -515,14 +515,6 @@ def register(request):
                 )
             if user is not None:
                 login(request, user)
-                from django.conf import settings as dj_settings
-
-                if getattr(dj_settings, 'VERCEL_EPHEMERAL_DB', False):
-                    messages.warning(
-                        request,
-                        'Аккаунт создан, но на Vercel без постоянной БД он пропадёт через несколько минут. '
-                        'Для сохранения — Beget или Supabase (инструкция на странице регистрации).',
-                    )
                 return redirect('vibel:feed')
     else:
         form = RegisterForm()

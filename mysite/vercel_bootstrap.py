@@ -43,7 +43,7 @@ def seed_minimal_demo_if_empty() -> None:
     )
     profile = Profile.objects.get(user=user)
     profile.display_name = 'Демо VibeLog'
-    profile.bio = 'Тестовый аккаунт. Для постоянного входа подключите Neon (см. VERCEL.md).'
+    profile.bio = 'Тестовый аккаунт VibeLog.'
     profile.save(update_fields=['display_name', 'bio'])
 
     category = Category.objects.order_by('order').first()

@@ -276,25 +276,6 @@
   </div>
   {% endif %}
 
-  {% if vercel_ephemeral_db %}
-  <div class="vl-ephemeral-bar" id="vl-ephemeral-bar" role="status">
-    <p class="vl-ephemeral-bar__text"><strong>На Vercel аккаунт сбрасывается</strong> — это нормально без постоянной БД. Для диплома лучше <strong>Beget</strong> (<code>c99631u8.beget.tech</code>) или Supabase + <code>DATABASE_URL</code>. Варианты на <a href="{% url 'vibel:register' %}">странице регистрации</a>.</p>
-    <button type="button" class="vl-ephemeral-bar__close" id="vl-ephemeral-bar-close" aria-label="Скрыть уведомление">×</button>
-  </div>
-  <script>
-    (function () {
-      var bar = document.getElementById('vl-ephemeral-bar');
-      var btn = document.getElementById('vl-ephemeral-bar-close');
-      if (!bar || !btn) return;
-      try { if (sessionStorage.getItem('vl-ephemeral-hide')) bar.hidden = true; } catch (e) {}
-      btn.addEventListener('click', function () {
-        bar.hidden = true;
-        try { sessionStorage.setItem('vl-ephemeral-hide', '1'); } catch (e) {}
-      });
-    })();
-  </script>
-  {% endif %}
-
   {% if messages %}
     <ul class="vl-messages" id="vl-django-messages" hidden>
       {% for message in messages %}
