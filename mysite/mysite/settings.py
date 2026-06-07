@@ -96,8 +96,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 ]
-# На Vercel статику отдаёт CDN; WhiteNoise только для Beget/локального prod.
-if _has_whitenoise and not _IS_VERCEL:
+if _has_whitenoise:
     MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
 MIDDLEWARE += [
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -190,6 +189,10 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 if _IS_VERCEL:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+    if _has_whitenoise:
+        # Исходники vibel/static/ уже в репозитории — отдаём без collectstatic на CDN.
+        WHITENOISE_USE_FINDERS = True
+        WHITENOISE_AUTOREFRESH = False
 elif _has_whitenoise and (_env_bool('BEGET_DEPLOY', False) or not DEBUG):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 else:
