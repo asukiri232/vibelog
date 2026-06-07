@@ -29,7 +29,7 @@ fi
 # shellcheck disable=SC1091
 source venv/bin/activate
 pip install -U pip
-pip install -r source/requirements.txt
+pip install -r source/requirements-local.txt
 
 cp -f source/deploy/beget/passenger_wsgi.py "$SITE_HOME/passenger_wsgi.py"
 cp -f source/deploy/beget/htaccess "$SITE_HOME/.htaccess"

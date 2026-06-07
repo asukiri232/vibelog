@@ -67,6 +67,18 @@ Preview-ссылки (`vibelog-xxxxx.vercel.app`) могут давать **401*
 
 ---
 
+## Размер деплоя (лимит 245 МБ)
+
+В `requirements.txt` только пакеты для Vercel (без Pillow и gunicorn). Локально:
+
+```powershell
+pip install -r requirements-local.txt
+```
+
+Не коммитьте папку `mysite/media/` — она в `.gitignore` и `.vercelignore`.
+
+---
+
 ## Медиа (фото в постах)
 
 Файлы по-прежнему в `/tmp` — после долгого простоя картинки могут пропасть. Для диплома обычно достаточно; для продакшена нужен S3/Cloudinary.

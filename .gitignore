@@ -8,6 +8,7 @@ __pycache__/
 !.env.example
 staticfiles/
 public/static/
+mysite/media/
 *.log
 .DS_Store
 Thumbs.db

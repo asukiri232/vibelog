@@ -1,0 +1,24 @@
+# Локальные и тяжёлые файлы — не в serverless bundle
+.venv/
+.idea/
+__pycache__/
+*.pyc
+.env
+.env.*
+
+# Медиа и БД (на Vercel — /tmp)
+mysite/media/
+mysite/db.sqlite3
+*.sqlite3
+
+# Дубли статики (на Vercel — WhiteNoise finders)
+mysite/staticfiles/
+public/static/
+
+# Тесты и деплой на другие хосты
+mysite/vibel/tests/
+deploy/
+render.yaml
+build.sh
+BEGET.md
+DEPLOY.md
