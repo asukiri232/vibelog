@@ -1,3 +1,4 @@
+import logging
 from datetime import timedelta
 
 from django.contrib import messages
@@ -39,6 +40,7 @@ from .models import (
     UserBlock,
 )
 from .services import create_notification, notify_mentions
+from .errors import WRITE_ERROR_MSG, add_form_write_error, respond_write_error
 from .utils import blocked_user_ids, optimize_uploaded_image
 from .views_extended import (
     DM_EDIT_WINDOW,
@@ -56,6 +58,8 @@ from .views_extended import (
     save_post_with_form,
     settings_page,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def _wants_json_response(request):
@@ -152,12 +156,26 @@ def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            post = save_post_with_form(form, request.user, request.FILES)
-            if post.visibility == Post.VIS_DRAFT:
-                messages.success(request, 'Черновик сохранён.')
+            try:
+                post = save_post_with_form(form, request.user, request.FILES)
+            except (DatabaseError, OSError, PermissionError, IOError, DjangoValidationError):
+                logger.warning('post_create save failed', exc_info=True)
+                add_form_write_error(
+                    form,
+                    'Не удалось опубликовать пост. Попробуйте без файлов или повторите позже.',
+                )
+            except Exception:
+                logger.exception('post_create unexpected error')
+                add_form_write_error(
+                    form,
+                    'Не удалось опубликовать пост. Попробуйте ещё раз.',
+                )
             else:
-                messages.success(request, 'Пост опубликован.')
-            return redirect('vibel:feed')
+                if post.visibility == Post.VIS_DRAFT:
+                    messages.success(request, 'Черновик сохранён.')
+                else:
+                    messages.success(request, 'Пост опубликован.')
+                return redirect('vibel:feed')
     else:
         form = PostForm()
     return render(request, 'vibel/post_form.html', {'form': form})
@@ -221,8 +239,12 @@ def profile_edit(request, username):
     if request.method == 'POST':
         form = ProfileEditForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            form.save()
-            return redirect('vibel:profile', username=user.username)
+            try:
+                form.save()
+            except (DatabaseError, OSError, PermissionError, IOError):
+                add_form_write_error(form, WRITE_ERROR_MSG)
+            else:
+                return redirect('vibel:profile', username=user.username)
     else:
         form = ProfileEditForm(instance=profile)
     return render(
@@ -244,25 +266,29 @@ def follow_toggle(request, username):
     ).exists():
         messages.error(request, 'Действие недоступно из-за блокировки.')
         return redirect('vibel:profile', username=username)
-    rel = Follow.objects.filter(follower=request.user, following=target)
-    if rel.exists():
-        rel.delete()
-        messages.info(request, f'Вы отписались от @{target.username}')
-    else:
-        Follow.objects.create(follower=request.user, following=target)
-        create_notification(
-            recipient=target,
-            actor=request.user,
-            event_type=Notification.TYPE_FOLLOW,
-            text=f'{request.user.username} подписался(ась) на вас',
-        )
-        if Follow.objects.filter(follower=target, following=request.user).exists():
-            messages.success(
-                request,
-                f'Вы подписались на @{target.username}. Вы друзья — можно писать в разделе «Сообщения».',
-            )
+    try:
+        rel = Follow.objects.filter(follower=request.user, following=target)
+        if rel.exists():
+            rel.delete()
+            messages.info(request, f'Вы отписались от @{target.username}')
         else:
-            messages.success(request, f'Вы подписались на @{target.username}')
+            Follow.objects.create(follower=request.user, following=target)
+            create_notification(
+                recipient=target,
+                actor=request.user,
+                event_type=Notification.TYPE_FOLLOW,
+                text=f'{request.user.username} подписался(ась) на вас',
+            )
+            if Follow.objects.filter(follower=target, following=request.user).exists():
+                messages.success(
+                    request,
+                    f'Вы подписались на @{target.username}. Вы друзья — можно писать в разделе «Сообщения».',
+                )
+            else:
+                messages.success(request, f'Вы подписались на @{target.username}')
+    except (DatabaseError, OSError, PermissionError, IOError):
+        messages.error(request, WRITE_ERROR_MSG)
+        return redirect('vibel:profile', username=username)
     next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
     if next_url:
         return redirect(next_url)
@@ -273,26 +299,31 @@ def follow_toggle(request, username):
 @require_POST
 def like_toggle(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    like, created = Like.objects.get_or_create(user=request.user, post=post)
-    if not created:
-        like.delete()
-        Notification.objects.filter(
-            recipient=post.author,
-            actor=request.user,
-            post=post,
-            event_type=Notification.TYPE_LIKE,
-        ).delete()
-    elif post.author_id != request.user.id:
-        create_notification(
-            recipient=post.author,
-            actor=request.user,
-            post=post,
-            event_type=Notification.TYPE_LIKE,
-            text=f'{request.user.username} поставил(а) лайк вашему посту',
-        )
-    likes_count = Like.objects.filter(post=post).count()
-    Post.objects.filter(pk=post.pk).update(likes_count=likes_count)
-    liked = created
+    try:
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        if not created:
+            like.delete()
+            Notification.objects.filter(
+                recipient=post.author,
+                actor=request.user,
+                post=post,
+                event_type=Notification.TYPE_LIKE,
+            ).delete()
+        elif post.author_id != request.user.id:
+            create_notification(
+                recipient=post.author,
+                actor=request.user,
+                post=post,
+                event_type=Notification.TYPE_LIKE,
+                text=f'{request.user.username} поставил(а) лайк вашему посту',
+            )
+        likes_count = Like.objects.filter(post=post).count()
+        Post.objects.filter(pk=post.pk).update(likes_count=likes_count)
+        liked = created
+    except (DatabaseError, OSError, PermissionError, IOError):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'ok': False, 'error': WRITE_ERROR_MSG}, status=500)
+        return respond_write_error(request)
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse(
@@ -355,10 +386,22 @@ def comment_create(request, post_id):
         if duplicate:
             comment = duplicate
         else:
-            comment = form.save(commit=False)
-            comment.author = request.user
-            comment.post = post
-            comment.save()
+            try:
+                comment = form.save(commit=False)
+                comment.author = request.user
+                comment.post = post
+                comment.save()
+            except (DatabaseError, OSError, PermissionError, IOError):
+                if _wants_json_response(request):
+                    return JsonResponse(
+                        {'ok': False, 'error': WRITE_ERROR_MSG},
+                        status=500,
+                    )
+                messages.error(request, WRITE_ERROR_MSG)
+                next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
+                if next_url:
+                    return HttpResponseRedirect(next_url, status=303)
+                return HttpResponseRedirect(reverse('vibel:feed'), status=303)
             if post.author_id != request.user.id:
                 create_notification(
                     recipient=post.author,
@@ -414,9 +457,15 @@ def comment_delete(request, post_id, comment_id):
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'ok': False, 'error': 'Нет прав'}, status=403)
         return HttpResponseForbidden()
-    if comment.image:
-        comment.image.delete(save=False)
-    comment.delete()
+    try:
+        if comment.image:
+            comment.image.delete(save=False)
+        comment.delete()
+    except (DatabaseError, OSError, PermissionError, IOError):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'ok': False, 'error': WRITE_ERROR_MSG}, status=500)
+        messages.error(request, WRITE_ERROR_MSG)
+        return redirect('vibel:post_detail', post_id=post_id)
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'ok': True, 'comment_id': comment_id})
     next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
@@ -438,7 +487,7 @@ def register(request):
                 msgs = getattr(exc, 'messages', None) or [str(exc)]
                 for msg in msgs:
                     form.add_error('password', msg)
-            except DatabaseError:
+            except (DatabaseError, OSError, PermissionError, IOError):
                 form.add_error(
                     None,
                     'Не удалось создать аккаунт. Попробуйте ещё раз через минуту.',
@@ -567,11 +616,16 @@ def saved_posts(request):
 @require_POST
 def save_toggle(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    saved, created = SavedPost.objects.get_or_create(user=request.user, post=post)
-    is_saved = created
-    if not created:
-        saved.delete()
-        is_saved = False
+    try:
+        saved, created = SavedPost.objects.get_or_create(user=request.user, post=post)
+        is_saved = created
+        if not created:
+            saved.delete()
+            is_saved = False
+    except (DatabaseError, OSError, PermissionError, IOError):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'ok': False, 'error': WRITE_ERROR_MSG}, status=500)
+        return respond_write_error(request)
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'ok': True, 'saved': is_saved})
     next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
@@ -674,19 +728,23 @@ def messages_thread(request, username):
                         )
                         .first()
                     )
-            dm = DirectMessage.objects.create(
-                sender=request.user,
-                recipient=other,
-                body=form.cleaned_data['text'],
-                reply_to=reply_to,
-            )
-            for i, f in enumerate(imgs):
-                DirectMessageAttachment.objects.create(
-                    message=dm,
-                    image=optimize_uploaded_image(f),
-                    sort_order=i,
+            try:
+                dm = DirectMessage.objects.create(
+                    sender=request.user,
+                    recipient=other,
+                    body=form.cleaned_data['text'],
+                    reply_to=reply_to,
                 )
-            return redirect('vibel:messages_thread', username=other.username)
+                for i, f in enumerate(imgs):
+                    DirectMessageAttachment.objects.create(
+                        message=dm,
+                        image=optimize_uploaded_image(f),
+                        sort_order=i,
+                    )
+            except (DatabaseError, OSError, PermissionError, IOError):
+                messages.error(request, WRITE_ERROR_MSG)
+            else:
+                return redirect('vibel:messages_thread', username=other.username)
     else:
         form = DirectMessageForm()
     thread_messages = (
@@ -750,23 +808,26 @@ def dm_message_delete(request, username, message_id):
         pk=message_id,
     )
     mode = (request.POST.get('mode') or 'me').strip().lower()
-    if mode == 'all':
-        if msg.sender_id != request.user.id:
-            messages.error(request, 'Удалить у всех может только отправитель.')
-        else:
-            msg.delete()
-            messages.success(request, 'Сообщение удалено у всех.')
-        return redirect('vibel:messages_thread', username=other.username)
+    try:
+        if mode == 'all':
+            if msg.sender_id != request.user.id:
+                messages.error(request, 'Удалить у всех может только отправитель.')
+            else:
+                msg.delete()
+                messages.success(request, 'Сообщение удалено у всех.')
+            return redirect('vibel:messages_thread', username=other.username)
 
-    now = timezone.now()
-    if msg.sender_id == request.user.id:
-        msg.hidden_for_sender_at = now
-        msg.save(update_fields=['hidden_for_sender_at'])
-    else:
-        msg.hidden_for_recipient_at = now
-        msg.save(update_fields=['hidden_for_recipient_at'])
-    msg.refresh_from_db()
-    if msg.hidden_for_sender_at and msg.hidden_for_recipient_at:
-        msg.delete()
-    messages.success(request, 'Сообщение скрыто у вас в этом чате.')
+        now = timezone.now()
+        if msg.sender_id == request.user.id:
+            msg.hidden_for_sender_at = now
+            msg.save(update_fields=['hidden_for_sender_at'])
+        else:
+            msg.hidden_for_recipient_at = now
+            msg.save(update_fields=['hidden_for_recipient_at'])
+        msg.refresh_from_db()
+        if msg.hidden_for_sender_at and msg.hidden_for_recipient_at:
+            msg.delete()
+        messages.success(request, 'Сообщение скрыто у вас в этом чате.')
+    except (DatabaseError, OSError, PermissionError, IOError):
+        messages.error(request, WRITE_ERROR_MSG)
     return redirect('vibel:messages_thread', username=other.username)

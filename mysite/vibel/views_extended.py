@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.db import DatabaseError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -13,6 +14,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 
+from .errors import WRITE_ERROR_MSG, respond_write_error
 from .forms import (
     MAX_IMAGE_UPLOAD_BYTES,
     AccountDeleteForm,
@@ -127,17 +129,25 @@ def settings_page(request):
         if action == 'password':
             password_form = PasswordChangeForm(user=request.user, data=request.POST)
             if password_form.is_valid():
-                password_form.save()
-                messages.success(request, 'Пароль изменён.')
-                return redirect('vibel:settings')
+                try:
+                    password_form.save()
+                except (DatabaseError, OSError, PermissionError, IOError):
+                    messages.error(request, WRITE_ERROR_MSG)
+                else:
+                    messages.success(request, 'Пароль изменён.')
+                    return redirect('vibel:settings')
         elif action == 'prefs':
             prefs_form = NotificationPrefsForm(
                 request.POST, instance=request.user.profile
             )
             if prefs_form.is_valid():
-                prefs_form.save()
-                messages.success(request, 'Настройки уведомлений сохранены.')
-                return redirect('vibel:settings')
+                try:
+                    prefs_form.save()
+                except (DatabaseError, OSError, PermissionError, IOError):
+                    messages.error(request, WRITE_ERROR_MSG)
+                else:
+                    messages.success(request, 'Настройки уведомлений сохранены.')
+                    return redirect('vibel:settings')
         elif action == 'delete':
             delete_form = AccountDeleteForm(request.POST)
             if delete_form.is_valid():
@@ -152,9 +162,13 @@ def settings_page(request):
                 ):
                     messages.error(request, 'Неверный пароль.')
                     return redirect('vibel:settings')
-                user = request.user
-                logout(request)
-                user.delete()
+                try:
+                    user = request.user
+                    logout(request)
+                    user.delete()
+                except (DatabaseError, OSError, PermissionError, IOError):
+                    messages.error(request, WRITE_ERROR_MSG)
+                    return redirect('vibel:settings')
                 return redirect('vibel:feed')
 
     return render(
@@ -174,11 +188,15 @@ def post_edit(request, post_id):
     if request.method == 'POST':
         form = PostEditForm(request.POST, instance=post)
         if form.is_valid():
-            form.save()
-            post.updated_at = timezone.now()
-            post.save(update_fields=['updated_at'])
-            messages.success(request, 'Пост обновлён.')
-            return redirect('vibel:post_detail', post_id=post.id)
+            try:
+                form.save()
+                post.updated_at = timezone.now()
+                post.save(update_fields=['updated_at'])
+            except (DatabaseError, OSError, PermissionError, IOError):
+                messages.error(request, WRITE_ERROR_MSG)
+            else:
+                messages.success(request, 'Пост обновлён.')
+                return redirect('vibel:post_detail', post_id=post.id)
     else:
         form = PostEditForm(instance=post)
     return render(
@@ -192,7 +210,10 @@ def post_edit(request, post_id):
 @require_POST
 def post_delete(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
-    post.delete()
+    try:
+        post.delete()
+    except (DatabaseError, OSError, PermissionError, IOError):
+        return respond_write_error(request)
     messages.success(request, 'Пост удалён.')
     next_url = (request.POST.get('next') or '').strip()
     post_detail_path = reverse('vibel:post_detail', kwargs={'post_id': post_id})
@@ -205,6 +226,13 @@ def post_delete(request, post_id):
 
 def save_post_with_form(form, user, file_storage=None):
     """Сохраняет пост: первое фото в Post.image + остальные в PostAttachment."""
+    import os
+
+    if os.environ.get('VERCEL'):
+        from vercel_bootstrap import ensure_media_dirs
+
+        ensure_media_dirs()
+
     file_storage = file_storage or form.files
     from .forms import files_getlist
 
@@ -230,16 +258,23 @@ def save_post_with_form(form, user, file_storage=None):
         post.image = optimize_uploaded_image(images[0])
         attachment_files = images[1:]
 
-    post.save()
-
-    for i, f in enumerate(attachment_files):
-        if f.size > MAX_IMAGE_UPLOAD_BYTES:
-            continue
-        PostAttachment.objects.create(
-            post=post,
-            image=optimize_uploaded_image(f),
-            sort_order=i,
-        )
+    try:
+        post.save()
+        for i, f in enumerate(attachment_files):
+            if f.size > MAX_IMAGE_UPLOAD_BYTES:
+                continue
+            PostAttachment.objects.create(
+                post=post,
+                image=optimize_uploaded_image(f),
+                sort_order=i,
+            )
+    except (DatabaseError, OSError, PermissionError, IOError):
+        if post.pk:
+            try:
+                post.delete()
+            except Exception:
+                pass
+        raise
     return post
 
 
@@ -247,13 +282,18 @@ def save_post_with_form(form, user, file_storage=None):
 @require_POST
 def hide_post_toggle(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    row = HiddenPost.objects.filter(user=request.user, post=post).first()
-    hidden = False
-    if row:
-        row.delete()
-    else:
-        HiddenPost.objects.create(user=request.user, post=post)
-        hidden = True
+    try:
+        row = HiddenPost.objects.filter(user=request.user, post=post).first()
+        hidden = False
+        if row:
+            row.delete()
+        else:
+            HiddenPost.objects.create(user=request.user, post=post)
+            hidden = True
+    except (DatabaseError, OSError, PermissionError, IOError):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'ok': False, 'error': WRITE_ERROR_MSG}, status=500)
+        return respond_write_error(request)
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'ok': True, 'hidden': hidden})
     return redirect(request.POST.get('next') or 'vibel:feed')
@@ -265,19 +305,23 @@ def block_toggle(request, username):
     target = get_object_or_404(User, username=username)
     if target == request.user:
         return redirect('vibel:profile', username=username)
-    rel = UserBlock.objects.filter(blocker=request.user, blocked=target)
-    blocked = False
-    if rel.exists():
-        rel.delete()
-        messages.info(request, f'@{target.username} разблокирован.')
-    else:
-        UserBlock.objects.create(blocker=request.user, blocked=target)
-        Follow.objects.filter(
-            Q(follower=request.user, following=target)
-            | Q(follower=target, following=request.user)
-        ).delete()
-        blocked = True
-        messages.success(request, f'@{target.username} заблокирован.')
+    try:
+        rel = UserBlock.objects.filter(blocker=request.user, blocked=target)
+        blocked = False
+        if rel.exists():
+            rel.delete()
+            messages.info(request, f'@{target.username} разблокирован.')
+        else:
+            UserBlock.objects.create(blocker=request.user, blocked=target)
+            Follow.objects.filter(
+                Q(follower=request.user, following=target)
+                | Q(follower=target, following=request.user)
+            ).delete()
+            blocked = True
+            messages.success(request, f'@{target.username} заблокирован.')
+    except (DatabaseError, OSError, PermissionError, IOError):
+        messages.error(request, WRITE_ERROR_MSG)
+        return redirect('vibel:profile', username=username)
     next_url = request.POST.get('next') or request.META.get('HTTP_REFERER')
     if next_url:
         return redirect(next_url)
@@ -312,12 +356,15 @@ def report_content(request):
     ):
         messages.error(request, 'Некорректный тип жалобы.')
         return redirect('vibel:feed')
-    ContentReport.objects.create(
-        reporter=request.user,
-        target_type=target_type,
-        target_id=tid,
-        reason=form.cleaned_data['reason'],
-    )
+    try:
+        ContentReport.objects.create(
+            reporter=request.user,
+            target_type=target_type,
+            target_id=tid,
+            reason=form.cleaned_data['reason'],
+        )
+    except (DatabaseError, OSError, PermissionError, IOError):
+        return respond_write_error(request)
     messages.success(request, 'Жалоба отправлена. Спасибо.')
     return redirect(request.POST.get('next') or 'vibel:feed')
 
@@ -325,7 +372,10 @@ def report_content(request):
 @login_required
 @require_POST
 def notification_mark_all_read(request):
-    request.user.notifications.filter(is_read=False).update(is_read=True)
+    try:
+        request.user.notifications.filter(is_read=False).update(is_read=True)
+    except (DatabaseError, OSError, PermissionError, IOError):
+        return respond_write_error(request, redirect_name='vibel:notifications')
     return redirect('vibel:notifications')
 
 
@@ -335,8 +385,13 @@ def notification_mark_read(request, notification_id):
     n = get_object_or_404(
         Notification, id=notification_id, recipient=request.user
     )
-    n.is_read = True
-    n.save(update_fields=['is_read'])
+    try:
+        n.is_read = True
+        n.save(update_fields=['is_read'])
+    except (DatabaseError, OSError, PermissionError, IOError):
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            return JsonResponse({'ok': False, 'error': WRITE_ERROR_MSG}, status=500)
+        return respond_write_error(request, redirect_name='vibel:notifications')
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({'ok': True})
     return redirect('vibel:notifications')
@@ -365,8 +420,12 @@ def dm_message_edit(request, username, message_id):
     if not body:
         messages.error(request, 'Текст не может быть пустым.')
         return redirect('vibel:messages_thread', username=other.username)
-    msg.body = body
-    msg.edited_at = timezone.now()
-    msg.save(update_fields=['body', 'edited_at'])
+    try:
+        msg.body = body
+        msg.edited_at = timezone.now()
+        msg.save(update_fields=['body', 'edited_at'])
+    except (DatabaseError, OSError, PermissionError, IOError):
+        messages.error(request, WRITE_ERROR_MSG)
+        return redirect('vibel:messages_thread', username=other.username)
     messages.success(request, 'Сообщение изменено.')
     return redirect('vibel:messages_thread', username=other.username)

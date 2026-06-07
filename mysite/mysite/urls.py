@@ -22,4 +22,9 @@ if os.environ.get('VERCEL'):
             serve,
             {'document_root': settings.STATIC_ROOT},
         ),
+        re_path(
+            r'^media/(?P<path>.*)$',
+            serve,
+            {'document_root': settings.MEDIA_ROOT},
+        ),
     ]

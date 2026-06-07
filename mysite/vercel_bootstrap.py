@@ -1,12 +1,25 @@
-"""Один раз при cold start на Vercel: миграции и базовые категории."""
+"""Подготовка Vercel: миграции, категории, папки для загрузок в /tmp."""
 import os
+from pathlib import Path
 
-_bootstrapped = False
+_db_ready = False
+_media_ready = False
+
+_MEDIA_SUBDIRS = (
+    'avatars',
+    'covers',
+    'posts',
+    'posts/extra',
+    'posts/video',
+    'comments',
+    'dm',
+    'messages',
+)
 
 
 def ensure_vercel_database() -> None:
-    global _bootstrapped
-    if _bootstrapped or not os.environ.get('VERCEL'):
+    global _db_ready
+    if _db_ready or not os.environ.get('VERCEL'):
         return
 
     from django.core.management import call_command
@@ -15,7 +28,28 @@ def ensure_vercel_database() -> None:
 
     from vibel.models import Category
 
-    if Category.objects.count() == 0:
-        call_command('seed_vibel', verbosity=0)
+    # Идемпотентно: категории нужны для формы нового поста.
+    call_command('seed_vibel', verbosity=0)
 
-    _bootstrapped = True
+    _db_ready = True
+
+
+def ensure_media_dirs() -> None:
+    global _media_ready
+    if not os.environ.get('VERCEL'):
+        return
+    if _media_ready:
+        return
+
+    from django.conf import settings
+
+    root = Path(settings.MEDIA_ROOT)
+    root.mkdir(parents=True, exist_ok=True)
+    for sub in _MEDIA_SUBDIRS:
+        (root / sub).mkdir(parents=True, exist_ok=True)
+    _media_ready = True
+
+
+def ensure_vercel_runtime() -> None:
+    ensure_vercel_database()
+    ensure_media_dirs()

@@ -93,7 +93,13 @@ INSTALLED_APPS = [
     'vibel',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE = []
+if _IS_VERCEL:
+    MIDDLEWARE += [
+        'vibel.middleware.SafeWriteErrorMiddleware',
+        'vibel.middleware.VercelBootstrapMiddleware',
+    ]
+MIDDLEWARE += [
     'django.middleware.security.SecurityMiddleware',
 ]
 if _has_whitenoise:
@@ -214,9 +220,13 @@ elif _has_whitenoise and (_env_bool('BEGET_DEPLOY', False) or not DEBUG):
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-SERVE_MEDIA = _env_bool('SERVE_MEDIA', DEBUG)
+MEDIA_URL = '/media/'
+if _IS_VERCEL:
+    MEDIA_ROOT = Path('/tmp/media')
+    SERVE_MEDIA = True
+else:
+    MEDIA_ROOT = BASE_DIR / 'media'
+    SERVE_MEDIA = _env_bool('SERVE_MEDIA', DEBUG)
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
