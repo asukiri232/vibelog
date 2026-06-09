@@ -3,12 +3,12 @@
 __pycache__/
 *.py[cod]
 *.sqlite3
+!mysite/db.sqlite3
 .env
 .env.*
 !.env.example
 staticfiles/
 public/static/
-mysite/media/
 *.log
 .DS_Store
 Thumbs.db

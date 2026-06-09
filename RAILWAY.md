@@ -43,7 +43,8 @@ Railway сам прокинет строку подключения — Django �
 | `DATABASE_URL` | Reference → Postgres (см. выше) |
 | `DJANGO_SECRET_KEY` | случайная строка 50+ символов |
 | `DJANGO_DEBUG` | `false` |
-| `SEED_DEMO` | `1` — заполнить демо при первой сборке; потом `0` |
+| `IMPORT_REPO_DATA` | `1` (по умолчанию) — загрузить пользователей и посты из `mysite/fixtures/vibel_data.json` в пустую PostgreSQL |
+| `SEED_DEMO` | `0` — не нужен, если данные уже в fixture; `1` только для пустого проекта без fixture |
 | `SERVE_MEDIA` | `true` |
 
 `ALLOWED_HOSTS` и CSRF для домена `*.railway.app` подставляются из `RAILWAY_PUBLIC_DOMAIN` автоматически.
@@ -116,7 +117,8 @@ Railway сам прокинет строку подключения — Django �
 | `DATABASE_URL` | Reference → Postgres |
 | `DJANGO_SECRET_KEY` | любая длинная случайная строка |
 | `DJANGO_DEBUG` | `false` |
-| `SEED_DEMO` | `1` (первый раз), потом `0` |
+| `IMPORT_REPO_DATA` | `1` |
+| `SEED_DEMO` | `0` (данные уже в репозитории) |
 
 Проверка после деплоя: `https://ВАШ-ДОМЕН.up.railway.app/health/` → должно быть `ok`.
 
@@ -138,6 +140,20 @@ railway login
 railway link
 railway run python mysite/manage.py createsuperuser
 ```
+
+---
+
+## Данные из локальной БД
+
+В репозитории:
+
+| Путь | Содержимое |
+|------|------------|
+| `mysite/db.sqlite3` | локальная SQLite (для разработки) |
+| `mysite/fixtures/vibel_data.json` | дамп пользователей, постов, лайков и т.д. |
+| `mysite/media/` | фото и видео постов |
+
+На Railway при первом старте (пустая PostgreSQL) команда `import_repo_fixture` загружает fixture. Медиа уже в образе из git; для постоянства подключите **Volume** на `/app/mysite/media`.
 
 ---
 

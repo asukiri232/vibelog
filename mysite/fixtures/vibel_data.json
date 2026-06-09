@@ -1,0 +1,3324 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$gXXRL4AHYwqCiodd93WJs1$lI/5hSmriSa0OIn64cKpFMRahT63j8lt8tiLUgFBMfk=",
+    "last_login": "2026-06-09T11:53:42.110Z",
+    "is_superuser": true,
+    "username": "kos",
+    "first_name": "",
+    "last_name": "",
+    "email": "jusygusy@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-04-03T07:24:00.467Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$3rUaukiKQy2hFgaDE6hUnm$huaVGvvXNP3vY2sp5IP8kbITBQ0ogvOyO5+O6jkLdHY=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_01",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_01@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:03:43.460Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$vID1FxVVrbaS5RGaYKMFlv$N56wNvUXX8KmvM+s5zPgMLfDYHIwhsSllBEbZl/eIAw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_02",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_02@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:04:52.383Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$J7TLeufnFUcSotq3B9v7wO$eOknGp/6MqfKNR7bCcru0K40/+W8t3cxCSIGBhCXxYs=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_03",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_03@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:07:15.003Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$woL3TzboDLBlHDK5IZg19L$0Kl+ZmqEKl6U0SSkhkDiMtvb+SUwjR7dnCLJwkF7bhQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_04",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_04@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:08:50.723Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$xUncU9lCrx6v6YrLhkbKQw$hSgL6zHEJc4dJsT/+4elO708tUchDBKTtT1C70WKBXg=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_05",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_05@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:10:46.865Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$2kAfNPe5g3dKjc7IwHrIPm$Bo37knDYMbIdV15XbUVbXTPRoxQ1R3KXIA1+RyJKEPc=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_06",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_06@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:13:02.680Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$4M00K3NfWypL1PXvbNXTOD$0OKr6cV3Ckm33SVAOVDjUezKxvN3AfwuiRmGzWvrqBU=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_07",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_07@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:14:31.180Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 9,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$Axe2X7mqi9XckKSlAJcUoO$07XyxENJci/6sObqoxzJGIH4PeOsqM195MXD/U9ixGc=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_08",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_08@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:15:07.035Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 10,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$lVnXQPSYxGTeKprtzKM91z$rjo5Q0/UPsnMjr25NvT2gUg81gv+noZp351rXUVKols=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_09",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_09@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:16:02.832Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 11,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$LYL16xmfe1XRn0w3lhTToj$jfK/AgFBN7Kzdt4ul+SCWB2KoORFBhnogjP84WtLSBo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_10",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_10@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:16:20.485Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 12,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$e7m3T71vh2o9fnqcklwSFA$KftqxSnQ5OP+YCRsopK7t4Q9x7CysW8QUxlEI+8G/UA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_11",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_11@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:18:22.049Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 13,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$Mrz7ikQRfybBDJ6wncIjuO$nMZd8kgN5JnG+KrlPSK6Bpy9MpOXJLWhw85ywK1aRJk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_12",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_12@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:18:45.277Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 14,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$bbuSK29waanclktUKQXGab$zSRKXZ3rB3dOhIAEOkcLftfpuHSruyyNaFwXWXmhs7s=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_13",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_13@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:19:32.774Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 15,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$79cIETJgGOr7Np8yKfALNo$VuS8B9/Xuofz3CjqoRztEW9Dr1XrgNH0GcPcfAjG2nk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_14",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_14@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:20:19.246Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 16,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$8EztpMn9JWWjsLeSbwlNFk$dOHpe1uiXUlNiU3O7gh2l9koJ2Qe/tUHdrReYyIFGps=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_15",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_15@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:20:39.704Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 17,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$EPAycjxiIOJbBnCQqcwvUg$je1hdy/HJgmsFpOHjlIdM//cu7g+MvHuu6f9haf8oBA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_16",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_16@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:21:46.254Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 18,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$TenBJwoXjQZ31S7U6iTyEh$jSvuSeNgvZaG0XbREEMFaKMZdT0869ECn9h6RyN2gCA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_17",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_17@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:21:54.259Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 19,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$o1wTf5IEpaOG9zWxFsjmUO$5diMxjG83DhmKblb7QvmcaiNPYd8V+JB0u6FjzG/e4M=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_18",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_18@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:22:38.849Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 20,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$YaqkufENjQHUcOkXYgxLnT$nnKxPW0++nkL/9FvQFGMBLP6/EHyKpg3YqIPYaBoEpw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_19",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_19@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:23:19.370Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 21,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$pjIvhZUN11CnGhl9NAdTHA$+cJiUB3QToo1wE04SnunxjQLQ/za7NeVJWfKZ4MmdzA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "demo_ru_20",
+    "first_name": "",
+    "last_name": "",
+    "email": "demo_ru_20@demo.vibel.local",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-05T10:23:24.579Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 22,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$XrKPGugbZ93Bus2gTiNfSV$6EUtiosuFA3e3mOsA/lv82ufnakUFFD1DPnzgLme6kI=",
+    "last_login": "2026-05-14T01:56:28.782Z",
+    "is_superuser": false,
+    "username": "саня",
+    "first_name": "",
+    "last_name": "",
+    "email": "antijusygusy@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-04-11T11:50:05Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "vibel.category",
+  "pk": 1,
+  "fields": {
+    "name": "Лайфстайл",
+    "slug": "lifestyle",
+    "order": 1
+  }
+},
+{
+  "model": "vibel.category",
+  "pk": 2,
+  "fields": {
+    "name": "Спорт",
+    "slug": "sport",
+    "order": 2
+  }
+},
+{
+  "model": "vibel.category",
+  "pk": 3,
+  "fields": {
+    "name": "Стрит",
+    "slug": "street",
+    "order": 3
+  }
+},
+{
+  "model": "vibel.category",
+  "pk": 4,
+  "fields": {
+    "name": "Путешествия",
+    "slug": "travel",
+    "order": 4
+  }
+},
+{
+  "model": "vibel.category",
+  "pk": 5,
+  "fields": {
+    "name": "Арт",
+    "slug": "art",
+    "order": 5
+  }
+},
+{
+  "model": "vibel.category",
+  "pk": 6,
+  "fields": {
+    "name": "Музыка",
+    "slug": "music",
+    "order": 6
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "display_name": "костян",
+    "bio": "аапа",
+    "location": "чотиб",
+    "cover": "covers/gara.jpg",
+    "avatar": "avatars/gaara.jpg",
+    "is_private": true,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-06-09T11:35:02.138Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 2,
+  "fields": {
+    "user": 2,
+    "display_name": "Анна Смирнова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_01_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:15.397Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 3,
+  "fields": {
+    "user": 3,
+    "display_name": "Дмитрий Волков",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_02_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:20.209Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 4,
+  "fields": {
+    "user": 4,
+    "display_name": "Елена Козлова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_03_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:25.314Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 5,
+  "fields": {
+    "user": 5,
+    "display_name": "Игорь Новиков",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_04_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:28.206Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 6,
+  "fields": {
+    "user": 6,
+    "display_name": "Мария Павлова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_05_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:31.213Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 7,
+  "fields": {
+    "user": 7,
+    "display_name": "Сергей Орлов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_06_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:37.640Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 8,
+  "fields": {
+    "user": 8,
+    "display_name": "Ольга Морозова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T10:14:31.419Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 9,
+  "fields": {
+    "user": 9,
+    "display_name": "Алексей Соколов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_08_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:50:57.286Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 10,
+  "fields": {
+    "user": 10,
+    "display_name": "Наталья Лебедева",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_09_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:00.334Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 11,
+  "fields": {
+    "user": 11,
+    "display_name": "Павел Кузнецов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_10_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:02.299Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 12,
+  "fields": {
+    "user": 12,
+    "display_name": "Татьяна Васильева",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_11_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:17.671Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 13,
+  "fields": {
+    "user": 13,
+    "display_name": "Андрей Попов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T10:18:45.513Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 14,
+  "fields": {
+    "user": 14,
+    "display_name": "Екатерина Семёнова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_13_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:33.169Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 15,
+  "fields": {
+    "user": 15,
+    "display_name": "Николай Виноградов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_14_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:38.253Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 16,
+  "fields": {
+    "user": 16,
+    "display_name": "Ирина Белова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_15_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:41.075Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 17,
+  "fields": {
+    "user": 17,
+    "display_name": "Максим Жуков",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_16_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:42.835Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 18,
+  "fields": {
+    "user": 18,
+    "display_name": "Светлана Никифорова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_17_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:51:46.929Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 19,
+  "fields": {
+    "user": 19,
+    "display_name": "Роман Степанов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T10:22:39.085Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 20,
+  "fields": {
+    "user": 20,
+    "display_name": "Юлия Фёдорова",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_19_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:52:05.405Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 21,
+  "fields": {
+    "user": 21,
+    "display_name": "Константин Давыдов",
+    "bio": "",
+    "location": "",
+    "cover": "",
+    "avatar": "avatars/demo_ru_20_avatar.jpg",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-05T11:52:08.363Z"
+  }
+},
+{
+  "model": "vibel.profile",
+  "pk": 22,
+  "fields": {
+    "user": 22,
+    "display_name": "саня",
+    "bio": "санечка",
+    "location": "",
+    "cover": "covers/вальхеме.jpg",
+    "avatar": "avatars/photo_2025-03-28_23-16-11.png",
+    "is_private": false,
+    "notify_likes": true,
+    "notify_comments": true,
+    "notify_follows": true,
+    "notify_mentions": true,
+    "updated_at": "2026-04-11T11:50:55.160Z"
+  }
+},
+{
+  "model": "vibel.follow",
+  "pk": 1,
+  "fields": {
+    "follower": 1,
+    "following": 21,
+    "created_at": "2026-04-05T12:13:32.462Z"
+  }
+},
+{
+  "model": "vibel.follow",
+  "pk": 2,
+  "fields": {
+    "follower": 1,
+    "following": 22,
+    "created_at": "2026-04-11T11:51:50.302Z"
+  }
+},
+{
+  "model": "vibel.follow",
+  "pk": 3,
+  "fields": {
+    "follower": 22,
+    "following": 1,
+    "created_at": "2026-04-11T11:54:13.950Z"
+  }
+},
+{
+  "model": "vibel.follow",
+  "pk": 5,
+  "fields": {
+    "follower": 22,
+    "following": 20,
+    "created_at": "2026-05-27T07:04:10.775Z"
+  }
+},
+{
+  "model": "vibel.follow",
+  "pk": 6,
+  "fields": {
+    "follower": 22,
+    "following": 19,
+    "created_at": "2026-05-27T07:04:35.956Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 3,
+  "fields": {
+    "author": 2,
+    "category": 3,
+    "image": "posts/demo_ru_01_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Нашла место, куда хочется возвращаться.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:16.364Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 4,
+  "fields": {
+    "author": 2,
+    "category": 1,
+    "image": "posts/demo_ru_01_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Этот вид стоил подъёма на рассвете.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:17.364Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 5,
+  "fields": {
+    "author": 2,
+    "category": 4,
+    "image": "posts/demo_ru_01_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Пробовала новое кафе: атмосфера топ, вернусь ещё.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:18.377Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 6,
+  "fields": {
+    "author": 2,
+    "category": 3,
+    "image": "posts/demo_ru_01_post_3.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Пицца была огонь, делиться не хотелось.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:19.397Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 7,
+  "fields": {
+    "author": 3,
+    "category": 6,
+    "image": "posts/demo_ru_02_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Просто день из жизни, без фильтров.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:21.291Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 8,
+  "fields": {
+    "author": 3,
+    "category": 6,
+    "image": "posts/demo_ru_02_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Сегодня гуляла без маршрута — и нашла красоту.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:22.318Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 9,
+  "fields": {
+    "author": 3,
+    "category": 6,
+    "image": "posts/demo_ru_02_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Маленький ресторанчик с большим сердцем.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:23.380Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 10,
+  "fields": {
+    "author": 3,
+    "category": 4,
+    "image": "posts/demo_ru_02_post_3.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Друзья + закат = идеальная формула.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:24.479Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 11,
+  "fields": {
+    "author": 4,
+    "category": 2,
+    "image": "posts/demo_ru_03_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Завтрак, который хочется повторять каждый день.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:26.332Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 12,
+  "fields": {
+    "author": 4,
+    "category": 6,
+    "image": "posts/demo_ru_03_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Закат, ветер, музыка в наушниках — идеально.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:27.321Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 13,
+  "fields": {
+    "author": 5,
+    "category": 3,
+    "image": "posts/demo_ru_04_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Люди вокруг — главный декор любого города.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:29.234Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 14,
+  "fields": {
+    "author": 5,
+    "category": 2,
+    "image": "posts/demo_ru_04_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Ничего особенного, просто хороший день.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:30.350Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 15,
+  "fields": {
+    "author": 6,
+    "category": 4,
+    "image": "posts/demo_ru_05_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Первый снег в городе, все как дети.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:32.354Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 16,
+  "fields": {
+    "author": 6,
+    "category": 4,
+    "image": "posts/demo_ru_05_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Нашла место, куда хочется возвращаться.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:33.402Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 17,
+  "fields": {
+    "author": 6,
+    "category": 6,
+    "image": "posts/demo_ru_05_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Окно в поезде — лучший кинозал.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:34.622Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 18,
+  "fields": {
+    "author": 6,
+    "category": 1,
+    "image": "posts/demo_ru_05_post_3.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Друзья + закат = идеальная формула.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:35.654Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 19,
+  "fields": {
+    "author": 6,
+    "category": 6,
+    "image": "posts/demo_ru_05_post_4.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Архитектура здесь будто из фильма.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:36.691Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 20,
+  "fields": {
+    "author": 7,
+    "category": 1,
+    "image": "posts/demo_ru_06_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Просто день из жизни, без фильтров.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:38.755Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 21,
+  "fields": {
+    "author": 7,
+    "category": 3,
+    "image": "posts/demo_ru_06_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Друзья + закат = идеальная формула.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:39.819Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 22,
+  "fields": {
+    "author": 7,
+    "category": 4,
+    "image": "posts/demo_ru_06_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Шумный рынок, ароматы, жизнь кипит.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:40.829Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 23,
+  "fields": {
+    "author": 8,
+    "category": 5,
+    "image": "posts/demo_ru_07_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Собрались компанией — смех до слёз.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:54.279Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 24,
+  "fields": {
+    "author": 8,
+    "category": 5,
+    "image": "posts/demo_ru_07_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Такое небо бывает раз в сезон, сфоткала на память.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:55.326Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 25,
+  "fields": {
+    "author": 8,
+    "category": 4,
+    "image": "posts/demo_ru_07_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Сегодня только я, камера и хорошее настроение.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:56.442Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 26,
+  "fields": {
+    "author": 9,
+    "category": 2,
+    "image": "posts/demo_ru_08_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "С детства люблю такие дворы.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:58.533Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 27,
+  "fields": {
+    "author": 9,
+    "category": 2,
+    "image": "posts/demo_ru_08_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Ночной город другой, почти кино.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:50:59.487Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 28,
+  "fields": {
+    "author": 10,
+    "category": 3,
+    "image": "posts/demo_ru_09_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Обед с друзьями затянулся — и ни капли не жаль.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:01.446Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 29,
+  "fields": {
+    "author": 11,
+    "category": 1,
+    "image": "posts/demo_ru_10_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Закат, ветер, музыка в наушниках — идеально.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:15.724Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 30,
+  "fields": {
+    "author": 11,
+    "category": 1,
+    "image": "posts/demo_ru_10_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Сегодня только я, камера и хорошее настроение.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:16.816Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 31,
+  "fields": {
+    "author": 12,
+    "category": 2,
+    "image": "posts/demo_ru_11_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Просто день из жизни, без фильтров.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:18.621Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 32,
+  "fields": {
+    "author": 13,
+    "category": 6,
+    "image": "posts/demo_ru_12_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Запах свежей выпечки решает всё.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:32.171Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 33,
+  "fields": {
+    "author": 14,
+    "category": 1,
+    "image": "posts/demo_ru_13_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Тёплый свет, тихая музыка, хочется остаться.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:34.310Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 34,
+  "fields": {
+    "author": 14,
+    "category": 4,
+    "image": "posts/demo_ru_13_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Первый снег в городе, все как дети.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:35.460Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 35,
+  "fields": {
+    "author": 14,
+    "category": 6,
+    "image": "posts/demo_ru_13_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Собрались компанией — смех до слёз.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:36.495Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 36,
+  "fields": {
+    "author": 14,
+    "category": 6,
+    "image": "posts/demo_ru_13_post_3.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Улица, о которой раньше не знала — теперь любимая.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:37.461Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 37,
+  "fields": {
+    "author": 15,
+    "category": 6,
+    "image": "posts/demo_ru_14_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Ночной город другой, почти кино.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:39.268Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 38,
+  "fields": {
+    "author": 15,
+    "category": 1,
+    "image": "posts/demo_ru_14_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Свет фонарей, лужи, отражения — магия.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:40.243Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 39,
+  "fields": {
+    "author": 16,
+    "category": 3,
+    "image": "posts/demo_ru_15_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Улица, о которой раньше не знала — теперь любимая.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:42.032Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 40,
+  "fields": {
+    "author": 17,
+    "category": 1,
+    "image": "posts/demo_ru_16_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Лето в одном кадре.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:43.900Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 41,
+  "fields": {
+    "author": 17,
+    "category": 2,
+    "image": "posts/demo_ru_16_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Запах свежей выпечки решает всё.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:44.939Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 42,
+  "fields": {
+    "author": 17,
+    "category": 2,
+    "image": "posts/demo_ru_16_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Улыбка случайного прохожего сделала кадр.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:45.941Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 43,
+  "fields": {
+    "author": 18,
+    "category": 3,
+    "image": "posts/demo_ru_17_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Первый снег в городе, все как дети.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:48.001Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 44,
+  "fields": {
+    "author": 18,
+    "category": 1,
+    "image": "posts/demo_ru_17_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Бранч затянулся до обеда, и это нормально.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:51:48.958Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 45,
+  "fields": {
+    "author": 19,
+    "category": 4,
+    "image": "posts/demo_ru_18_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Пицца была огонь, делиться не хотелось.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:52:02.494Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 46,
+  "fields": {
+    "author": 19,
+    "category": 6,
+    "image": "posts/demo_ru_18_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Момент, когда хочется нажать «стоп» у времени.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:52:03.568Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 47,
+  "fields": {
+    "author": 19,
+    "category": 5,
+    "image": "posts/demo_ru_18_post_2.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Лето в одном кадре.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:52:04.537Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 48,
+  "fields": {
+    "author": 20,
+    "category": 5,
+    "image": "posts/demo_ru_19_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Пицца была огонь, делиться не хотелось.",
+    "visibility": "public",
+    "likes_count": 0,
+    "created_at": "2026-04-05T11:52:06.567Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 49,
+  "fields": {
+    "author": 20,
+    "category": 1,
+    "image": "posts/demo_ru_19_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Тихий парк посреди бетона — спасение.",
+    "visibility": "public",
+    "likes_count": 2,
+    "created_at": "2026-04-05T11:52:07.521Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 50,
+  "fields": {
+    "author": 21,
+    "category": 2,
+    "image": "posts/demo_ru_20_post_0.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Просто поела и стало легче на душе.",
+    "visibility": "public",
+    "likes_count": 1,
+    "created_at": "2026-04-05T11:52:09.366Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 51,
+  "fields": {
+    "author": 21,
+    "category": 1,
+    "image": "posts/demo_ru_20_post_1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "Маленький ресторанчик с большим сердцем.",
+    "visibility": "public",
+    "likes_count": 2,
+    "created_at": "2026-04-05T11:52:10.378Z",
+    "updated_at": "2026-05-27T06:53:08.430Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 52,
+  "fields": {
+    "author": 22,
+    "category": 5,
+    "image": "posts/misa1.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "",
+    "visibility": "public",
+    "likes_count": 1,
+    "created_at": "2026-05-27T06:58:55.340Z",
+    "updated_at": "2026-05-27T06:58:55.340Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 62,
+  "fields": {
+    "author": 1,
+    "category": 1,
+    "image": "posts/mimimisa.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "аа",
+    "visibility": "public",
+    "likes_count": 1,
+    "created_at": "2026-05-28T03:25:46.524Z",
+    "updated_at": "2026-05-28T03:25:46.524Z"
+  }
+},
+{
+  "model": "vibel.post",
+  "pk": 65,
+  "fields": {
+    "author": 1,
+    "category": 5,
+    "image": "posts/illus.jpg",
+    "video": "",
+    "video_clip_start_s": 0,
+    "video_clip_end_s": null,
+    "video_clip_limit_s": 15,
+    "caption": "кртинки",
+    "visibility": "public",
+    "likes_count": 1,
+    "created_at": "2026-06-09T11:38:59.462Z",
+    "updated_at": "2026-06-09T11:51:43.217Z"
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 17,
+  "fields": {
+    "post": 62,
+    "image": "posts/extra/misa_FHze4KY.jpg",
+    "sort_order": 0
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 18,
+  "fields": {
+    "post": 62,
+    "image": "posts/extra/misa1.jpg",
+    "sort_order": 1
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 19,
+  "fields": {
+    "post": 62,
+    "image": "posts/extra/misapisa_SYsNJFO.jpg",
+    "sort_order": 2
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 20,
+  "fields": {
+    "post": 65,
+    "image": "posts/extra/mimimisa_q4avCgB.jpg",
+    "sort_order": 0
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 21,
+  "fields": {
+    "post": 65,
+    "image": "posts/extra/misa_4W4dn5g.jpg",
+    "sort_order": 1
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 22,
+  "fields": {
+    "post": 65,
+    "image": "posts/extra/misa1_OSx6n7P.jpg",
+    "sort_order": 2
+  }
+},
+{
+  "model": "vibel.postattachment",
+  "pk": 23,
+  "fields": {
+    "post": 65,
+    "image": "posts/extra/misapisa_wUBU7Mn.jpg",
+    "sort_order": 3
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 25,
+  "fields": {
+    "user": 1,
+    "post": 49,
+    "created_at": "2026-04-17T02:36:22.698Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 27,
+  "fields": {
+    "user": 22,
+    "post": 49,
+    "created_at": "2026-05-14T01:57:04.934Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 28,
+  "fields": {
+    "user": 22,
+    "post": 51,
+    "created_at": "2026-05-14T01:57:07.603Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 34,
+  "fields": {
+    "user": 1,
+    "post": 62,
+    "created_at": "2026-05-28T03:26:12.909Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 35,
+  "fields": {
+    "user": 1,
+    "post": 52,
+    "created_at": "2026-06-09T11:36:23.589Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 36,
+  "fields": {
+    "user": 1,
+    "post": 65,
+    "created_at": "2026-06-09T11:39:17.164Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 38,
+  "fields": {
+    "user": 1,
+    "post": 51,
+    "created_at": "2026-06-09T11:53:47.753Z"
+  }
+},
+{
+  "model": "vibel.like",
+  "pk": 39,
+  "fields": {
+    "user": 1,
+    "post": 50,
+    "created_at": "2026-06-09T11:53:49.716Z"
+  }
+},
+{
+  "model": "vibel.comment",
+  "pk": 84,
+  "fields": {
+    "post": 49,
+    "author": 1,
+    "text": "",
+    "image": "comments/misapisa.jpg",
+    "created_at": "2026-06-09T11:35:33.114Z"
+  }
+},
+{
+  "model": "vibel.comment",
+  "pk": 85,
+  "fields": {
+    "post": 49,
+    "author": 1,
+    "text": "😇",
+    "image": "",
+    "created_at": "2026-06-09T11:35:42.396Z"
+  }
+},
+{
+  "model": "vibel.comment",
+  "pk": 86,
+  "fields": {
+    "post": 49,
+    "author": 1,
+    "text": "привет",
+    "image": "",
+    "created_at": "2026-06-09T11:35:47.910Z"
+  }
+},
+{
+  "model": "vibel.savedpost",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "post": 49,
+    "created_at": "2026-04-08T09:54:38.953Z"
+  }
+},
+{
+  "model": "vibel.savedpost",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "post": 51,
+    "created_at": "2026-05-14T01:53:27.878Z"
+  }
+},
+{
+  "model": "vibel.savedpost",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "post": 52,
+    "created_at": "2026-06-09T11:36:25.050Z"
+  }
+},
+{
+  "model": "vibel.savedpost",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "post": 65,
+    "created_at": "2026-06-09T11:39:18.008Z"
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 1,
+  "fields": {
+    "sender": 22,
+    "recipient": 1,
+    "body": "привет",
+    "image": "",
+    "read_at": "2026-04-11T11:55:12.844Z",
+    "created_at": "2026-04-11T11:54:23.806Z",
+    "hidden_for_sender_at": null,
+    "hidden_for_recipient_at": "2026-05-13T18:48:10.414Z",
+    "reply_to": null,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 3,
+  "fields": {
+    "sender": 1,
+    "recipient": 22,
+    "body": "",
+    "image": "dm/misa1.jpg",
+    "read_at": "2026-05-13T18:54:20.251Z",
+    "created_at": "2026-05-13T08:17:21.115Z",
+    "hidden_for_sender_at": null,
+    "hidden_for_recipient_at": null,
+    "reply_to": null,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 8,
+  "fields": {
+    "sender": 1,
+    "recipient": 22,
+    "body": "😍",
+    "image": "",
+    "read_at": "2026-05-14T01:56:33.323Z",
+    "created_at": "2026-05-14T01:54:16.424Z",
+    "hidden_for_sender_at": null,
+    "hidden_for_recipient_at": null,
+    "reply_to": null,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 9,
+  "fields": {
+    "sender": 1,
+    "recipient": 22,
+    "body": "",
+    "image": "",
+    "read_at": "2026-05-14T01:56:33.323Z",
+    "created_at": "2026-05-14T01:54:20.758Z",
+    "hidden_for_sender_at": null,
+    "hidden_for_recipient_at": "2026-05-14T01:56:36.772Z",
+    "reply_to": null,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 19,
+  "fields": {
+    "sender": 1,
+    "recipient": 22,
+    "body": "никак",
+    "image": "",
+    "read_at": null,
+    "created_at": "2026-05-28T03:27:24.870Z",
+    "hidden_for_sender_at": null,
+    "hidden_for_recipient_at": null,
+    "reply_to": null,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 21,
+  "fields": {
+    "sender": 1,
+    "recipient": 22,
+    "body": "крутяк",
+    "image": "",
+    "read_at": null,
+    "created_at": "2026-06-09T11:52:19.083Z",
+    "hidden_for_sender_at": "2026-06-09T11:52:24.506Z",
+    "hidden_for_recipient_at": null,
+    "reply_to": 9,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessage",
+  "pk": 22,
+  "fields": {
+    "sender": 1,
+    "recipient": 22,
+    "body": "привет",
+    "image": "",
+    "read_at": null,
+    "created_at": "2026-06-09T11:52:35.352Z",
+    "hidden_for_sender_at": null,
+    "hidden_for_recipient_at": null,
+    "reply_to": null,
+    "edited_at": null
+  }
+},
+{
+  "model": "vibel.directmessageattachment",
+  "pk": 3,
+  "fields": {
+    "message": 9,
+    "image": "dm/mimimisa.jpg",
+    "sort_order": 0
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 1,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": null,
+    "event_type": "follow",
+    "text": "kos подписался(ась) на вас",
+    "is_read": false,
+    "created_at": "2026-04-05T12:13:32.468Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 3,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "kos прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-04-05T12:26:08.284Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 15,
+  "fields": {
+    "recipient": 22,
+    "actor": 1,
+    "post": null,
+    "event_type": "follow",
+    "text": "kos подписался(ась) на вас",
+    "is_read": true,
+    "created_at": "2026-04-11T11:51:50.321Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 16,
+  "fields": {
+    "recipient": 1,
+    "actor": 22,
+    "post": null,
+    "event_type": "follow",
+    "text": "саня подписался(ась) на вас",
+    "is_read": true,
+    "created_at": "2026-04-11T11:54:13.959Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 17,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "like",
+    "text": "kos поставил(а) лайк вашему посту",
+    "is_read": false,
+    "created_at": "2026-04-17T02:36:22.713Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 19,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:00:28.910Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 20,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:00:29.011Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 21,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:03:55.177Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 22,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:03:55.295Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 23,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:05:22.716Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 24,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:05:22.799Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 25,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:05:29.194Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 26,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:05:29.317Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 27,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:05:49.393Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 28,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:05:49.480Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 29,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:08:02.015Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 30,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:08:02.130Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 31,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:08:28.745Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 32,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:08:28.799Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 33,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:08:33.400Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 34,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:10:24.598Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 35,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:10:24.647Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 36,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:10:33.769Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 37,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:10:33.864Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 38,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:11:52.500Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 39,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:11:52.585Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 40,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:12:34.326Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 41,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:12:34.407Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 42,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:13:08.281Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 43,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:13:08.370Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 44,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:13:33.815Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 45,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:13:33.902Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 46,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:16:09.137Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 47,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:16:15.502Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 48,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:31:15.487Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 49,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:31:15.549Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 50,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:31:25.123Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 51,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:56:22.258Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 52,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T08:56:22.368Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 53,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:09:21.140Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 54,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:09:21.205Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 55,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:12:00.973Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 56,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:12:06.496Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 57,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:12:14.904Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 58,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:12:19.417Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 59,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:12:42.068Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 60,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:13:02.448Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 61,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:15:05.509Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 62,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:15:16.222Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 63,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:18:09.951Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 64,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T09:18:56.262Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 65,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T17:55:23.070Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 66,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T17:58:16.751Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 67,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:00:41.983Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 68,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:03:42.260Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 69,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:03:51.078Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 70,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:04:27.343Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 71,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:07:50.239Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 72,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:07:55.423Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 73,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:08:11.578Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 74,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:08:20.564Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 75,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:08:59.105Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 76,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:12:01.612Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 77,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:12:10.048Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 78,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 50,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:15:28.392Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 79,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:15:36.024Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 80,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:31:30.702Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 81,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:31:39.909Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 82,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:31:48.593Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 83,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T18:40:21.380Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 85,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T19:03:49.239Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 86,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T19:03:56.671Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 87,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-13T19:04:06.239Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 88,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-14T01:53:16.964Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 89,
+  "fields": {
+    "recipient": 20,
+    "actor": 22,
+    "post": 49,
+    "event_type": "like",
+    "text": "саня поставил(а) лайк вашему посту",
+    "is_read": false,
+    "created_at": "2026-05-14T01:57:04.947Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 90,
+  "fields": {
+    "recipient": 21,
+    "actor": 22,
+    "post": 51,
+    "event_type": "like",
+    "text": "саня поставил(а) лайк вашему посту",
+    "is_read": false,
+    "created_at": "2026-05-14T01:57:07.618Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 91,
+  "fields": {
+    "recipient": 20,
+    "actor": 22,
+    "post": null,
+    "event_type": "follow",
+    "text": "саня подписался(ась) на вас",
+    "is_read": false,
+    "created_at": "2026-05-27T07:04:10.788Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 92,
+  "fields": {
+    "recipient": 19,
+    "actor": 22,
+    "post": null,
+    "event_type": "follow",
+    "text": "саня подписался(ась) на вас",
+    "is_read": false,
+    "created_at": "2026-05-27T07:04:35.968Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 93,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-27T08:02:23.174Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 94,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-27T15:06:00.298Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 95,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-27T15:06:04.877Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 96,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-27T15:06:14.935Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 97,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-27T15:06:16.739Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 98,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-05-27T15:06:18.572Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 99,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-06-09T11:35:33.121Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 100,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-06-09T11:35:42.405Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 101,
+  "fields": {
+    "recipient": 20,
+    "actor": 1,
+    "post": 49,
+    "event_type": "comment",
+    "text": "<bound method Profile.display_handle of <Profile: костян>> прокомментировал(а) ваш пост",
+    "is_read": false,
+    "created_at": "2026-06-09T11:35:47.918Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 102,
+  "fields": {
+    "recipient": 22,
+    "actor": 1,
+    "post": 52,
+    "event_type": "like",
+    "text": "kos поставил(а) лайк вашему посту",
+    "is_read": false,
+    "created_at": "2026-06-09T11:36:23.598Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 103,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 51,
+    "event_type": "like",
+    "text": "kos поставил(а) лайк вашему посту",
+    "is_read": false,
+    "created_at": "2026-06-09T11:53:47.768Z"
+  }
+},
+{
+  "model": "vibel.notification",
+  "pk": 104,
+  "fields": {
+    "recipient": 21,
+    "actor": 1,
+    "post": 50,
+    "event_type": "like",
+    "text": "kos поставил(а) лайк вашему посту",
+    "is_read": false,
+    "created_at": "2026-06-09T11:53:49.731Z"
+  }
+}
+]

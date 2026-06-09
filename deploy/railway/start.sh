@@ -24,7 +24,11 @@ echo "PORT=${PORT:-8000}"
 "$PYTHON" manage.py migrate --no-input
 "$PYTHON" manage.py seed_vibel
 
-if [ "${SEED_DEMO:-1}" = "1" ]; then
+if [ "${IMPORT_REPO_DATA:-1}" = "1" ]; then
+  "$PYTHON" manage.py import_repo_fixture
+fi
+
+if [ "${SEED_DEMO:-0}" = "1" ]; then
   "$PYTHON" manage.py seed_demo_users --no-reconcile || true
 fi
 
