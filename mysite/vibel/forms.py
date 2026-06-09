@@ -68,8 +68,17 @@ class RegisterForm(forms.Form):
     password = forms.CharField(
         label='Пароль',
         strip=False,
+        min_length=8,
+        help_text='Минимум 8 символов.',
+        error_messages={
+            'min_length': 'Пароль должен быть не короче 8 символов.',
+        },
         widget=forms.PasswordInput(
-            attrs={'class': 'vl-input', 'autocomplete': 'new-password'}
+            attrs={
+                'class': 'vl-input',
+                'autocomplete': 'new-password',
+                'minlength': '8',
+            }
         ),
     )
     password_confirm = forms.CharField(

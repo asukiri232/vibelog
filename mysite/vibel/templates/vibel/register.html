@@ -12,6 +12,7 @@
       <div class="vl-field{% if field.errors %} vl-field--error{% endif %}">
         <label class="vl-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field }}
+        {% if field.help_text %}<p class="vl-hint">{{ field.help_text }}</p>{% endif %}
         {% if field.errors %}<span class="vl-error">{{ field.errors.0 }}</span>{% endif %}
       </div>
     {% endfor %}
