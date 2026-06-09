@@ -3,10 +3,17 @@ import os
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import include, path, re_path
 from django.views.static import serve
 
+
+def health(_request):
+    return HttpResponse('ok', content_type='text/plain')
+
+
 urlpatterns = [
+    path('health/', health, name='health'),
     path('admin/', admin.site.urls),
     path('', include('vibel.urls')),
 ]

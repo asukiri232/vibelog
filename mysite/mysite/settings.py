@@ -98,6 +98,9 @@ if _railway_public:
 
 if _IS_RAILWAY:
     DEBUG = _env_bool('DJANGO_DEBUG', False)
+    for _railway_exact in ('localhost', '127.0.0.1', 'healthcheck.railway.app'):
+        if _railway_exact not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_railway_exact)
 
 
 # Application definition

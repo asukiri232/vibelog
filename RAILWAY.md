@@ -97,7 +97,32 @@ Railway сам прокинет строку подключения — Django �
 
 ---
 
-## 9. Обновление после правок в коде
+## 9. «Application failed to respond»
+
+Чаще всего одна из причин ниже. Откройте **Deployments → последний деплой → Deploy Logs** (не Build Logs).
+
+| Симптом в логах | Решение |
+|-----------------|--------|
+| `ERROR: DATABASE_URL is not set` | Web-сервис → **Variables** → **Add Reference** → Postgres → `DATABASE_URL` → Redeploy |
+| `gunicorn: not found` / `python: command not found` | Обновите код (исправлен `start.sh` с `.venv/bin/python`) |
+| `$'\r': command not found` | CRLF в `.sh` — обновите репозиторий (есть `.gitattributes`) |
+| `migrate` / `connection refused` / SSL | Убедитесь, что Postgres **Running**; reference на тот же проект |
+| Сборка OK, старт падает сразу | **Settings → Deploy → Start Command:** `bash deploy/railway/start.sh` |
+
+Минимальные переменные web-сервиса:
+
+| Переменная | Значение |
+|------------|----------|
+| `DATABASE_URL` | Reference → Postgres |
+| `DJANGO_SECRET_KEY` | любая длинная случайная строка |
+| `DJANGO_DEBUG` | `false` |
+| `SEED_DEMO` | `1` (первый раз), потом `0` |
+
+Проверка после деплоя: `https://ВАШ-ДОМЕН.up.railway.app/health/` → должно быть `ok`.
+
+---
+
+## 10. Обновление после правок в коде
 
 Push в `main` → Railway пересоберёт автоматически.
 
@@ -105,7 +130,7 @@ Push в `main` → Railway пересоберёт автоматически.
 
 ---
 
-## 10. Полезные команды (Railway CLI, по желанию)
+## 11. Полезные команды (Railway CLI, по желанию)
 
 ```bash
 npm i -g @railway/cli
@@ -121,7 +146,7 @@ railway run python mysite/manage.py createsuperuser
 | Файл | Назначение |
 |------|------------|
 | `railway.toml` | Сборка и старт для Railway |
-| `build-railway.sh` | migrate, static, seed |
-| `deploy/railway/start.sh` | gunicorn |
+| `build-railway.sh` | pip, collectstatic |
+| `deploy/railway/start.sh` | migrate, seed, gunicorn |
 | `requirements-railway.txt` | Django + Postgres + gunicorn |
 | `Procfile` | запасной старт |
