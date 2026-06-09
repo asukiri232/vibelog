@@ -14,7 +14,13 @@ def _max_image_bytes():
 
 MAX_IMAGE_UPLOAD_BYTES = _max_image_bytes()
 MAX_POST_IMAGES = 8
-MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024  # 50 МБ
+
+
+def _max_video_bytes():
+    return int(getattr(settings, 'MAX_VIDEO_UPLOAD_BYTES', 50 * 1024 * 1024))
+
+
+MAX_VIDEO_UPLOAD_BYTES = _max_video_bytes()
 
 
 def files_getlist(files, key):
@@ -295,17 +301,21 @@ class PostForm(forms.ModelForm):
         self._images = images
 
         if video:
-            if video.size > MAX_VIDEO_UPLOAD_BYTES:
-                raise ValidationError('Видео слишком большое (максимум 50 МБ).')
+            max_v = _max_video_bytes()
+            if video.size > max_v:
+                mb = max(1, max_v // (1024 * 1024))
+                raise ValidationError(f'Видео слишком большое (максимум {mb} МБ).')
             limit_s = int(data.get('video_clip_limit_s') or 15)
             start_s = int(data.get('video_clip_start_s') or 0)
             end_raw = data.get('video_clip_end_s')
             end_s = int(end_raw) if end_raw not in (None, '',) else None
             if start_s < 0:
                 raise ValidationError('Начало клипа должно быть >= 0.')
-            if end_s is not None and end_s <= start_s:
+            if end_s is None:
+                end_s = start_s + limit_s
+            if end_s <= start_s:
                 raise ValidationError('Конец клипа должен быть больше начала.')
-            if end_s is not None and end_s - start_s > limit_s:
+            if end_s - start_s > limit_s:
                 raise ValidationError(f'Клип должен быть не длиннее {limit_s} секунд.')
             data['video_clip_limit_s'] = limit_s
             data['video_clip_start_s'] = start_s

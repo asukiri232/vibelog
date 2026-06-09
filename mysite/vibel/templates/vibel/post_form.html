@@ -2,8 +2,11 @@
 {% block title %}Новый пост — VibeLog{% endblock %}
 {% block content %}
 
-<form method="post" enctype="multipart/form-data" class="vl-form">
+<form method="post" enctype="multipart/form-data" class="vl-form" id="vl-post-form">
   {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="vl-error vl-error--block">{{ form.non_field_errors.0 }}</div>
+  {% endif %}
   {% for field in form %}
     {% if field.name == 'video_clip_start_s' or field.name == 'video_clip_end_s' %}
       {{ field }}
@@ -18,7 +21,9 @@
         {{ field }}
       {% endif %}
       {% if field.field.widget.input_type == 'file' %}
-        {% if field.name != 'image' %}
+        {% if field.name == 'video' %}
+          <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" aria-live="polite">Видео до {{ max_video_mb }} МБ, 15 или 30 сек. клип. Не выбирайте фото одновременно с видео.</p>
+        {% elif field.name != 'image' %}
           <p class="vl-file-hint" data-vl-file-hint-for="{{ field.id_for_label }}" aria-live="polite">Файл не выбран — нажмите кнопку и укажите изображение (JPG, PNG, WebP).</p>
         {% endif %}
       {% endif %}
@@ -181,6 +186,19 @@
       limitSel.addEventListener('change', function () {
         clamp();
       });
+
+      var postForm = document.getElementById('vl-post-form');
+      if (postForm) {
+        postForm.addEventListener('submit', function () {
+          if (videoInput.files && videoInput.files.length) {
+            if (!hidEnd.value || hidEnd.value === '0') {
+              clamp();
+            } else {
+              setHidden(sec(rStart.value), sec(rEnd.value));
+            }
+          }
+        });
+      }
     }
   })();
 </script>

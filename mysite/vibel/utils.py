@@ -82,6 +82,36 @@ def blocked_user_ids(user) -> Set[int]:
     return blocked
 
 
+def safe_media_url(file_field) -> str:
+    """URL файла или пустая строка, если файла нет или он удалён с диска."""
+    if not file_field:
+        return ''
+    name = getattr(file_field, 'name', None)
+    if not name:
+        return ''
+    try:
+        return file_field.url
+    except (ValueError, OSError):
+        return ''
+
+
+def post_grid_image_url(post) -> str:
+    """Превью для сетки профиля: главное фото, вложение или пусто (видео/текст)."""
+    url = safe_media_url(getattr(post, 'image', None))
+    if url:
+        return url
+    attachments = getattr(post, '_prefetched_objects_cache', {}).get('attachments')
+    if attachments is not None:
+        iterable = attachments
+    else:
+        iterable = post.attachments.all()
+    for att in iterable:
+        url = safe_media_url(getattr(att, 'image', None))
+        if url:
+            return url
+    return ''
+
+
 def filter_blocked_users(qs, user, field_prefix=''):
     """Исключает пользователей из чёрного списка (в обе стороны)."""
     if not user.is_authenticated:

@@ -249,6 +249,7 @@ def save_post_with_form(form, user, file_storage=None):
 
     post = form.save(commit=False)
     post.author = user
+    has_video = bool(form.cleaned_data.get('video'))
 
     attachment_files = []
     if post.image and images:
@@ -257,6 +258,8 @@ def save_post_with_form(form, user, file_storage=None):
     elif images:
         post.image = optimize_uploaded_image(images[0])
         attachment_files = images[1:]
+    elif has_video:
+        post.image = ''
 
     try:
         post.save()

@@ -1,10 +1,12 @@
+{% load vibel_extras %}
 {% comment %}
   Фото поста: одно — как раньше; несколько — карусель того же размера.
   media_link_to_detail — в ленте клик по фото открывает пост.
 {% endcomment %}
-{% if post.video %}
+{% with video_url=post.video|safe_media_url_filter %}
+{% if video_url %}
   <div class="vl-post-video" data-vl-post-clip data-clip-start="{{ post.video_clip_start_s }}" data-clip-end="{{ post.video_clip_end_s|default:'' }}">
-    <video class="vl-post-video__el" src="{{ post.video.url }}" playsinline muted controls preload="metadata"></video>
+    <video class="vl-post-video__el" src="{{ video_url }}" playsinline muted controls preload="metadata"></video>
   </div>
 {% else %}
 {% with extras=post.attachments.all %}
@@ -82,3 +84,4 @@
   {% endif %}
 {% endwith %}
 {% endif %}
+{% endwith %}

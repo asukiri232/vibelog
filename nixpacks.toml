@@ -1,0 +1,6 @@
+# Railway / Nixpacks: Python 3.12 для VibeLog
+[phases.setup]
+nixPkgs = ["python312"]
+
+[variables]
+NIXPACKS_PYTHON_VERSION = "3.12"

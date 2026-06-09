@@ -178,7 +178,17 @@ def post_create(request):
                 return redirect('vibel:feed')
     else:
         form = PostForm()
-    return render(request, 'vibel/post_form.html', {'form': form})
+    from django.conf import settings as dj_settings
+
+    max_v = int(getattr(dj_settings, 'MAX_VIDEO_UPLOAD_BYTES', 50 * 1024 * 1024))
+    return render(
+        request,
+        'vibel/post_form.html',
+        {
+            'form': form,
+            'max_video_mb': max(1, max_v // (1024 * 1024)),
+        },
+    )
 
 
 def profile_view(request, username):

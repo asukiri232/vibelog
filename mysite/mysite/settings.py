@@ -28,6 +28,11 @@ except ImportError:
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 _IS_VERCEL = bool(os.environ.get('VERCEL'))
+_IS_RAILWAY = bool(
+    os.environ.get('RAILWAY_ENVIRONMENT')
+    or os.environ.get('RAILWAY_PROJECT_ID')
+    or os.environ.get('RAILWAY_SERVICE_ID')
+)
 
 
 def _env_bool(name: str, default: bool = False) -> bool:
@@ -79,6 +84,20 @@ if _render_host:
     CSRF_TRUSTED_ORIGINS.append(f'https://{_render_host}')
 if _vercel_url:
     CSRF_TRUSTED_ORIGINS.append(f'https://{_vercel_url}')
+
+_railway_public = os.environ.get('RAILWAY_PUBLIC_DOMAIN', '').strip()
+if _railway_public and _railway_public not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(_railway_public)
+for _railway_host in ('.railway.app', '.up.railway.app'):
+    if _railway_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_railway_host)
+if _railway_public:
+    _railway_origin = f'https://{_railway_public}'
+    if _railway_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_railway_origin)
+
+if _IS_RAILWAY:
+    DEBUG = _env_bool('DJANGO_DEBUG', False)
 
 
 # Application definition
@@ -142,16 +161,45 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 _db_url = os.environ.get('DATABASE_URL', '').strip()
 VERCEL_EPHEMERAL_DB = _IS_VERCEL and not _db_url
 
+
+def _postgres_cfg_valid(cfg: dict) -> bool:
+    engine = cfg.get('ENGINE', '')
+    if 'postgresql' not in engine:
+        return True
+    if cfg.get('NAME'):
+        return True
+    return bool((cfg.get('OPTIONS') or {}).get('service'))
+
+
+_db_cfg = None
 if _db_url and dj_database_url is not None:
-    _db_cfg = dj_database_url.config(
+    _parsed = dj_database_url.config(
         default=_db_url,
         conn_max_age=0 if _IS_VERCEL else 600,
     )
-    if _IS_VERCEL:
-        _db_cfg.setdefault('OPTIONS', {})
-        _db_cfg['OPTIONS'].setdefault('sslmode', 'require')
-        _db_cfg['CONN_HEALTH_CHECKS'] = True
+    if _postgres_cfg_valid(_parsed):
+        _db_cfg = _parsed
+        if _IS_VERCEL:
+            _db_cfg.setdefault('OPTIONS', {})
+            _db_cfg['OPTIONS'].setdefault('sslmode', 'require')
+            _db_cfg['CONN_HEALTH_CHECKS'] = True
+        elif _IS_RAILWAY and _db_url.startswith('postgres'):
+            _db_cfg['CONN_HEALTH_CHECKS'] = True
+            # Внутренняя сеть Railway (.railway.internal) — без принудительного SSL.
+            if 'railway.internal' not in _db_url:
+                _db_cfg.setdefault('OPTIONS', {})
+                _db_cfg['OPTIONS'].setdefault('sslmode', 'require')
+
+if _db_cfg is not None:
     DATABASES = {'default': _db_cfg}
+elif _IS_RAILWAY:
+    # Build без Postgres reference: collectstatic не требует БД, migrate — при старте.
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 elif _IS_VERCEL:
     # На Vercel файловая система проекта read-only — пишем в /tmp.
     DATABASES = {
@@ -220,7 +268,9 @@ if _IS_VERCEL:
         # Исходники vibel/static/ уже в репозитории — отдаём без collectstatic на CDN.
         WHITENOISE_USE_FINDERS = True
         WHITENOISE_AUTOREFRESH = False
-elif _has_whitenoise and (_env_bool('BEGET_DEPLOY', False) or not DEBUG):
+elif _has_whitenoise and (
+    _env_bool('BEGET_DEPLOY', False) or _IS_RAILWAY or not DEBUG
+):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
@@ -229,6 +279,10 @@ MEDIA_URL = '/media/'
 if _IS_VERCEL:
     MEDIA_ROOT = Path('/tmp/media')
     SERVE_MEDIA = True
+elif _IS_RAILWAY:
+    # Подключите Volume в Railway на этот путь — фото/видео сохранятся после redeploy.
+    MEDIA_ROOT = Path(os.environ.get('MEDIA_ROOT', str(BASE_DIR / 'media')))
+    SERVE_MEDIA = _env_bool('SERVE_MEDIA', True)
 else:
     MEDIA_ROOT = BASE_DIR / 'media'
     SERVE_MEDIA = _env_bool('SERVE_MEDIA', DEBUG)
@@ -253,8 +307,15 @@ if _IS_VERCEL:
         if _origin not in CSRF_TRUSTED_ORIGINS:
             CSRF_TRUSTED_ORIGINS.append(_origin)
 
-# На Vercel лимит тела запроса ~4.5 МБ — не принимаем файлы больше 3 МБ.
-MAX_IMAGE_UPLOAD_BYTES = 3 * 1024 * 1024 if _IS_VERCEL else 8 * 1024 * 1024
+# На Vercel лимит тела запроса ~4.5 МБ; на Railway — полные лимиты.
+if _IS_VERCEL:
+    MAX_IMAGE_UPLOAD_BYTES = 3 * 1024 * 1024
+    MAX_VIDEO_UPLOAD_BYTES = 3 * 1024 * 1024
+else:
+    MAX_IMAGE_UPLOAD_BYTES = 8 * 1024 * 1024
+    MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = max(MAX_IMAGE_UPLOAD_BYTES, MAX_VIDEO_UPLOAD_BYTES) + (1024 * 1024)
+FILE_UPLOAD_MAX_MEMORY_SIZE = DATA_UPLOAD_MAX_MEMORY_SIZE
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

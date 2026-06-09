@@ -1,4 +1,5 @@
 {% extends 'vibel/base.html' %}
+{% load vibel_extras %}
 {% block title %}@{{ profile_user.username }} — VibeLog{% endblock %}
 {% block content %}
 <div class="vl-profile-page">
@@ -11,22 +12,26 @@
         </a>
       </div>
     {% endif %}
-    {% if profile.cover %}
-      <img src="{{ profile.cover.url }}" alt="" class="vl-profile-cover__img" width="1200" height="400">
+    {% with cover_url=profile.cover|safe_media_url_filter %}
+    {% if cover_url %}
+      <img src="{{ cover_url }}" alt="" class="vl-profile-cover__img" width="1200" height="400">
     {% else %}
       <div class="vl-profile-cover__placeholder" aria-hidden="true"></div>
     {% endif %}
+    {% endwith %}
   </div>
 
   <div class="vl-profile-sheet">
     <div class="vl-profile-body">
       <div class="vl-profile-avatar-slot">
         <div class="vl-profile-avatar-ring">
-          {% if profile.avatar %}
-            <img src="{{ profile.avatar.url }}" alt="" class="vl-profile-avatar-ring__img" width="168" height="168">
+          {% with avatar_url=profile.avatar|safe_media_url_filter %}
+          {% if avatar_url %}
+            <img src="{{ avatar_url }}" alt="" class="vl-profile-avatar-ring__img" width="168" height="168">
           {% else %}
             <span class="vl-profile-avatar-ring__placeholder" aria-hidden="true">{{ profile.display_name|default:profile_user.username|first|upper }}</span>
           {% endif %}
+          {% endwith %}
         </div>
       </div>
 
@@ -121,7 +126,17 @@
   <div class="vl-grid">
     {% for post in posts %}
       <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-grid__cell">
-        <img src="{{ post.image.url }}" alt="" class="vl-grid__img" loading="lazy">
+        {% with thumb=post|post_grid_thumb %}
+        {% if thumb %}
+          <img src="{{ thumb }}" alt="" class="vl-grid__img" loading="lazy">
+        {% elif post.video %}
+          <div class="vl-grid__placeholder vl-grid__placeholder--video" aria-hidden="true">
+            <span class="vl-grid__video-icon">▶</span>
+          </div>
+        {% else %}
+          <div class="vl-grid__placeholder" aria-hidden="true"></div>
+        {% endif %}
+        {% endwith %}
         <span class="vl-grid__overlay">♥ {{ post.likes_count }}</span>
       </a>
     {% empty %}

@@ -2772,6 +2772,32 @@ body.vl-report-open {
   transition: opacity 0.25s;
 }
 
+.vl-grid__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1;
+  background: rgba(12, 61, 46, 0.08);
+}
+
+[data-theme='dark'] .vl-grid__placeholder {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.vl-grid__placeholder--video {
+  background: rgba(12, 61, 46, 0.14);
+}
+
+.vl-grid__video-icon {
+  font-size: 1.75rem;
+  color: rgba(12, 61, 46, 0.55);
+}
+
+[data-theme='dark'] .vl-grid__video-icon {
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .vl-grid__cell:hover .vl-grid__overlay {
   opacity: 1;
 }
