@@ -1,11 +1,30 @@
 import logging
 import os
+import sys
 
 from django.core.exceptions import ValidationError
 
 from .errors import WRITE_ERROR_MSG, respond_write_error
 
 logger = logging.getLogger(__name__)
+
+
+class RailwayRequestLogMiddleware:
+    """Логирует Host и статус — видно в Railway Deploy Logs при 502."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        if os.environ.get('RAILWAY_ENVIRONMENT') or os.environ.get('PORT'):
+            msg = (
+                f'{request.method} {request.path} '
+                f'host={request.get_host()} status={response.status_code}'
+            )
+            print(msg, file=sys.stderr, flush=True)
+        return response
+
 
 class VercelBootstrapMiddleware:
     """Гарантирует БД и /tmp/media перед обработкой запроса на Vercel."""

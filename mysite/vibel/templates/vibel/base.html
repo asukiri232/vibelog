@@ -1,4 +1,4 @@
-{% load static %}
+{% load static vibel_extras %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -75,11 +75,13 @@
         <div class="vl-user-menu" id="vl-user-menu">
           <button type="button" class="vl-user-menu__trigger" id="vl-user-menu-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="vl-user-menu-panel" title="Меню аккаунта">
             <span class="vl-user-menu__avatar-wrap">
-              {% if nav_profile.avatar %}
-                <img src="{{ nav_profile.avatar.url }}" alt="" class="vl-user-menu__avatar-img" width="36" height="36">
+              {% with nav_avatar=nav_profile.avatar|safe_media_url_filter %}
+              {% if nav_avatar %}
+                <img src="{{ nav_avatar }}" alt="" class="vl-user-menu__avatar-img" width="36" height="36">
               {% else %}
                 <span class="vl-user-menu__avatar-img vl-user-menu__avatar-img--placeholder" aria-hidden="true">{{ nav_profile.display_name|default:user.username|first|upper }}</span>
               {% endif %}
+              {% endwith %}
             </span>
             <span class="vl-user-menu__chevron" aria-hidden="true">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
@@ -87,11 +89,13 @@
           </button>
           <div class="vl-user-menu__panel" id="vl-user-menu-panel" role="menu" aria-label="Меню пользователя" hidden>
             <div class="vl-user-menu__head">
-              {% if nav_profile.avatar %}
-                <img src="{{ nav_profile.avatar.url }}" alt="" class="vl-user-menu__head-avatar" width="56" height="56">
+              {% with nav_avatar=nav_profile.avatar|safe_media_url_filter %}
+              {% if nav_avatar %}
+                <img src="{{ nav_avatar }}" alt="" class="vl-user-menu__head-avatar" width="56" height="56">
               {% else %}
                 <span class="vl-user-menu__head-avatar vl-user-menu__head-avatar--placeholder" aria-hidden="true">{{ nav_profile.display_name|default:user.username|first|upper }}</span>
               {% endif %}
+              {% endwith %}
               <div class="vl-user-menu__head-text">
                 <span class="vl-user-menu__head-name">{{ nav_profile.display_handle }}</span>
                 <span class="vl-user-menu__head-handle">@{{ user.username }}</span>
@@ -166,11 +170,13 @@
       <div class="vl-mobile-menu__body">
         {% if user.is_authenticated %}
         <div class="vl-mobile-menu__user">
-          {% if nav_profile.avatar %}
-            <img src="{{ nav_profile.avatar.url }}" alt="" class="vl-mobile-menu__user-avatar" width="48" height="48">
+          {% with nav_avatar=nav_profile.avatar|safe_media_url_filter %}
+          {% if nav_avatar %}
+            <img src="{{ nav_avatar }}" alt="" class="vl-mobile-menu__user-avatar" width="48" height="48">
           {% else %}
             <span class="vl-mobile-menu__user-avatar vl-mobile-menu__user-avatar--ph" aria-hidden="true">{{ nav_profile.display_name|default:user.username|first|upper }}</span>
           {% endif %}
+          {% endwith %}
           <div class="vl-mobile-menu__user-text">
             <span class="vl-mobile-menu__user-name">{{ nav_profile.display_handle }}</span>
             <span class="vl-mobile-menu__user-handle">@{{ user.username }}</span>

@@ -28,6 +28,8 @@ if [ "${SEED_DEMO:-0}" = "1" ]; then
   "$PYTHON" manage.py seed_demo_users --no-reconcile || true
 fi
 
+"$PYTHON" manage.py railway_smoke_test
+
 echo "Starting gunicorn on 0.0.0.0:${PORT:-8000}..."
 exec "$PYTHON" -m gunicorn mysite.wsgi:application \
   --bind "0.0.0.0:${PORT:-8000}" \

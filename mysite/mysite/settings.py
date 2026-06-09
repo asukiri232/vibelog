@@ -32,6 +32,11 @@ _IS_RAILWAY = bool(
     os.environ.get('RAILWAY_ENVIRONMENT')
     or os.environ.get('RAILWAY_PROJECT_ID')
     or os.environ.get('RAILWAY_SERVICE_ID')
+    or os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+    or (
+        os.environ.get('PORT')
+        and os.environ.get('DATABASE_URL', '').startswith(('postgres://', 'postgresql://'))
+    )
 )
 
 
@@ -99,23 +104,16 @@ if _railway_public:
 if _IS_RAILWAY:
     DEBUG = _env_bool('DJANGO_DEBUG', False)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    # Railway сам передаёт Host; X-Forwarded-Host часто ломает проверку домена.
-    if _env_bool('RAILWAY_USE_X_FORWARDED_HOST', False):
-        USE_X_FORWARDED_HOST = True
-    # Явный ALLOWED_HOSTS из панели (например .onrender.com) режет *.railway.app.
-    if os.environ.get('ALLOWED_HOSTS', '').strip():
-        ALLOWED_HOSTS = ['*']
-    else:
-        for _railway_exact in (
-            'localhost',
-            '127.0.0.1',
-            'healthcheck.railway.app',
-        ):
-            if _railway_exact not in ALLOWED_HOSTS:
-                ALLOWED_HOSTS.append(_railway_exact)
-        for _railway_suffix in ('.railway.internal', '.railway.app', '.up.railway.app'):
-            if _railway_suffix not in ALLOWED_HOSTS:
-                ALLOWED_HOSTS.append(_railway_suffix)
+    ALLOWED_HOSTS = ['*']
+    for _origin_host in (
+        _railway_public,
+        'localhost',
+        '127.0.0.1',
+    ):
+        if _origin_host:
+            _o = f'https://{_origin_host}'
+            if _o not in CSRF_TRUSTED_ORIGINS:
+                CSRF_TRUSTED_ORIGINS.append(_o)
 
 
 # Application definition
@@ -131,6 +129,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = []
+if _IS_RAILWAY:
+    MIDDLEWARE.append('vibel.middleware.RailwayRequestLogMiddleware')
 if _IS_VERCEL:
     MIDDLEWARE += [
         'vibel.middleware.SafeWriteErrorMiddleware',
@@ -295,9 +295,9 @@ if _IS_VERCEL:
         # Исходники vibel/static/ уже в репозитории — отдаём без collectstatic на CDN.
         WHITENOISE_USE_FINDERS = True
         WHITENOISE_AUTOREFRESH = False
-elif _has_whitenoise and (
-    _env_bool('BEGET_DEPLOY', False) or _IS_RAILWAY or not DEBUG
-):
+elif _has_whitenoise and _IS_RAILWAY:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+elif _has_whitenoise and (_env_bool('BEGET_DEPLOY', False) or not DEBUG):
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 else:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'

@@ -98,9 +98,44 @@ Railway сам прокинет строку подключения — Django �
 
 ---
 
-## 9. Ошибка 502 / «Application failed to respond»
+## 9. Ошибка 502 при успешном healthcheck
 
-Gunicorn запустился, но сайт отдаёт 502 — чаще всего **неверный `DATABASE_URL` на web-сервисе**.
+Если в логах есть `GET /health/ 200`, но в браузере 502 — **приложение живое**, проблема в **маршрутизации Railway** или **не том URL**.
+
+### Чеклист (по порядку)
+
+1. **Открываете URL web-сервиса, не Postgres**  
+   В проекте два сервиса. Домен нужен у **vibelog / web** → Settings → Networking → **Public URL** (`*.up.railway.app`).  
+   URL Postgres (`DATABASE_PUBLIC_URL`) в браузере даст 502.
+
+2. **Networking → Target Port**  
+   Должен совпадать с `PORT` из логов (обычно **8080**). Если вручную стоит `8000` — будет 502 при рабочем healthcheck.
+
+3. **Удалите с web-сервиса** `ALLOWED_HOSTS`, `DATABASE_PUBLIC_URL`, все `PG*` переменные.  
+   Оставьте только **Reference** `DATABASE_URL` → Postgres.
+
+4. **Start Command** на web: `bash deploy/railway/start.sh`
+
+5. После redeploy в **Deploy Logs** должно быть:
+   ```
+   Smoke test OK
+   GET /ready/ -> 200
+   GET / -> 200
+   ```
+
+6. Проверка в браузере:
+   - `/health/` → `ok`
+   - `/ready/` → `ok users=...`
+   - `/` → лента
+
+7. **HTTP Logs** (вкладка у web-сервиса): при открытии сайта должна появиться строка `GET / host=... status=200`.  
+   Если строк нет — вы открываете не тот домен.
+
+---
+
+## 10. Ошибка 502 / «Application failed to respond» (БД)
+
+Gunicorn не стартует или падает до healthcheck — чаще всего **неверный `DATABASE_URL` на web-сервисе**.
 
 **Неправильно** (шаблон Postgres, вставленный вручную на web):
 ```
@@ -120,7 +155,7 @@ DATABASE_URL="postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@..."
 
 ---
 
-## 10. «Application failed to respond» (другое)
+## 11. «Application failed to respond» (другое)
 
 Чаще всего одна из причин ниже. Откройте **Deployments → последний деплой → Deploy Logs** (не Build Logs).
 
@@ -154,7 +189,7 @@ Push в `main` → Railway пересоберёт автоматически.
 
 ---
 
-## 11. Полезные команды (Railway CLI, по желанию)
+## 12. Полезные команды (Railway CLI, по желанию)
 
 ```bash
 npm i -g @railway/cli
