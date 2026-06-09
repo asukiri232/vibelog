@@ -100,11 +100,13 @@
             <div class="vl-comment-line__body">
               <a href="{% url 'vibel:profile' username=c.author.username %}" class="vl-comment-user">{{ c.author.profile.display_handle }}</a>
               {% if c.text %}<span class="vl-comment-body">{{ c.text }}</span>{% endif %}
-              {% if c.image %}
-                <a href="{{ c.image.url }}" class="vl-comment-img-link" data-vl-lightbox>
-                  <img src="{{ c.image.url }}" alt="" class="vl-comment-img" loading="lazy" width="280" height="280">
+              {% with c_image_url=c.image|safe_media_url_filter %}
+              {% if c_image_url %}
+                <a href="{{ c_image_url }}" class="vl-comment-img-link" data-vl-lightbox>
+                  <img src="{{ c_image_url }}" alt="" class="vl-comment-img" loading="lazy" width="280" height="280">
                 </a>
               {% endif %}
+              {% endwith %}
             </div>
             {% include 'vibel/partials/comment_delete_form.html' with c=c post=post ajax=True %}
           </div>

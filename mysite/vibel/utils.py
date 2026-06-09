@@ -1,4 +1,5 @@
 import io
+import logging
 import re
 from typing import Iterable, List, Set
 
@@ -14,6 +15,8 @@ MAX_IMAGE_EDGE = 1920
 JPEG_QUALITY = 85
 
 MENTION_RE = re.compile(r'@([a-zA-Z0-9_]{1,150})')
+
+logger = logging.getLogger(__name__)
 
 
 def optimize_uploaded_image(uploaded, max_edge=MAX_IMAGE_EDGE):
@@ -83,7 +86,12 @@ def blocked_user_ids(user) -> Set[int]:
 
 
 def safe_media_url(file_field) -> str:
-    """URL файла или пустая строка, если файла нет или он удалён с диска."""
+    """Return the URL for a file field, or an empty string if the field is
+    empty, has no name, or the storage backend raises any error.
+
+    Catches all exceptions so that a missing or corrupt file never propagates
+    to the template layer and crashes the request.
+    """
     if not file_field:
         return ''
     name = getattr(file_field, 'name', None)
@@ -91,7 +99,13 @@ def safe_media_url(file_field) -> str:
         return ''
     try:
         return file_field.url
-    except (ValueError, OSError):
+    except Exception:
+        logger.warning(
+            'safe_media_url: could not resolve URL for file field %r (name=%r)',
+            file_field,
+            name,
+            exc_info=True,
+        )
         return ''
 
 
