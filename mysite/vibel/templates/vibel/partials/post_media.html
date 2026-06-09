@@ -15,22 +15,22 @@
       {% if post.image %}
         {% if media_link_to_detail %}
           <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-post-gallery__item--main vl-card__media-link">
-            <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+            <img src="{{ post.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
           </a>
         {% else %}
-          <a href="{{ post.image.url }}" class="vl-post-gallery__item vl-post-gallery__item--main" data-vl-lightbox>
-            <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+          <a href="{{ post.image|safe_media_url_filter }}" class="vl-post-gallery__item vl-post-gallery__item--main" data-vl-lightbox>
+            <img src="{{ post.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
           </a>
         {% endif %}
       {% endif %}
       {% for att in extras %}
         {% if media_link_to_detail and not post.image %}
           <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-card__media-link">
-            <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+            <img src="{{ att.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
           </a>
         {% else %}
-          <a href="{{ att.image.url }}" class="vl-post-gallery__item" data-vl-lightbox>
-            <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+          <a href="{{ att.image|safe_media_url_filter }}" class="vl-post-gallery__item" data-vl-lightbox>
+            <img src="{{ att.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
           </a>
         {% endif %}
       {% endfor %}
@@ -45,11 +45,11 @@
             <div class="vl-post-carousel__slide">
               {% if media_link_to_detail %}
                 <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-post-gallery__item--main vl-card__media-link">
-                  <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                  <img src="{{ post.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
                 </a>
               {% else %}
-                <a href="{{ post.image.url }}" class="vl-post-gallery__item vl-post-gallery__item--main" data-vl-lightbox>
-                  <img src="{{ post.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                <a href="{{ post.image|safe_media_url_filter }}" class="vl-post-gallery__item vl-post-gallery__item--main" data-vl-lightbox>
+                  <img src="{{ post.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
                 </a>
               {% endif %}
             </div>
@@ -58,11 +58,11 @@
             <div class="vl-post-carousel__slide">
               {% if media_link_to_detail %}
                 <a href="{% url 'vibel:post_detail' post_id=post.id %}" class="vl-post-gallery__item vl-card__media-link">
-                  <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                  <img src="{{ att.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
                 </a>
               {% else %}
-                <a href="{{ att.image.url }}" class="vl-post-gallery__item" data-vl-lightbox>
-                  <img src="{{ att.image.url }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
+                <a href="{{ att.image|safe_media_url_filter }}" class="vl-post-gallery__item" data-vl-lightbox>
+                  <img src="{{ att.image|safe_media_url_filter }}" alt="" class="vl-card__img" loading="lazy" decoding="async">
                 </a>
               {% endif %}
             </div>

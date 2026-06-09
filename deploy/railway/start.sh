@@ -15,6 +15,8 @@ fi
 echo "Using Python: $($PYTHON --version 2>&1)"
 echo "PORT=${PORT:-8000}"
 
+bash "${ROOT}/deploy/railway/ensure_media.sh"
+
 "$PYTHON" manage.py railway_preflight
 
 "$PYTHON" manage.py migrate --no-input
