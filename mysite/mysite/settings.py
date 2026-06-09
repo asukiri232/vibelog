@@ -98,9 +98,18 @@ if _railway_public:
 
 if _IS_RAILWAY:
     DEBUG = _env_bool('DJANGO_DEBUG', False)
-    for _railway_exact in ('localhost', '127.0.0.1', 'healthcheck.railway.app'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
+    for _railway_exact in (
+        'localhost',
+        '127.0.0.1',
+        'healthcheck.railway.app',
+    ):
         if _railway_exact not in ALLOWED_HOSTS:
             ALLOWED_HOSTS.append(_railway_exact)
+    for _railway_suffix in ('.railway.internal',):
+        if _railway_suffix not in ALLOWED_HOSTS:
+            ALLOWED_HOSTS.append(_railway_suffix)
 
 
 # Application definition
@@ -161,7 +170,13 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+def _has_unresolved_railway_var(value) -> bool:
+    return isinstance(value, str) and ('${{' in value or '}}' in value)
+
+
 _db_url = os.environ.get('DATABASE_URL', '').strip()
+if _has_unresolved_railway_var(_db_url):
+    _db_url = ''
 VERCEL_EPHEMERAL_DB = _IS_VERCEL and not _db_url
 
 
@@ -169,6 +184,9 @@ def _postgres_cfg_valid(cfg: dict) -> bool:
     engine = cfg.get('ENGINE', '')
     if 'postgresql' not in engine:
         return True
+    for key in ('NAME', 'HOST', 'USER', 'PASSWORD'):
+        if _has_unresolved_railway_var(cfg.get(key)):
+            return False
     if cfg.get('NAME'):
         return True
     return bool((cfg.get('OPTIONS') or {}).get('service'))
@@ -196,7 +214,7 @@ if _db_url and dj_database_url is not None:
 if _db_cfg is not None:
     DATABASES = {'default': _db_cfg}
 elif _IS_RAILWAY:
-    # Build без Postgres reference: collectstatic не требует БД, migrate — при старте.
+    # Только build (collectstatic). На старте railway_preflight требует PostgreSQL.
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

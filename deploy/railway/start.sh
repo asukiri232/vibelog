@@ -12,14 +12,10 @@ else
   PYTHON=python
 fi
 
-if [ -z "${DATABASE_URL:-}" ]; then
-  echo "ERROR: DATABASE_URL is not set."
-  echo "Railway: Postgres service -> Variables -> Add Reference -> DATABASE_URL on the web service."
-  exit 1
-fi
-
 echo "Using Python: $($PYTHON --version 2>&1)"
 echo "PORT=${PORT:-8000}"
+
+"$PYTHON" manage.py railway_preflight
 
 "$PYTHON" manage.py migrate --no-input
 "$PYTHON" manage.py seed_vibel
@@ -32,7 +28,7 @@ if [ "${SEED_DEMO:-0}" = "1" ]; then
   "$PYTHON" manage.py seed_demo_users --no-reconcile || true
 fi
 
-echo "Starting gunicorn..."
+echo "Starting gunicorn on 0.0.0.0:${PORT:-8000}..."
 exec "$PYTHON" -m gunicorn mysite.wsgi:application \
   --bind "0.0.0.0:${PORT:-8000}" \
   --workers "${WEB_CONCURRENCY:-2}" \

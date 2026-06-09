@@ -98,7 +98,29 @@ Railway сам прокинет строку подключения — Django �
 
 ---
 
-## 9. «Application failed to respond»
+## 9. Ошибка 502 / «Application failed to respond»
+
+Gunicorn запустился, но сайт отдаёт 502 — чаще всего **неверный `DATABASE_URL` на web-сервисе**.
+
+**Неправильно** (шаблон Postgres, вставленный вручную на web):
+```
+DATABASE_URL="postgresql://${{PGUSER}}:${{POSTGRES_PASSWORD}}@..."
+```
+
+**Правильно:**
+1. Удалите на **web-сервисе** переменные `DATABASE_URL`, `DATABASE_PUBLIC_URL`, `PGUSER`, `PGPASSWORD` и т.п.
+2. **+ New Variable** → **Add Reference** → сервис **Postgres** → поле **`DATABASE_URL`**
+3. Значение будет вида `postgresql://postgres:реальный_пароль@containers-....railway.app:12345/railway`
+
+Также **удалите** `ALLOWED_HOSTS` с web-сервиса (там не должно быть `.onrender.com`).
+
+После push с `railway_preflight` в логах будет явная ошибка, если Reference не настроен.
+
+Проверка: `/health/` → `ok` (работает даже до полной настройки Django).
+
+---
+
+## 10. «Application failed to respond» (другое)
 
 Чаще всего одна из причин ниже. Откройте **Deployments → последний деплой → Deploy Logs** (не Build Logs).
 
