@@ -1,4 +1,5 @@
 {% extends 'vibel/base.html' %}
+{% load vibel_extras %}
 {% block title %}Лента — VibeLog{% endblock %}
 {% block content %}
 <div class="vl-feed-controls">
@@ -33,11 +34,13 @@
     <article class="vl-card{% if not user.is_authenticated %} vl-card--guest-feed{% endif %}" id="post-{{ post.id }}">
       <header class="vl-card__head">
         <a href="{% url 'vibel:profile' username=post.author.username %}" class="vl-card__user">
-          {% if post.author.profile.avatar %}
-            <img src="{{ post.author.profile.avatar.url }}" alt="" class="vl-card__avatar">
+          {% with avatar_url=post.author.profile.avatar|safe_media_url_filter %}
+          {% if avatar_url %}
+            <img src="{{ avatar_url }}" alt="" class="vl-card__avatar">
           {% else %}
             <span class="vl-card__avatar vl-card__avatar--placeholder"></span>
           {% endif %}
+          {% endwith %}
           <span class="vl-card__name">{{ post.author.profile.display_handle }}</span>
         </a>
         <span class="vl-card__badge">{{ post.category.name }}</span>

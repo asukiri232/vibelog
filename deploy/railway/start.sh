@@ -31,7 +31,7 @@ fi
 echo "Starting gunicorn on 0.0.0.0:${PORT:-8000}..."
 exec "$PYTHON" -m gunicorn mysite.wsgi:application \
   --bind "0.0.0.0:${PORT:-8000}" \
-  --workers "${WEB_CONCURRENCY:-2}" \
+  --workers "${WEB_CONCURRENCY:-1}" \
   --timeout "${GUNICORN_TIMEOUT:-120}" \
   --access-logfile - \
   --error-logfile -

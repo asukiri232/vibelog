@@ -12,8 +12,16 @@ def health(_request):
     return HttpResponse('ok', content_type='text/plain')
 
 
+def ready(_request):
+    from django.contrib.auth import get_user_model
+
+    users = get_user_model().objects.count()
+    return HttpResponse(f'ok users={users}', content_type='text/plain')
+
+
 urlpatterns = [
     path('health/', health, name='health'),
+    path('ready/', ready, name='ready'),
     path('admin/', admin.site.urls),
     path('', include('vibel.urls')),
 ]

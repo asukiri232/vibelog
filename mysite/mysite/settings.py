@@ -99,17 +99,23 @@ if _railway_public:
 if _IS_RAILWAY:
     DEBUG = _env_bool('DJANGO_DEBUG', False)
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    USE_X_FORWARDED_HOST = True
-    for _railway_exact in (
-        'localhost',
-        '127.0.0.1',
-        'healthcheck.railway.app',
-    ):
-        if _railway_exact not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(_railway_exact)
-    for _railway_suffix in ('.railway.internal',):
-        if _railway_suffix not in ALLOWED_HOSTS:
-            ALLOWED_HOSTS.append(_railway_suffix)
+    # Railway сам передаёт Host; X-Forwarded-Host часто ломает проверку домена.
+    if _env_bool('RAILWAY_USE_X_FORWARDED_HOST', False):
+        USE_X_FORWARDED_HOST = True
+    # Явный ALLOWED_HOSTS из панели (например .onrender.com) режет *.railway.app.
+    if os.environ.get('ALLOWED_HOSTS', '').strip():
+        ALLOWED_HOSTS = ['*']
+    else:
+        for _railway_exact in (
+            'localhost',
+            '127.0.0.1',
+            'healthcheck.railway.app',
+        ):
+            if _railway_exact not in ALLOWED_HOSTS:
+                ALLOWED_HOSTS.append(_railway_exact)
+        for _railway_suffix in ('.railway.internal', '.railway.app', '.up.railway.app'):
+            if _railway_suffix not in ALLOWED_HOSTS:
+                ALLOWED_HOSTS.append(_railway_suffix)
 
 
 # Application definition
